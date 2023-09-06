@@ -11,7 +11,7 @@
     "body-parser": "~1.19.0",
     "cors": "~2.8.0",
     "express": "~4.17.0",
-    "fast-xml-parser": "~3.12.11",
+    "fast-xml-parser": "~4.2.5",
     "htpasswd": "~2.4.0",
     "http-auth": "~3.2.4",
     "moment": "~2.29.3",
