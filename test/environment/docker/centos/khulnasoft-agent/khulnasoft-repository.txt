@@ -1,0 +1,7 @@
+[khulnasoft_repo]
+gpgcheck=1
+gpgkey=https://packages.khulnasoft.com/key/GPG-KEY-KHULNASOFT
+enabled=1
+name=Khulnasoft repository
+baseurl=https://packages.khulnasoft.com/3.x/yum/
+protect=1

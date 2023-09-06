@@ -1,0 +1,81 @@
+version: '3.7'
+
+services:
+  khulnasoft-master:
+    build:
+      context: ./khulnasoft-manager
+      args:
+        khulnasoft_branch: "${KHULNASOFT_BRANCH}"
+        khulnasoft_api_branch: "${KHULNASOFT_API_BRANCH}"
+    image: khulnasoft-manager-centos:${KHULNASOFT_BRANCH}
+    volumes:
+      - ./share:/share
+    entrypoint:
+      - /scripts/entrypoint.sh
+      - ${MASTER_NAME}
+      - master
+      - master
+  khulnasoft-worker1:
+    build:
+      context: ./khulnasoft-manager
+      args:
+        khulnasoft_branch: "${KHULNASOFT_BRANCH}"
+        khulnasoft_api_branch: "${KHULNASOFT_API_BRANCH}"
+    image: khulnasoft-manager-centos:${KHULNASOFT_BRANCH}
+    volumes:
+      - ./share:/share
+    depends_on:
+      - khulnasoft-master
+    entrypoint:
+      - /scripts/entrypoint.sh
+      - ${MASTER_NAME}
+      - ${WORKER1_NAME}
+      - worker
+  khulnasoft-worker2:
+    build:
+      context: ./khulnasoft-manager
+      args:
+        khulnasoft_branch: "${KHULNASOFT_BRANCH}"
+        khulnasoft_api_branch: "${KHULNASOFT_API_BRANCH}"
+    image: khulnasoft-manager-centos:${KHULNASOFT_BRANCH}
+    depends_on:
+      - khulnasoft-master
+    entrypoint:
+      - /scripts/entrypoint.sh
+      - ${MASTER_NAME}
+      - ${WORKER2_NAME}
+      - worker
+  khulnasoft-agent1:
+    build:
+      context: ./khulnasoft-agent
+    image: khulnasoft-agent-centos:last-stable
+    entrypoint: 
+      - /scripts/entrypoint.sh 
+      - khulnasoft-master
+      - khulnasoft-master
+    depends_on:
+      - khulnasoft-master
+  khulnasoft-agent2:
+    build:
+      context: ./khulnasoft-agent
+    image: khulnasoft-agent-centos:last-stable
+    entrypoint: 
+      - /scripts/entrypoint.sh
+      - khulnasoft-master
+      - khulnasoft-worker1
+    depends_on:
+      - khulnasoft-master
+      - khulnasoft-worker1
+      - khulnasoft-agent1
+  khulnasoft-agent3:
+    build:
+      context: ./khulnasoft-agent-outdated
+    image: khulnasoft-agent-centos:3.5
+    entrypoint:
+      - /scripts/entrypoint.sh
+      - khulnasoft-master
+      - khulnasoft-worker2
+    depends_on:
+      - khulnasoft-master
+      - khulnasoft-agent1
+      - khulnasoft-agent2
