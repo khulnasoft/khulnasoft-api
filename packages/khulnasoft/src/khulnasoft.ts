@@ -183,14 +183,7 @@ export interface Endpoint<
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
   TResponseSchema extends z.ZodTypeAny | undefined
-> extends BaseEndpoint<
-    Config,
-    MethodAndUrl,
-    Path,
-    Query,
-    Body,
-    TResponseSchema
-  > {
+> {
   handler?: Handler<
     KhulnasoftContext<
       BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, TResponseSchema>
@@ -198,7 +191,7 @@ export interface Endpoint<
     Path,
     Query,
     Body,
-    TResponseSchema extends z.ZodTypeAny ? z.input<TResponseSchema> : undefined
+    HandlerResponseInputType<TResponseSchema>
   >;
 }
 
@@ -589,7 +582,7 @@ interface CreateEndpointOptions<
     Path,
     Query,
     Body,
-    TResponseSchema extends z.ZodTypeAny ? z.input<TResponseSchema> : undefined
+    HandlerResponseInputType<TResponseSchema>
   >;
 }
 
@@ -902,7 +895,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     Path extends ZodObjectSchema | undefined,
     Query extends ZodObjectSchema | undefined,
     Body extends ZodObjectSchema | undefined,
-    Response extends z.ZodTypeAny = z.ZodVoid
+    TResponse extends z.ZodTypeAny = z.ZodVoid
   >(
     params: CreateEndpointOptions<
       MethodAndUrl,
@@ -910,9 +903,9 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
       Path,
       Query,
       Body,
-      Response
+      TResponse
     >
-  ): Endpoint<Config, MethodAndUrl, Path, Query, Body, Response> {
+  ): Endpoint<Config, MethodAndUrl, Path, Query, Body, TResponse> {
     const { config, response, path, query, body, ...rest } = params;
     return {
       khulnasoft: this,
@@ -1148,7 +1141,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     type Path = TypeArgToZodObject<T, "path">;
     type Query = TypeArgToZodObject<T, "query">;
     type Body = TypeArgToZodObject<T, "body">;
-    type Response = "response" extends keyof T
+    type TResponse = "response" extends keyof T
       ? z.toZod<T["response"]>
       : z.ZodVoid;
     return {
@@ -1165,8 +1158,8 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
         Path,
         Query,
         Body,
-        Response
-      >): Endpoint<Config, MethodAndUrl, Path, Query, Body, Response> => {
+        TResponse
+      >): Endpoint<Config, MethodAndUrl, Path, Query, Body, TResponse> => {
         return {
           khulnasoft: this,
           endpoint,
@@ -1175,7 +1168,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
           path: undefined as Path,
           query: undefined as Query,
           body: undefined as Body,
-          response: Response,
+          response: TResponse,
         };
       },
     };
@@ -1208,7 +1201,7 @@ interface TypeEndpointParams<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny = z.ZodVoid
+  TResponse extends z.ZodTypeAny = z.ZodVoid
 > {
   endpoint: MethodAndUrl;
   config?: Config;
@@ -1226,7 +1219,7 @@ interface TypeEndpointBuilder<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny = z.ZodVoid
+  TResponse extends z.ZodTypeAny = z.ZodVoid
 > {
   endpoint<
     MethodAndUrl extends HttpEndpoint,

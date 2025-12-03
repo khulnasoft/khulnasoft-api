@@ -427,8 +427,8 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
       zod-openapi:
-        specifier: github:khulnasoft/zod-openapi#2.5.1
-        version: https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8bbfc58c0a299fce62f257475ff5029191c2b8a1(zod@3.25.76)
+        specifier: github:khulnasoft/zod-openapi#2.8.0
+        version: https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8cec5371e1ebb8fb6b3c28e458624657252de78c(zod@3.25.76)
       zod-validation-error:
         specifier: ^4.0.1
         version: 4.0.2(zod@3.25.76)
@@ -8147,8 +8147,8 @@ packages:
     resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
     engines: {node: '>=12.20'}
 
-  zod-openapi@https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8bbfc58c0a299fce62f257475ff5029191c2b8a1:
-    resolution: {tarball: https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8bbfc58c0a299fce62f257475ff5029191c2b8a1}
+  zod-openapi@https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8cec5371e1ebb8fb6b3c28e458624657252de78c:
+    resolution: {tarball: https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8cec5371e1ebb8fb6b3c28e458624657252de78c}
     version: 2.5.1
     engines: {node: '>=16.11'}
     peerDependencies:
@@ -17723,7 +17723,7 @@ snapshots:
 
   yocto-queue@1.2.2: {}
 
-  zod-openapi@https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8bbfc58c0a299fce62f257475ff5029191c2b8a1(zod@3.25.76):
+  zod-openapi@https://codeload.github.com/khulnasoft/zod-openapi/tar.gz/8cec5371e1ebb8fb6b3c28e458624657252de78c(zod@3.25.76):
     dependencies:
       zod: 3.25.76
 

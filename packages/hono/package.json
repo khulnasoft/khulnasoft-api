@@ -33,6 +33,6 @@
   "dependencies": {
     "hono": "^4.0.0",
     "qs": "^6.11.2",
-    "khulnasoft": "workspace:*"
+    "khulnasoft": "github:khulnasoft-api/khulnasoft-api#khulnasoft-0.0.1"
   }
 }

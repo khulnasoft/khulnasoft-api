@@ -902,37 +902,31 @@ export type Out<T> = 0 extends 1 & T
 
 export type toZod<T> = 0 extends 1 & T
   ? any
-  : [null | undefined] extends [T]
-  ? z.ZodOptional<z.ZodNullable<toZod<NonNullable<T>>>>
-  : [null] extends [T]
-  ? z.ZodNullable<toZod<NonNullable<T>>>
-  : [undefined] extends [T]
-  ? z.ZodOptional<toZod<NonNullable<T>>>
-  : [T] extends [z.ZodTypeAny]
+  : T extends z.ZodTypeAny
   ? T
-  : [T] extends [BaseSchema]
+  : T extends BaseSchema
   ? schemaTypeToZod<T>
-  : [T] extends [Date]
+  : T extends Date
   ? z.ZodDate
-  : [T] extends [Array<infer E>]
+  : T extends Array<infer E>
   ? z.ZodArray<toZod<E>>
-  : [T] extends [Set<infer E>]
+  : T extends Set<infer E>
   ? z.ZodSet<toZod<E>>
-  : [T] extends [Map<infer K, infer V>]
+  : T extends Map<infer K, infer V>
   ? z.ZodMap<toZod<K>, toZod<V>>
-  : [T] extends [PromiseLike<infer E>]
+  : T extends PromiseLike<infer E>
   ? z.ZodPromise<toZod<E>>
-  : [T] extends [object]
-  ? z.ZodObject<{ [k in keyof T]-?: toZod<T[k]> }>
-  : [number] extends [T]
+  : T extends object
+  ? z.ZodObject<{ [k in keyof T]-?: toZod<NonNullable<T[k]>> }>
+  : T extends number
   ? z.ZodNumber
-  : [string] extends [T]
+  : T extends string
   ? z.ZodString
-  : [boolean] extends [T]
+  : T extends boolean
   ? z.ZodBoolean
-  : [bigint] extends [T]
+  : T extends bigint
   ? z.ZodBigInt
-  : z.ZodType<Out<T>, any, In<T>>;
+  : z.ZodType<Out<T>, any, In<T>>; // Fallback for any other type
 
 type schemaTypeToZod<T extends BaseSchema> = T extends {
   metadata: infer M extends object;
