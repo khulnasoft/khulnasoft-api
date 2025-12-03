@@ -62,7 +62,7 @@ If you’d like to use the repository from source, you can either install from g
 To install via git:
 
 ```sh
-$ pip install git+ssh://git@github.com/khulnasoft/khulnasoft-api#master.git
+$ pip install git+ssh://git@github.com/khulnasoft/khulnasoft-api#python.git
 ```
 
 Alternatively, you can build from source and install the wheel file:
