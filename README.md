@@ -14,12 +14,9 @@ It is generated with [Stainless](https://www.stainless.com/).
 ## Installation
 
 ```sh
-# install from the production repo
-pip install git+ssh://git@github.com/khulnasoft/khulnasoft-api#python.git
+# install from PyPI
+pip install khulnasoft_api
 ```
-
-> [!NOTE]
-> Once this package is [published to PyPI](https://www.stainless.com/docs/guides/publish), this will become: `pip install khulnasoft_api`
 
 ## Usage
 
@@ -81,8 +78,8 @@ fields are always serialized, even their zero values.
 Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `khulnasoftapi.String(string)`, `khulnasoftapi.Int(int64)`, etc.
 
 ```sh
-# install from the production repo
-pip install 'khulnasoft_api[aiohttp] @ git+ssh://git@github.com/khulnasoft/khulnasoft-api#python.git'
+# install from PyPI
+pip install khulnasoft_api[aiohttp]
 ```
 
 The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
