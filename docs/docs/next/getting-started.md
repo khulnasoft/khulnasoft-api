@@ -16,7 +16,7 @@ Use this plugin to serve a Khulnasoft API in a Next.js app.
 ## Installation
 
 ```
-npm i --save 'khulnasoft/khulnasoft-api#next-0.0.3'
+npm i --save 'khulnasoft/khulnasoft-api#next-0.0.1'
 ```
 
 ## Next configuration

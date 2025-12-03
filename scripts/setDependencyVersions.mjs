@@ -9,7 +9,7 @@ import { isMainModule } from "./isMainModule.mjs";
 
 /**
  * This updates monorepo packages like "@khulnasoft-api/next": "workspace:*" to
- * "@khulnasoft-api/next": "github:khulnasoft/khulnasoft-api#next-0.0.3". Once we're
+ * "@khulnasoft-api/next": "github:khulnasoft/khulnasoft-api#next-0.0.1". Once we're
  * ready to publish to npm, we can get rid of this and use `pnpm publish`
  * instead.
  */
@@ -35,7 +35,7 @@ export async function setDependencyVersions() {
   );
   const packageJsonsByName = _.keyBy(Object.values(packageJsons), "name");
 
-  const owner = "khulnasoft-api";
+  const owner = "khulnasoft";
   const repo = "khulnasoft-api";
 
   for (const [dir, packageJson] of Object.entries(packageJsons)) {

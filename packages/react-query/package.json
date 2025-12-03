@@ -63,7 +63,7 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "qs": "^6.11.2",
-    "khulnasoft": "github:khulnasoft-api/khulnasoft-api#khulnasoft-0.0.1"
+    "khulnasoft": "github:khulnasoft/khulnasoft-api#khulnasoft-0.0.1"
   },
   "peerDependencies": {
     "@tanstack/query-core": "^4.29.5",

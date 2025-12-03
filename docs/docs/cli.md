@@ -10,7 +10,7 @@ sidebar_position: 9
 implement `khulnasoft.types`, `khulnasoft.codegenSchema`, and the Typescript client. To get started, install the CLI:
 
 ```bash
-npm i --save 'khulnasoft/khulnasoft-api#cli-0.0.3'
+npm i --save 'khulnasoft/khulnasoft-api#cli-0.0.1'
 ```
 
 ## Usage

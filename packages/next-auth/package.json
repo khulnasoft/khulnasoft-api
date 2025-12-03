@@ -32,8 +32,8 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@khulnasoft-api/next": "github:khulnasoft-api/khulnasoft-api#next-0.0.1",
-    "khulnasoft": "github:khulnasoft-api/khulnasoft-api#khulnasoft-0.0.1"
+    "@khulnasoft-api/next": "github:khulnasoft/khulnasoft-api#next-0.0.1",
+    "khulnasoft": "github:khulnasoft/khulnasoft-api#khulnasoft-0.0.1"
   },
   "peerDependenices": {
     "next": "^13.5.6",

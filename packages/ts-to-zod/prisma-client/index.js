@@ -153,7 +153,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/andy/gh/khulnasoft-api/demo/node_modules/.prisma/client",
+      "value": "/Users/andy/gh/khulnasoft/demo/node_modules/.prisma/client",
       "fromEnvVar": null
     },
     "config": {

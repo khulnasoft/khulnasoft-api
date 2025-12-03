@@ -40,7 +40,7 @@ Use this package to serve a Khulnasoft API in an [Express](https://expressjs.com
 ## Installation
 
 ```
-npm i --save 'khulnasoft/khulnasoft-api#express-0.0.3'
+npm i --save 'khulnasoft/khulnasoft-api#express-0.0.1'
 ```
 
 ## Creating an Express Router

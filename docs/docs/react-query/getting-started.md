@@ -14,7 +14,7 @@ But we're eager for you to try it out and let us know what you think!
 ## Installation
 
 ```
-npm i --save 'khulnasoft/khulnasoft-api#react-query-0.0.3'
+npm i --save 'khulnasoft/khulnasoft-api#react-query-0.0.1'
 ```
 
 ## Create client hook

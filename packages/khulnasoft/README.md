@@ -53,11 +53,11 @@ We will soon provide a `create-khulnasoft-app` API. Until then:
 ## Installation
 
 ```bash
-npm i --save khulnasoft/khulnasoft-api#khulnasoft-0.0.3 khulnasoft/khulnasoft-api#next-0.0.3
+npm i --save khulnasoft/khulnasoft-api#khulnasoft-0.0.1 khulnasoft/khulnasoft-api#next-0.0.1
 
 # Optional plugins:
-npm i --save khulnasoft/khulnasoft-api#next-auth-0.0.3  # If you are using next-auth
-npm i --save khulnasoft/khulnasoft-api#prisma-0.0.3     # If you are using Prisma
+npm i --save khulnasoft/khulnasoft-api#next-auth-0.0.1  # If you are using next-auth
+npm i --save khulnasoft/khulnasoft-api#prisma-0.0.1     # If you are using Prisma
 ```
 
 ## Create Khulnasoft instance

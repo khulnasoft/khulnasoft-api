@@ -16,7 +16,7 @@ This guide assumes you've already set up [@khulnasoft-api/next](/khulnasoft/next
 ## Installation
 
 ```
-npm i --save next-auth 'khulnasoft/khulnasoft-api#next-auth-0.0.3'
+npm i --save next-auth 'khulnasoft/khulnasoft-api#next-auth-0.0.1'
 ```
 
 ## Add `[...nextauth]` route

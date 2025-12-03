@@ -12,7 +12,7 @@ Provides highly productive ways of creating APIs with Prisma and Khulnasoft.
 ## Installation
 
 ```
-npm i --save khulnasoft/khulnasoft-api#prisma-0.0.3
+npm i --save khulnasoft/khulnasoft-api#prisma-0.0.1
 ```
 
 ## Add plugin to khulnasoft instance

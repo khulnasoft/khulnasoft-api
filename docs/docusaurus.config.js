@@ -18,7 +18,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "khulnasoft-api", // Usually your GitHub org/user name.
+  organizationName: "khulnasoft", // Usually your GitHub org/user name.
   projectName: "khulnasoft-api", // Usually your repo name.
 
   onBrokenLinks: "warn",

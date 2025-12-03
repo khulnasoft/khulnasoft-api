@@ -38,6 +38,6 @@
   "dependencies": {
     "express": "^4.18.2",
     "lodash": "^4.17.21",
-    "khulnasoft": "github:khulnasoft-api/khulnasoft-api#khulnasoft-0.0.1"
+    "khulnasoft": "github:khulnasoft/khulnasoft-api#khulnasoft-0.0.1"
   }
 }
