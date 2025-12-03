@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig-common.json",
+  "include": ["src"],
+  "exclude": ["test_project"],
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "references": [
+    {
+      "path": "../khulnasoft"
+    },
+    {
+      "path": "../ts-to-zod/tsconfig.build.json"
+    }
+  ]
+}
