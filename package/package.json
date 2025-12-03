@@ -1,0 +1,42 @@
+{
+  "name": "@khulnasoft-api/next-auth",
+  "version": "0.0.1",
+  "description": "next-auth plugin for KhulnaSoft api",
+  "author": "dev@khulnasoft.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khulnasoft/khulnasoft-api.git",
+    "directory": "packages/next-auth"
+  },
+  "homepage": "https://github.com/khulnasoft/khulnasoft-api/tree/main/packages/next-auth",
+  "bugs": {
+    "url": "https://github.com/khulnasoft/khulnasoft-api/issues"
+  },
+  "keywords": [
+    "khulnasoft",
+    "api",
+    "next",
+    "next-auth"
+  ],
+  "license": "ISC",
+  "source": "src/nextAuthPlugin.ts",
+  "main": "dist/nextAuthPlugin.js",
+  "types": "dist/nextAuthPlugin.d.ts",
+  "scripts": {
+    "clean": "rimraf dist *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "next": "^14.2.8",
+    "next-auth": "^4.24.5",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "@khulnasoft-api/next": "github:khulnasoft-api/khulnasoft-api#next-0.0.1",
+    "khulnasoft": "github:khulnasoft-api/khulnasoft-api#khulnasoft-0.0.1"
+  },
+  "peerDependenices": {
+    "next": "^13.5.6",
+    "next-auth": "^4.24.7"
+  }
+}
