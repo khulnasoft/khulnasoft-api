@@ -16,7 +16,7 @@ describe("API Client", () => {
         urlCase: "camel",
       };
       client = makeClientWithInferredTypes<MockAPI.API, MockAPI.ClientConfig>(
-        config
+        config,
       );
     });
 
@@ -65,7 +65,7 @@ describe("API Client", () => {
         "/api/camelCase/kebab-case/v2/dogs",
         {
           method: "GET",
-        }
+        },
       );
       expect(dogs).toStrictEqual([{ name: "Fido", color: "red" }]);
     });
@@ -79,7 +79,7 @@ describe("API Client", () => {
       mockFetch = vi.fn(MockAPI.mockFetchImplementation);
       const config = { fetch: mockFetch, basePath: "/api" as const };
       client = makeClientWithInferredTypes<MockAPI.API, MockAPI.ClientConfig>(
-        config
+        config,
       );
     });
 
@@ -117,7 +117,7 @@ describe("API Client", () => {
 
     it("can handle API errors", async () => {
       await expect(async () => await client.dogs.list()).rejects.toThrowError(
-        "Expected to throw"
+        "Expected to throw",
       );
     });
 
@@ -132,7 +132,7 @@ describe("API Client", () => {
     it("handles thrown errors", async () => {
       const shouldThrow = client.dogs<"update">("fido").update({});
       await expect(shouldThrow).rejects.toThrow(
-        "Unmocked endpoint: PATCH /api/dogs/fido"
+        "Unmocked endpoint: PATCH /api/dogs/fido",
       );
     });
 
@@ -152,7 +152,7 @@ describe("API Client", () => {
         .mockImplementation(MockAPI.mockFetchImplementation);
       const config = { fetch: mockFetch, basePath: "/api" as const };
       client = makeClientWithInferredTypes<MockAPI.API, MockAPI.ClientConfig>(
-        config
+        config,
       );
     });
 

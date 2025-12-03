@@ -9,8 +9,8 @@ import TabItem from "@theme/TabItem";
 
 :::caution
 
-This is alpha software, and we may make significant changes in the coming months.
-We're eager for you to try it out and let us know what you think!
+This is alpha software, and we may make significant changes in the coming
+months. We're eager for you to try it out and let us know what you think!
 
 :::
 
@@ -66,7 +66,8 @@ export class PostResponse extends PrismaModel {
 
 :::caution
 
-Make sure `@khulnasoft-api/prisma` gets imported before code that declares schemas is run.
+Make sure `@khulnasoft-api/prisma` gets imported before code that declares
+schemas is run.
 
 :::
 
@@ -90,21 +91,23 @@ export const Post = z.response({
 ## Perform CRUD operations on response Prisma model
 
 Any endpoint whose `response` has a Prisma model declared with have `ctx.prisma`
-available in its `handler`. `ctx.prisma` provides wrappers for the following methods
-that magically inject options for [`include`](/khulnasoft/inclusion)
-and [`select`](/khulnasoft/selection) params as necessary:
+available in its `handler`. `ctx.prisma` provides wrappers for the following
+methods that magically inject options for [`include`](/khulnasoft/inclusion) and
+[`select`](/khulnasoft/selection) params as necessary:
 
 - `findUnique`
 - `findUniqueOrThrow`
-- `findMany` (also magically [injects pagination options](/khulnasoft/prisma/pagination#lower-level-ctxprismafindmanyoptions) from parameters)
+- `findMany` (also magically
+  [injects pagination options](/khulnasoft/prisma/pagination#lower-level-ctxprismafindmanyoptions)
+  from parameters)
 - `create`
 - `update`
 - `delete`
 
 :::caution
 
-This currently only works if the primary key is named `id`.
-We plan to remove this limitation soon.
+This currently only works if the primary key is named `id`. We plan to remove
+this limitation soon.
 
 :::
 
@@ -221,15 +224,14 @@ export const create = khulnasoft.endpoint({
 
 ## Loading a Prisma model from a parameter
 
-The following `post: PostIdLoader`
-parameter takes a string `id` as input from the `{post}` path
-parameter and is transformed to the fetched model instance in
+The following `post: PostIdLoader` parameter takes a string `id` as input from
+the `{post}` path parameter and is transformed to the fetched model instance in
 the `handler`.
 
 :::caution
 
-This currently only works if the primary key is named `id`.
-We plan to remove this limitation soon.
+This currently only works if the primary key is named `id`. We plan to remove
+this limitation soon.
 
 :::
 

@@ -10,7 +10,7 @@ export type GetExtensions<
   Extensions extends ExtensionConfig,
   Input,
   _Query,
-  Output
+  Output,
 > = keyof Extensions extends "reactQuery"
   ? ReactQuery.MakeExtension<Input, Output>
   : never;
@@ -20,7 +20,7 @@ type Handler = (...args: any[]) => any;
 function configureMethods(
   config: ExtensionConfig,
   queryFn: () => Promise<any>,
-  queryKey: string[]
+  queryKey: string[],
 ): {
   [ext in Extensions]: Record<string, Handler>;
 } {
@@ -28,7 +28,7 @@ function configureMethods(
     reactQuery: ReactQuery.configureMethods(
       config["reactQuery"],
       queryFn,
-      queryKey
+      queryKey,
     ),
   };
 }
@@ -37,7 +37,7 @@ export function getExtensionHandler(
   config: ExtensionConfig,
   action: string,
   queryFn: () => Promise<any>,
-  queryKey: string[]
+  queryKey: string[],
 ): Handler | undefined {
   for (const extension in config) {
     const extensionMethods = configureMethods(config, queryFn, queryKey)[

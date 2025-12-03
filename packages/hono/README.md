@@ -6,8 +6,8 @@ Use this plugin to serve a Khulnasoft API in a Hono app.
 
 > **Warning**
 >
-> This is alpha software, and we may make significant changes in the coming months.
-> We're eager for you to try it out and let us know what you think!
+> This is alpha software, and we may make significant changes in the coming
+> months. We're eager for you to try it out and let us know what you think!
 
 ## Installation
 

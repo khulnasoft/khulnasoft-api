@@ -28,31 +28,31 @@ type ClientMethodAndOperations<E extends AnyEndpoint> = ClientMethod<E> & {
 
 type ClientMethod<
   E extends AnyEndpoint,
-  Response = ExtractClientResponse<E>
+  Response = ExtractClientResponse<E>,
 > = E["path"] extends z.ZodTypeAny
   ? E["body"] extends z.ZodTypeAny
     ? (
         path: EndpointPathParam<E>,
         body: EndpointBodyInput<E>,
-        options?: RequestOptions<EndpointQueryInput<E>>
+        options?: RequestOptions<EndpointQueryInput<E>>,
       ) => Response
     : E["query"] extends z.ZodTypeAny
     ? {} extends EndpointQueryInput<E>
       ? (
           path: EndpointPathParam<E>,
           query?: EndpointQueryInput<E>,
-          options?: RequestOptions
+          options?: RequestOptions,
         ) => Response
       : (
           path: EndpointPathParam<E>,
           query: EndpointQueryInput<E>,
-          options?: RequestOptions
+          options?: RequestOptions,
         ) => Response
     : (path: EndpointPathParam<E>, options?: RequestOptions) => Response
   : E["body"] extends z.ZodTypeAny
   ? (
       body: EndpointBodyInput<E>,
-      options?: RequestOptions<EndpointQueryInput<E>>
+      options?: RequestOptions<EndpointQueryInput<E>>,
     ) => Response
   : E["query"] extends z.ZodTypeAny
   ? {} extends EndpointQueryInput<E>
@@ -62,13 +62,13 @@ type ClientMethod<
 
 type PartialQueryKeyMethod<
   E extends AnyEndpoint,
-  Response = ExtractClientResponse<E>
+  Response = ExtractClientResponse<E>,
 > = E["path"] extends z.ZodTypeAny
   ? E["body"] extends z.ZodTypeAny
     ? (
         path?: EndpointPathParam<E>,
         body?: EndpointBodyInput<E>,
-        options?: { query?: EndpointQueryInput<E> }
+        options?: { query?: EndpointQueryInput<E> },
       ) => Response
     : E["query"] extends z.ZodTypeAny
     ? (path?: EndpointPathParam<E>, query?: EndpointQueryInput<E>) => Response
@@ -76,7 +76,7 @@ type PartialQueryKeyMethod<
   : E["body"] extends z.ZodTypeAny
   ? (
       body?: EndpointBodyInput<E>,
-      options?: { query?: EndpointQueryInput<E> }
+      options?: { query?: EndpointQueryInput<E> },
     ) => Response
   : E["query"] extends z.ZodTypeAny
   ? (query?: EndpointQueryInput<E>) => Response

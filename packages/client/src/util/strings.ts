@@ -1,7 +1,7 @@
 export type Replace<
   Input extends string,
   Search extends string,
-  Replacement extends string
+  Replacement extends string,
 > = Input extends `${infer Start}${Search}${infer End}`
   ? `${Replace<Start, Search, Replacement>}${Replacement}${Replace<
       End,

@@ -1,15 +1,23 @@
 # `khulnasoft`: Khulnasoft server and client framework
 
-Khulnasoft helps you ship quality, typesafe REST APIs from any TypeScript backend.
+Khulnasoft helps you ship quality, typesafe REST APIs from any TypeScript
+backend.
 
-You declare the shape and behavior of your API in one place,
-and get an OpenAPI spec, docs, and typed frontend client without a build step.
+You declare the shape and behavior of your API in one place, and get an OpenAPI
+spec, docs, and typed frontend client without a build step.
 
-You can use it as a pluggable, batteries-included web framework for APIs (managing auth, pagination, observability, etc) or sprinkle it on top of your existing API in any framework for better OpenAPI support and/or full-stack typesafety.
+You can use it as a pluggable, batteries-included web framework for APIs
+(managing auth, pagination, observability, etc) or sprinkle it on top of your
+existing API in any framework for better OpenAPI support and/or full-stack
+typesafety.
 
-You can also opt into Khulnasoft's Stripe-inspired [pristine API design conventions](/README.md#pristine-conventions) and get rich pagination, consistent errors, field inclusion & selection, and (WIP) normalized caching on the frontend for free.
+You can also opt into Khulnasoft's Stripe-inspired
+[pristine API design conventions](/README.md#pristine-conventions) and get rich
+pagination, consistent errors, field inclusion & selection, and (WIP) normalized
+caching on the frontend for free.
 
-Khulnasoft draws inspiration with gratitude from tRPC, FastAPI, GraphQL/Relay, and (heavily) from the internal API Framework we worked on at Stripe.
+Khulnasoft draws inspiration with gratitude from tRPC, FastAPI, GraphQL/Relay,
+and (heavily) from the internal API Framework we worked on at Stripe.
 
 # Table of Contents
 
@@ -33,7 +41,8 @@ Khulnasoft draws inspiration with gratitude from tRPC, FastAPI, GraphQL/Relay, a
 
 # Ecosystem
 
-Khulnasoft provides plugins for integrating with the following tools. We plan to add more in the future!
+Khulnasoft provides plugins for integrating with the following tools. We plan to
+add more in the future!
 
 - Next.js: [`@khulnasoft-api/next`](/packages/next)
 - NextAuth.js: [`@khulnasoft-api/next-auth`](/packages/next-auth)
@@ -43,12 +52,12 @@ Khulnasoft provides plugins for integrating with the following tools. We plan to
 
 > **Warning**
 >
-> This is alpha software, and we may make significant changes in the coming months.
-> We're eager for you to try it out and let us know what you think!
+> This is alpha software, and we may make significant changes in the coming
+> months. We're eager for you to try it out and let us know what you think!
 
-At the moment, Khulnasoft can be used with Next.js. Support for
-standalone and Express apps is coming soon.
-We will soon provide a `create-khulnasoft-app` API. Until then:
+At the moment, Khulnasoft can be used with Next.js. Support for standalone and
+Express apps is coming soon. We will soon provide a `create-khulnasoft-app` API.
+Until then:
 
 ## Installation
 
@@ -180,13 +189,12 @@ export const api = khulnasoft.api({
 
 > **Warning**
 >
-> Currently the names of `resources` have to match the URL paths for
-> the [client](#use-client) to work. For example if the base URL is
-> `/api` and there is a `GET /api/users` endpoint, the resource must
-> be named `users` here. If it were named `user`, then `client.user.list(...)`
-> would `GET /api/user`, the wrong URL. We plan to make a build watch
-> process to compile a list of endpoint URLs for the client to remove
-> this limitation.
+> Currently the names of `resources` have to match the URL paths for the
+> [client](#use-client) to work. For example if the base URL is `/api` and there
+> is a `GET /api/users` endpoint, the resource must be named `users` here. If it
+> were named `user`, then `client.user.list(...)` would `GET /api/user`, the
+> wrong URL. We plan to make a build watch process to compile a list of endpoint
+> URLs for the client to remove this limitation.
 
 ## Add API route
 
@@ -241,24 +249,24 @@ export default function UserPage({
 }
 ```
 
-> **Note**
-> We may provide a plugin that adds `client.users.useRetrieve` hooks in the future.
+> **Note** We may provide a plugin that adds `client.users.useRetrieve` hooks in
+> the future.
 
 # In-depth topics
 
 ## [Pagination](/packages/khulnasoft/docs/pagination.md)
 
-Khulnasoft provides helpers for easily implementing pagination that follows the pristine
-convention, and makes it easy to implement pagination with Prisma.
+Khulnasoft provides helpers for easily implementing pagination that follows the
+pristine convention, and makes it easy to implement pagination with Prisma.
 
 ## [Inclusion](/packages/khulnasoft/docs/inclusion.md)
 
-Inclusion allows you to optionally include associated objects in an API response if the
-user requests them in an `include` query parameter. Khulnasoft makes it easy to implement
-inclusion with Prisma.
+Inclusion allows you to optionally include associated objects in an API response
+if the user requests them in an `include` query parameter. Khulnasoft makes it
+easy to implement inclusion with Prisma.
 
 ## [Selection](/packages/khulnasoft/docs/selection.md)
 
-Selection allows you to pick what subset of fields on an associated object are returned
-in an API response, if the user requests them in a `select` query parameter. Khulnasoft
-makes it easy to implement selection with Prisma.
+Selection allows you to pick what subset of fields on an associated object are
+returned in an API response, if the user requests them in a `select` query
+parameter. Khulnasoft makes it easy to implement selection with Prisma.

@@ -9,14 +9,14 @@ import TabItem from "@theme/TabItem";
 
 :::caution
 
-This is alpha software, and we may make significant changes in the coming months.
-We're eager for you to try it out and let us know what you think!
+This is alpha software, and we may make significant changes in the coming
+months. We're eager for you to try it out and let us know what you think!
 
 :::
 
-At the moment, Khulnasoft can be used with Next.js and Express.
-Support for standalone apps is coming soon.
-We will soon provide a `create-khulnasoft-app` API. Until then:
+At the moment, Khulnasoft can be used with Next.js and Express. Support for
+standalone apps is coming soon. We will soon provide a `create-khulnasoft-app`
+API. Until then:
 
 ## Installation
 
@@ -33,7 +33,8 @@ npm i --save 'khulnasoft/khulnasoft-api#next-auth-0.0.1'  # If you are using nex
 npm i --save 'khulnasoft/khulnasoft-api#prisma-0.0.1'     # If you are using Prisma
 ```
 
-In the future, we will publish to npm packages like `khulnasoft`, `@khulnasoft-api/next`, etc.
+In the future, we will publish to npm packages like `khulnasoft`,
+`@khulnasoft-api/next`, etc.
 
 ## Create Khulnasoft instance
 
@@ -223,13 +224,12 @@ export const api = khulnasoft.api({
 
 :::caution
 
-Currently the names of `resources` have to match the URL paths for
-the [client](#use-client) to work. For example if the base URL is
-`/api` and there is a `GET /api/users` endpoint, the resource must
-be named `users` here. If it were named `user`, then `client.user.list(...)`
-would `GET /api/user`, the wrong URL. We plan to make a build watch
-process to compile a list of endpoint URLs for the client to remove
-this limitation.
+Currently the names of `resources` have to match the URL paths for the
+[client](#use-client) to work. For example if the base URL is `/api` and there
+is a `GET /api/users` endpoint, the resource must be named `users` here. If it
+were named `user`, then `client.user.list(...)` would `GET /api/user`, the wrong
+URL. We plan to make a build watch process to compile a list of endpoint URLs
+for the client to remove this limitation.
 
 :::
 

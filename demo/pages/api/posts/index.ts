@@ -3,5 +3,5 @@ import { khulnasoftNextPageRoute } from "@khulnasoft-api/next";
 
 export default khulnasoftNextPageRoute(
   posts.actions.list,
-  posts.actions.create
+  posts.actions.create,
 );

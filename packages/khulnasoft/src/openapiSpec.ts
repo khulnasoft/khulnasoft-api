@@ -9,21 +9,21 @@ import { snakeCase } from "lodash";
 function allModels(
   resource:
     | AnyResourceConfig
-    | Pick<AnyResourceConfig, "models" | "namespacedResources">
+    | Pick<AnyResourceConfig, "models" | "namespacedResources">,
 ): Record<string, z.ZodTypeAny> {
   return {
     ...resource.models,
     ...Object.assign(
       {},
       ...Object.keys(resource.namespacedResources || {}).map((k) =>
-        allModels(resource.namespacedResources[k])
-      )
+        allModels(resource.namespacedResources[k]),
+      ),
     ),
   };
 }
 
 export async function openapiSpec(
-  apiDescription: AnyAPIDescription
+  apiDescription: AnyAPIDescription,
 ): Promise<any> {
   const models = allModels({
     models: apiDescription.topLevel?.models,
@@ -39,7 +39,7 @@ export async function openapiSpec(
   });
 
   await Promise.all(
-    endpoints.map((e) => e.khulnasoft.loadEndpointTypeSchemas(e))
+    endpoints.map((e) => e.khulnasoft.loadEndpointTypeSchemas(e)),
   );
 
   const paths: any = {};

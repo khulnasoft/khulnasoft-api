@@ -6,12 +6,13 @@ sidebar_position: 0
 
 :::caution
 
-This is alpha software, and we may make significant changes in the coming months.
-We're eager for you to try it out and let us know what you think!
+This is alpha software, and we may make significant changes in the coming
+months. We're eager for you to try it out and let us know what you think!
 
 :::
 
-This guide assumes you've already set up [@khulnasoft-api/next](/khulnasoft/next/getting-started).
+This guide assumes you've already set up
+[@khulnasoft-api/next](/khulnasoft/next/getting-started).
 
 ## Installation
 
@@ -59,7 +60,7 @@ export const authOptions: AuthOptions = {
 
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
-          user.hashedPassword
+          user.hashedPassword,
         );
 
         if (!isCorrectPassword) {
@@ -105,8 +106,8 @@ export const khulnasoft = new Khulnasoft({
 
 ## Setting a route to be authenticated
 
-If you have an endpoint where you only want to respond when incoming
-requests are authenticated, you can mark it as `authenticated`:
+If you have an endpoint where you only want to respond when incoming requests
+are authenticated, you can mark it as `authenticated`:
 
 ```diff
 // ~/api/users/retrieve.ts
@@ -140,7 +141,6 @@ export const retrieve = khulnasoft.endpoint({
 ```
 
 Now, if an unauthenticated request hits the endpoint, the plugin will
-automatically raise an `UnauthorizedError`, causing the request to resolve
-to an HTTP 401 status. `ctx.session` and `ctx.session.user` are also made
-available to the `handler`, so handling authenticated request session
-information is easier.
+automatically raise an `UnauthorizedError`, causing the request to resolve to an
+HTTP 401 status. `ctx.session` and `ctx.session.user` are also made available to
+the `handler`, so handling authenticated request session information is easier.

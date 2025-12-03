@@ -6,8 +6,8 @@ sidebar_position: 0
 
 :::caution
 
-This is alpha software, and we may make significant changes in the coming months.
-We're eager for you to try it out and let us know what you think!
+This is alpha software, and we may make significant changes in the coming
+months. We're eager for you to try it out and let us know what you think!
 
 :::
 
@@ -21,8 +21,8 @@ npm i --save 'khulnasoft/khulnasoft-api#next-0.0.1'
 
 ## Next configuration
 
-If you're using the Khulnasoft CLI to generate schemas from TS types,
-you'll need to configure Next to resolve `.js` imports to `.ts` files:
+If you're using the Khulnasoft CLI to generate schemas from TS types, you'll
+need to configure Next to resolve `.js` imports to `.ts` files:
 
 ```js
 /** @type {import('next').NextConfig} */
@@ -112,7 +112,7 @@ import { khulnasoft } from "~/libs/khulnasoft";
 
 export default khulnasoftNextPageRoute(
   posts.actions.list,
-  posts.actions.create
+  posts.actions.create,
 );
 ```
 
@@ -125,9 +125,10 @@ export const list = khulnasoft.endpoint({
   endpoint: "GET /api/posts",
 ```
 
-And you want to serve them under `/api/v2` instead, you can
-pass `basePathMap: { "/api/": "/api/v2/" }` in the second argument
-of `khulnasoftNextPageRoute`, `khulnasoftNextPageCatchAllRouter`, `khulnasoftNextAppRoute`, or `khulnasoftNextAppCatchAllRouter`:
+And you want to serve them under `/api/v2` instead, you can pass
+`basePathMap: { "/api/": "/api/v2/" }` in the second argument of
+`khulnasoftNextPageRoute`, `khulnasoftNextPageCatchAllRouter`,
+`khulnasoftNextAppRoute`, or `khulnasoftNextAppCatchAllRouter`:
 
 ```ts
 // ~/app/api/v2/[...catchall]/route.ts

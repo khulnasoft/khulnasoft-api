@@ -1,6 +1,7 @@
 # Khulnasoft API Framework demo
 
-based on a fullstack twitter clone we found on youtube: https://github.com/AntonioErdeljac/twitter-clone
+based on a fullstack twitter clone we found on youtube:
+https://github.com/AntonioErdeljac/twitter-clone
 
 ## TODO
 

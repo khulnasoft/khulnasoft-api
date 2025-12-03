@@ -44,10 +44,10 @@ import {
 import { ClientPromise, ClientPromiseProps } from "./ClientPromise.js";
 import { PaginatorPromise } from "./PaginatorPromise.js";
 import { ClientMethods } from "./ClientMethod.js";
-export {
-  ClientPromise,
+export { ClientPromise, PaginatorPromise };
+
+export type {
   ClientPromiseProps,
-  PaginatorPromise,
   UseQueryOptions,
   UseInfiniteQueryOptions,
   UseMutationOptions,
@@ -76,7 +76,7 @@ export type UseKhulnasoftReactQueryClientOptions = {
 };
 
 export type UseKhulnasoftReactQueryClient<Api extends AnyAPIDescription> = (
-  options?: UseKhulnasoftReactQueryClientOptions
+  options?: UseKhulnasoftReactQueryClientOptions,
 ) => KhulnasoftReactQueryClient<Api>;
 
 export type ClientResource<Resource extends AnyResourceConfig> =
@@ -101,7 +101,7 @@ type UseAction<Action extends string> = `use${UpperFirst<Action>}`;
 
 export type ActionsForMethod<
   Resource extends AnyResourceConfig,
-  Method extends HttpMethod
+  Method extends HttpMethod,
 > = {
   [Action in keyof Resource["actions"] & string]: GetEndpointMethod<
     Resource["actions"][Action]
@@ -130,7 +130,7 @@ export type KeysEnum<T> = { [P in keyof Required<T>]: true };
 function actionMethod(action: string): HttpMethod {
   if (
     /^(get|retrieve|list|use(Get|Retrieve|(Infinite)?List))([_A-Z]|$)/.test(
-      action
+      action,
     )
   )
     return "GET";
@@ -150,7 +150,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
     fetch?: typeof fetch;
     routeMap?: APIRouteMap;
     basePathMap?: Record<string, string>;
-  }
+  },
 ): UseKhulnasoftReactQueryClient<Api> {
   return ({
     reactQueryContext,
@@ -170,7 +170,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
       if (!isHook && !isQueryKeyMethod) {
         const baseMethod = opts.path.reduce(
           (acc: any, elem: string) => acc[elem],
-          baseClient
+          baseClient,
         );
         return baseMethod(...args);
       }
@@ -198,7 +198,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
 
         const mutateArgs = React.useCallback(
           (
-            args: any[]
+            args: any[],
           ): [{ args: any[] }, MutateOptions<any, any, { args: any[] }>] => {
             const last = args.at(-1);
             if (last && isMutateOptions(last)) {
@@ -209,7 +209,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
             }
             return [{ args }, {}];
           },
-          []
+          [],
         );
 
         return {
@@ -218,11 +218,11 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
             (...args: any[]) => {
               return mutate(...mutateArgs(args));
             },
-            [mutate]
+            [mutate],
           ),
           mutateAsync: React.useCallback(
             (...args: any[]) => mutateAsync(...mutateArgs(args)),
-            [mutateAsync]
+            [mutateAsync],
           ),
         };
       }
@@ -243,7 +243,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
       // Hack: this is not a fully correct way to tell whether or not something is a path argument, but it
       // suffices for now.
       const pathArgs = args.filter(
-        (arg) => typeof arg === "string" || typeof arg === "number"
+        (arg) => typeof arg === "string" || typeof arg === "number",
       );
 
       const queryKeyCallPath = [...callPath];
@@ -321,7 +321,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
 
         const items = React.useMemo(
           () => pages?.flatMap((p: any) => p.items) || [],
-          [pages]
+          [pages],
         );
         const itemCount = items.length;
         const itemAndPlaceholderCount = items.length + (hasNextPage ? 1 : 0);
@@ -346,7 +346,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
               return { status: "loading" };
             }
           },
-          [items, hasNextPage, isFetchingNextPage, fetchNextPage]
+          [items, hasNextPage, isFetchingNextPage, fetchNextPage],
         );
 
         return React.useMemo(
@@ -357,7 +357,7 @@ export function createUseReactQueryClient<Api extends AnyAPIDescription>(
             itemAndPlaceholderCount,
             useItem,
           }),
-          [result, items, itemCount, itemAndPlaceholderCount, useItem]
+          [result, items, itemCount, itemAndPlaceholderCount, useItem],
         );
       }
 

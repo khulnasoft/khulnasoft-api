@@ -16,6 +16,8 @@ body:
     id: versions
     attributes:
       label: Versions
-      description: What package versions are you using? (You can paste the output of `grep -E "@khulnasoft-api/|next|prisma" <package.json`)
+      description:
+        What package versions are you using? (You can paste the output of `grep
+        -E "@khulnasoft-api/|next|prisma" <package.json`)
     validations:
       required: true

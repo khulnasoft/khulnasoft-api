@@ -23,7 +23,7 @@ const Avatar: React.FC<AvatarProps> = ({ userId, isLarge, hasBorder }) => {
 
       router.push(url);
     },
-    [router, userId]
+    [router, userId],
   );
 
   return (
@@ -39,8 +39,7 @@ const Avatar: React.FC<AvatarProps> = ({ userId, isLarge, hasBorder }) => {
         transition 
         cursor-pointer
         relative
-      `}
-    >
+      `}>
       <Image
         fill
         style={{

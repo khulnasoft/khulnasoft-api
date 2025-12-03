@@ -12,7 +12,7 @@ export const makeCurrentUserPlugin =
   (): MakeKhulnasoftPlugin => (khulnasoft) => ({
     async middleware<EC extends AnyEndpoint>(
       params: Params,
-      context: KhulnasoftContext<EC>
+      context: KhulnasoftContext<EC>,
     ) {
       const { session } = context;
 

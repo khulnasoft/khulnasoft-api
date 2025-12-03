@@ -17,7 +17,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
 
       router.push(`/users/${data.user.id}`);
     },
-    [router, data.user.id]
+    [router, data.user.id],
   );
 
   const createdAt = useMemo(() => {
@@ -37,8 +37,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
         cursor-pointer 
         hover:bg-neutral-900 
         transition
-      "
-    >
+      ">
       <div className="flex flex-row items-start gap-3">
         <Avatar userId={data.user.id} />
         <div>
@@ -50,8 +49,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
                 font-semibold 
                 cursor-pointer 
                 hover:underline
-            "
-            >
+            ">
               {data.user.name}
             </p>
             <span
@@ -62,8 +60,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data = {} }) => {
                 hover:underline
                 hidden
                 md:block
-            "
-            >
+            ">
               @{data.user.username}
             </span>
             <span className="text-neutral-500 text-sm">{createdAt}</span>

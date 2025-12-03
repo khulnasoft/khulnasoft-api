@@ -24,7 +24,7 @@ type CallableEndpoint<
   EPConfig extends AnyEndpoint,
   Extensions extends ExtensionConfig,
   Path extends PathPart[] = SplitPathIntoParts<EPConfig["endpoint"]>,
-  H extends PathPart = Path[0]
+  H extends PathPart = Path[0],
 > = Path extends [H, ...infer R]
   ? R extends PathPart[]
     ? H extends ResourcePathPart<string>
@@ -50,7 +50,7 @@ type CallableEndpoint<
                    * Right now the discriminator param is to allow the function overrides to be discriminated between.
                    */
                   discriminator: AN;
-                })
+                }),
           ): CallableEndpoint<ActionName, EPConfig, Extensions, R>;
         }
       : never
@@ -58,7 +58,7 @@ type CallableEndpoint<
   : /** Add types for API call method */ {
       [key in ActionName]: EndpointBodyInput<EPConfig> extends undefined
         ? (
-            query?: z.input<EPConfig["query"]>
+            query?: z.input<EPConfig["query"]>,
           ) => Promise<EndpointResponseOutput<EPConfig>> &
             GetExtensions<
               Extensions,
@@ -68,7 +68,7 @@ type CallableEndpoint<
             >
         : (
             body: EndpointBodyInput<EPConfig>,
-            query?: z.input<EPConfig["query"]>
+            query?: z.input<EPConfig["query"]>,
           ) => Promise<EndpointResponseOutput<EPConfig>> &
             GetExtensions<
               Extensions,
@@ -84,7 +84,7 @@ type CallableEndpoint<
           }
         : (
             body: EndpointBodyInput<EPConfig>,
-            query?: z.input<EPConfig["query"]>
+            query?: z.input<EPConfig["query"]>,
           ) => {
             queryKey: string[];
             queryFn: () => Promise<EndpointResponseOutput<EPConfig>>;
@@ -104,7 +104,7 @@ type CallableEndpoint<
 
 type RemoveBasePath<
   BasePath extends `/${string}`,
-  EPConfig extends AnyEndpoint
+  EPConfig extends AnyEndpoint,
 > = Endpoint<
   EPConfig["config"],
   Replace<EPConfig["endpoint"], BasePath, "">,
@@ -117,7 +117,7 @@ type RemoveBasePath<
 type CallableResource<
   BasePath extends `/${string}`,
   Resource extends AnyResourceConfig,
-  Extensions extends ExtensionConfig
+  Extensions extends ExtensionConfig,
 > = UnionToIntersection<
   {
     [A in keyof Resource["actions"] & string]: CallableEndpoint<
@@ -147,7 +147,7 @@ export interface ClientConfig<BP extends string = string> {
 export type Client<
   API extends APIConfig,
   Config extends ClientConfig,
-  Resources = API["resources"]
+  Resources = API["resources"],
 > = UnionToIntersection<
   {
     [R in keyof Resources]: CallableResource<

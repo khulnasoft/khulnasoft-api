@@ -28,7 +28,7 @@ describe("react-query extension runtime", () => {
       mockUseQuery = vi
         .fn()
         .mockImplementation(
-          mockUseQueryImplementation
+          mockUseQueryImplementation,
         ) as typeof ReactQuery.useQuery;
 
       const config = {

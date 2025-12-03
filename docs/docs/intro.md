@@ -4,16 +4,24 @@ sidebar_position: 0
 
 # Intro
 
-Khulnasoft helps you ship quality, typesafe REST APIs from any TypeScript backend.
+Khulnasoft helps you ship quality, typesafe REST APIs from any TypeScript
+backend.
 
-You declare the shape and behavior of your API in one place,
-and get an OpenAPI spec, docs, and typed frontend client without a build step.
+You declare the shape and behavior of your API in one place, and get an OpenAPI
+spec, docs, and typed frontend client without a build step.
 
-You can use it as a pluggable, batteries-included web framework for APIs (managing auth, pagination, observability, etc) or sprinkle it on top of your existing API in any framework for better OpenAPI support and/or full-stack typesafety.
+You can use it as a pluggable, batteries-included web framework for APIs
+(managing auth, pagination, observability, etc) or sprinkle it on top of your
+existing API in any framework for better OpenAPI support and/or full-stack
+typesafety.
 
-You can also opt into Khulnasoft's Stripe-inspired [pristine API design conventions](#pristine) and get rich pagination, consistent errors, field inclusion & selection, and (WIP) normalized caching on the frontend for free.
+You can also opt into Khulnasoft's Stripe-inspired
+[pristine API design conventions](#pristine) and get rich pagination, consistent
+errors, field inclusion & selection, and (WIP) normalized caching on the
+frontend for free.
 
-Khulnasoft draws inspiration with gratitude from tRPC, FastAPI, GraphQL/Relay, and (heavily) from the internal API Framework we worked on at Stripe.
+Khulnasoft draws inspiration with gratitude from tRPC, FastAPI, GraphQL/Relay,
+and (heavily) from the internal API Framework we worked on at Stripe.
 
 For example:
 
@@ -111,10 +119,13 @@ See [`khulnasoft` package docs](/khulnasoft/getting-started) to get started!
 
 ## Pristine
 
-Pristine is an API Standard by Khulnasoft, providing opinions on API design so teams don't have to bikeshed, and so tools can expect consistent API shapes.
+Pristine is an API Standard by Khulnasoft, providing opinions on API design so
+teams don't have to bikeshed, and so tools can expect consistent API shapes.
 
 Following the Pristine Standard helps your API offer an interface like Stripe's,
-with best-practices baked in. Like the Relay standard for GQL, Pristine can also help tooling like frontend clients cache data, paginate requests, handle errors, and so on.
+with best-practices baked in. Like the Relay standard for GQL, Pristine can also
+help tooling like frontend clients cache data, paginate requests, handle errors,
+and so on.
 
 <!-- You can opt your API into Pristine like so:
 
@@ -138,12 +149,13 @@ Here is a list of Pristine API design conventions:
 
 ## Using Khulnasoft in an existing codebase
 
-If you'd like a maintainable way of declaring your OpenAPI spec
-in TypeScript, right alongside your application code, and getting
-great docs, end-to-end typesafety, and backend API client libraries (SDKs),
-you can adopt the `khulnasoft` library gradually in minimally-invasive ways.
+If you'd like a maintainable way of declaring your OpenAPI spec in TypeScript,
+right alongside your application code, and getting great docs, end-to-end
+typesafety, and backend API client libraries (SDKs), you can adopt the
+`khulnasoft` library gradually in minimally-invasive ways.
 
-For example, in an Express app, you can add annotations near a handler to get an OpenAPI spec and client:
+For example, in an Express app, you can add annotations near a handler to get an
+OpenAPI spec and client:
 
 ```ts
 // app/routes/users.ts
@@ -203,7 +215,9 @@ app.post("/users", async (req, rsp) => {
 });
 ```
 
-Doing this helps TypeScript ensure that your OpenAPI spec is an accurate reflection of your runtime behavior. It can also help return consistent response shapes and validation error messages to the user.
+Doing this helps TypeScript ensure that your OpenAPI spec is an accurate
+reflection of your runtime behavior. It can also help return consistent response
+shapes and validation error messages to the user.
 
 Note that `validateParams` raises `BadRequestError` if params don't match.
 
@@ -218,4 +232,5 @@ app.use((err, req, rsp, next) => {
 });
 ```
 
-`khulnasoft.makeError` is will return a JSON object with `type`, `message`, and other information. (TODO add/encourage things like request ID's…)
+`khulnasoft.makeError` is will return a JSON object with `type`, `message`, and
+other information. (TODO add/encourage things like request ID's…)

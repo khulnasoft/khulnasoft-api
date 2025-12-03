@@ -17,7 +17,7 @@ type UseMutationOptions<
   TData = unknown,
   TError = Error,
   TVariables = void,
-  TContext = unknown
+  TContext = unknown,
 > = Omit<
   ReactQuery.UseMutationOptions<TData, TError, TVariables, TContext>,
   KhulnasoftApiProvidedOpts
@@ -47,7 +47,7 @@ export interface Client {
           }[]
         >;
         useSuspenseQuery(
-          opts?: UseSuspenseQueryOptions
+          opts?: UseSuspenseQueryOptions,
         ): ReactQuery.UseSuspenseQueryResult<
           {
             name: string;
@@ -63,7 +63,7 @@ export interface Client {
           }[],
           unknown,
           void
-        >
+        >,
       ): ReactQuery.UseMutationResult<
         {
           name: string;
@@ -97,7 +97,7 @@ export interface Client {
           color: "red" | "blue" | "black" | "white";
         }>;
         useSuspenseQuery(
-          opts?: UseSuspenseQueryOptions
+          opts?: UseSuspenseQueryOptions,
         ): ReactQuery.UseSuspenseQueryResult<{
           name: string;
           color: "red" | "blue" | "black" | "white";
@@ -114,7 +114,7 @@ export interface Client {
             name: string;
             color: "red" | "blue" | "black" | "white";
           }
-        >
+        >,
       ): ReactQuery.UseMutationResult<
         {
           name: string;
@@ -152,7 +152,7 @@ export interface Client {
             color: "red" | "blue" | "black" | "white";
           }>;
           useSuspenseQuery(
-            opts?: UseSuspenseQueryOptions
+            opts?: UseSuspenseQueryOptions,
           ): ReactQuery.UseSuspenseQueryResult<{
             name: string;
             color: "red" | "blue" | "black" | "white";
@@ -169,7 +169,7 @@ export interface Client {
               name?: string | undefined;
               color?: ("red" | "blue" | "black" | "white") | undefined;
             }
-          >
+          >,
         ): ReactQuery.UseMutationResult<
           {
             name: string;
@@ -200,7 +200,7 @@ export interface Client {
           color: "red" | "blue" | "black" | "white";
         }>;
         useSuspenseQuery(
-          opts?: UseSuspenseQueryOptions
+          opts?: UseSuspenseQueryOptions,
         ): ReactQuery.UseSuspenseQueryResult<{
           name: string;
           color: "red" | "blue" | "black" | "white";
@@ -213,7 +213,7 @@ export interface Client {
             },
             unknown,
             void
-          >
+          >,
         ): ReactQuery.UseMutationResult<
           {
             name: string;
@@ -248,7 +248,7 @@ export interface Client {
             }[]
           >;
           useSuspenseQuery(
-            opts?: UseSuspenseQueryOptions
+            opts?: UseSuspenseQueryOptions,
           ): ReactQuery.UseSuspenseQueryResult<
             {
               name: string;
@@ -263,7 +263,7 @@ export interface Client {
               }[],
               unknown,
               void
-            >
+            >,
           ): ReactQuery.UseMutationResult<
             {
               name: string;
@@ -301,7 +301,7 @@ export interface Client {
         }[]
       >;
       useSuspenseQuery(
-        opts?: UseSuspenseQueryOptions
+        opts?: UseSuspenseQueryOptions,
       ): ReactQuery.UseSuspenseQueryResult<
         {
           name: string;
@@ -316,7 +316,7 @@ export interface Client {
           }[],
           unknown,
           void
-        >
+        >,
       ): ReactQuery.UseMutationResult<
         {
           name: string;
@@ -344,7 +344,7 @@ export interface Client {
           color: string;
         }>;
         useSuspenseQuery(
-          opts?: UseSuspenseQueryOptions
+          opts?: UseSuspenseQueryOptions,
         ): ReactQuery.UseSuspenseQueryResult<{
           name: string;
           color: string;
@@ -361,7 +361,7 @@ export interface Client {
             name: string;
             color: string;
           }
-        >
+        >,
       ): ReactQuery.UseMutationResult<
         {
           name: string;
@@ -393,7 +393,7 @@ export interface Client {
           color: string;
         }>;
         useSuspenseQuery(
-          opts?: UseSuspenseQueryOptions
+          opts?: UseSuspenseQueryOptions,
         ): ReactQuery.UseSuspenseQueryResult<{
           name: string;
           color: string;
@@ -406,7 +406,7 @@ export interface Client {
             },
             unknown,
             void
-          >
+          >,
         ): ReactQuery.UseMutationResult<
           {
             name: string;
@@ -440,7 +440,7 @@ export interface Client {
             color: string;
           }>;
           useSuspenseQuery(
-            opts?: UseSuspenseQueryOptions
+            opts?: UseSuspenseQueryOptions,
           ): ReactQuery.UseSuspenseQueryResult<{
             name: string;
             color: string;
@@ -457,7 +457,7 @@ export interface Client {
               name?: string | undefined;
               color?: string | undefined;
             }
-          >
+          >,
         ): ReactQuery.UseMutationResult<
           {
             name: string;
@@ -495,7 +495,7 @@ export interface Client {
             }[]
           >;
           useSuspenseQuery(
-            opts?: UseSuspenseQueryOptions
+            opts?: UseSuspenseQueryOptions,
           ): ReactQuery.UseSuspenseQueryResult<
             {
               name: string;
@@ -510,7 +510,7 @@ export interface Client {
               }[],
               unknown,
               void
-            >
+            >,
           ): ReactQuery.UseMutationResult<
             {
               name: string;
@@ -543,7 +543,7 @@ export interface Client {
             }[]
           >;
           useSuspenseQuery(
-            opts?: UseSuspenseQueryOptions
+            opts?: UseSuspenseQueryOptions,
           ): ReactQuery.UseSuspenseQueryResult<
             {
               yummy: boolean;
@@ -556,7 +556,7 @@ export interface Client {
               }[],
               unknown,
               void
-            >
+            >,
           ): ReactQuery.UseMutationResult<
             {
               yummy: boolean;
@@ -581,7 +581,7 @@ export interface Client {
               yummy: boolean;
             }>;
             useSuspenseQuery(
-              opts?: UseSuspenseQueryOptions
+              opts?: UseSuspenseQueryOptions,
             ): ReactQuery.UseSuspenseQueryResult<{
               yummy: boolean;
             }>;
@@ -592,7 +592,7 @@ export interface Client {
                 },
                 unknown,
                 void
-              >
+              >,
             ): ReactQuery.UseMutationResult<
               {
                 yummy: boolean;
@@ -616,7 +616,7 @@ export interface Client {
                 yummy: boolean;
               }>;
               useSuspenseQuery(
-                opts?: UseSuspenseQueryOptions
+                opts?: UseSuspenseQueryOptions,
               ): ReactQuery.UseSuspenseQueryResult<{
                 yummy: boolean;
               }>;
@@ -630,7 +630,7 @@ export interface Client {
                 {
                   yummy: boolean;
                 }
-              >
+              >,
             ): ReactQuery.UseMutationResult<
               {
                 yummy: boolean;
@@ -691,7 +691,7 @@ export interface Client {
             updatedAt: string;
           }>;
           useSuspenseQuery(
-            opts?: UseSuspenseQueryOptions
+            opts?: UseSuspenseQueryOptions,
           ): ReactQuery.UseSuspenseQueryResult<{
             id: string;
             name?: (string | null) | undefined;
@@ -721,7 +721,7 @@ export interface Client {
               email?: string | undefined;
               accountType?: ("admin" | "free" | "paid") | undefined;
             }
-          >
+          >,
         ): ReactQuery.UseMutationResult<
           {
             id: string;

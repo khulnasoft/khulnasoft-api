@@ -53,13 +53,13 @@ export default function InfiniteScroll<I, D, R = HTMLElement>({
       useItem,
       itemData: _itemData,
     }),
-    [_Item, Loading, Error, _itemData, useItem]
+    [_Item, Loading, Error, _itemData, useItem],
   );
 
   const itemKey = React.useCallback(
     (index: number, data: ItemData<I, D, R>) =>
       _itemKey && data.itemData ? _itemKey(index, data.itemData) : index,
-    [_itemKey]
+    [_itemKey],
   );
 
   return (
@@ -71,8 +71,7 @@ export default function InfiniteScroll<I, D, R = HTMLElement>({
           height={height ?? size.height ?? 0}
           width={width ?? size.width ?? 0}
           itemKey={itemKey}
-          itemData={itemData}
-        >
+          itemData={itemData}>
           {Item}
         </DynamicSizeList>
       )}
@@ -95,7 +94,7 @@ const Item = React.forwardRef<
     isScrolling,
     data: { Item: _Item, Loading, Error, useItem, itemData },
   }: ListChildComponentProps<ItemData<any, any, any>>,
-  ref
+  ref,
 ): React.ReactElement | null {
   const item = useItem(index);
   switch (item?.status) {

@@ -43,7 +43,7 @@ function makeHandler(endpoints: AnyEndpoint[], options?: KhulnasoftAppOptions) {
 
       if (!isValidRouteMatch(match)) {
         const enabledMethods = methods.filter((method) =>
-          isValidRouteMatch(routeMatcher.match(method, c.req.path))
+          isValidRouteMatch(routeMatcher.match(method, c.req.path)),
         );
         if (enabledMethods.length) {
           return c.json(
@@ -52,7 +52,7 @@ function makeHandler(endpoints: AnyEndpoint[], options?: KhulnasoftAppOptions) {
                 .map((x) => x.toUpperCase())
                 .join(", ")}.`,
             },
-            { status: 405 }
+            { status: 405 },
           );
         }
         if (options?.handleErrors !== false) {
@@ -103,7 +103,7 @@ function makeHandler(endpoints: AnyEndpoint[], options?: KhulnasoftAppOptions) {
 
       console.error(
         `ERROR in ${c.req.method} ${c.req.url}:`,
-        error instanceof Error ? error.stack : error
+        error instanceof Error ? error.stack : error,
       );
       return c.json({ error, details: "Failed to handle the request." }, 500);
     }
@@ -112,13 +112,13 @@ function makeHandler(endpoints: AnyEndpoint[], options?: KhulnasoftAppOptions) {
 
 export function khulnasoftApi(
   { topLevel, resources }: AnyAPIDescription,
-  options?: KhulnasoftAppOptions
+  options?: KhulnasoftAppOptions,
 ) {
   return makeHandler(
     allEndpoints({
       actions: topLevel?.actions,
       namespacedResources: resources,
     }),
-    options
+    options,
   );
 }

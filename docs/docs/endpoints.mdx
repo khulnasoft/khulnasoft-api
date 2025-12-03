@@ -7,9 +7,10 @@ import TabItem from "@theme/TabItem";
 
 # Endpoints
 
-A Khulnasoft API endpoint declares a method and URL, request and response parameter schemas, and
-a handler function that handles the request. Endpoints are grouped into [resources](/khulnasoft/resources),
-which are in turn grouped into an entire API definition. Here's a basic example:
+A Khulnasoft API endpoint declares a method and URL, request and response
+parameter schemas, and a handler function that handles the request. Endpoints
+are grouped into [resources](/khulnasoft/resources), which are in turn grouped
+into an entire API definition. Here's a basic example:
 
 <Tabs groupId="schema-variants">
 <TabItem value="codegen" label="Codegen types">
@@ -71,35 +72,40 @@ export const retrieve = khulnasoft.endpoint({
 
 ## Properties
 
-The `endpoint` method takes properties to customize the behavior of the endpoint.
+The `endpoint` method takes properties to customize the behavior of the
+endpoint.
 
 ### `endpoint`
 
-A string declaring the HTTP method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`, `HEAD`) and
-URL for this endpoint.
+A string declaring the HTTP method (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`,
+`OPTIONS`, `HEAD`) and URL for this endpoint.
 
 ### `handler(params, context)`
 
-The function that handles requests to this `endpoint`. It will be called with a `params` object consisting
-of the parsed `path`, `query`, and `body` parameters squashed together, a `context` object, and should return
-or resolve to a raw response to be parsed by the `response` schema.
+The function that handles requests to this `endpoint`. It will be called with a
+`params` object consisting of the parsed `path`, `query`, and `body` parameters
+squashed together, a `context` object, and should return or resolve to a raw
+response to be parsed by the `response` schema.
 
-The `params`, `context` and return types will be automatically mapped from the request and response types.
+The `params`, `context` and return types will be automatically mapped from the
+request and response types.
 
-Note that the handler field is optional: this is useful for declaring
-the shape of an API through endpoints, but not serving requests using
-`khulnasoft`.
+Note that the handler field is optional: this is useful for declaring the shape
+of an API through endpoints, but not serving requests using `khulnasoft`.
 
 ## Types
 
-`khulnasoft.types` is a helper that enables generating rich, validating schemas for the parameter and
-response types of the endpoint. After running the `@khulnasoft-api` CLI, these type definitions are
-converted into Zod schemas, which are used to validate endpoint parameters. If parameters
-fail to validate against the generated schema, the endpoint responds with a detailed error message.
-For more information about the CLI, visit its [dedicated page](/khulnasoft/cli).
+`khulnasoft.types` is a helper that enables generating rich, validating schemas
+for the parameter and response types of the endpoint. After running the
+`@khulnasoft-api` CLI, these type definitions are converted into Zod schemas,
+which are used to validate endpoint parameters. If parameters fail to validate
+against the generated schema, the endpoint responds with a detailed error
+message. For more information about the CLI, visit its
+[dedicated page](/khulnasoft/cli).
 
-`khulnasoft.types` accepts one type parameter, which is used to specify the types of the parameters accepted by the endpoint,
-as well as the type of its response. In order to provide these parameters, these fields can be passed as
+`khulnasoft.types` accepts one type parameter, which is used to specify the
+types of the parameters accepted by the endpoint, as well as the type of its
+response. In order to provide these parameters, these fields can be passed as
 properties of the type parameter:
 
 ### `response`
@@ -120,16 +126,19 @@ The type for the request body parameters.
 
 ## Error handling
 
-You can throw certain exceptions within the `handler` to return 4xx or 5xx HTTP error responses to the user, with well-formatted bodies.
+You can throw certain exceptions within the `handler` to return 4xx or 5xx HTTP
+error responses to the user, with well-formatted bodies.
 
-`khulnasoft` provides some exception types to streamline this. Each will cause the endpoint to respond with an HTTP status code.
-Each exception's constructor also accepts an optional record
-parameter, which is included in the body of the response JSON.
+`khulnasoft` provides some exception types to streamline this. Each will cause
+the endpoint to respond with an HTTP status code. Each exception's constructor
+also accepts an optional record parameter, which is included in the body of the
+response JSON.
 
 ### `KhulnasoftError`
 
-Takes an HTTP status code as a constructor argument. Responds with
-that status code. Best used to create custom subclasses if you need HTTP status codes we don't yet provide out of the box.
+Takes an HTTP status code as a constructor argument. Responds with that status
+code. Best used to create custom subclasses if you need HTTP status codes we
+don't yet provide out of the box.
 
 ### `BadRequestError`
 
@@ -149,10 +158,10 @@ Responds with HTTP status code 404.
 
 ## Manually providing Zod schemas
 
-Typed endpoints can also be created through manually specifying
-zod schemas, and passing them to the standalone `endpoint` method.
-This method takes the same properties as the `endpoint` method available when using `khulnasoft.types`,
-as well as these additional properties for providing schema values:
+Typed endpoints can also be created through manually specifying zod schemas, and
+passing them to the standalone `endpoint` method. This method takes the same
+properties as the `endpoint` method available when using `khulnasoft.types`, as
+well as these additional properties for providing schema values:
 
 ### `response`
 
@@ -164,20 +173,23 @@ The [schema](/khulnasoft/schemas/runtime-zod-schemas) for the path parameters.
 
 ### `query`
 
-The [schema](/khulnasoft/schemas/runtime-zod-schemas) for the query (search) parameters.
+The [schema](/khulnasoft/schemas/runtime-zod-schemas) for the query (search)
+parameters.
 
 ### `body`
 
-The [schema](/khulnasoft/schemas/runtime-zod-schemas) for the request body parameters.
+The [schema](/khulnasoft/schemas/runtime-zod-schemas) for the request body
+parameters.
 
 ## Path and query parameter coercion
 
 Since the raw path and query parameters from an HTTP request are strings, if you
-provide a number, boolean, Date, or bigint schema for a parameter, Khulnasoft will
-automatically coerce the raw value to that type.
+provide a number, boolean, Date, or bigint schema for a parameter, Khulnasoft
+will automatically coerce the raw value to that type.
 
-To accomplish this Khulnasoft deeply maps the parameter schemas, adding a coercion
-preprocess step anywhere a number, boolean, Date or bigint schema is encountered.
+To accomplish this Khulnasoft deeply maps the parameter schemas, adding a
+coercion preprocess step anywhere a number, boolean, Date or bigint schema is
+encountered.
 
 ### Coercion defaults
 
@@ -202,7 +214,8 @@ Boolean, number, Date and bigint coercion all share the following `null` and
 
 ### Boolean coercion
 
-In addition to the [nullish rules](#nullish-values), booleans are coerced as follows:
+In addition to the [nullish rules](#nullish-values), booleans are coerced as
+follows:
 
 | Raw Value (case insensitive) | Coerced Value |
 | ---------------------------- | ------------- |
@@ -213,7 +226,8 @@ In addition to the [nullish rules](#nullish-values), booleans are coerced as fol
 
 ### Number coercion
 
-In addition to the [nullish rules](#nullish-values), numbers are coerced as follows:
+In addition to the [nullish rules](#nullish-values), numbers are coerced as
+follows:
 
 | Raw Value (⚠️ ️case _sensitive_) | Coerced Value |
 | -------------------------------- | ------------- |
@@ -228,7 +242,8 @@ In addition to the [nullish rules](#nullish-values), numbers are coerced as foll
 
 ### BigInt coercion
 
-In addition to the [nullish rules](#nullish-values), bigints are coerced as follows:
+In addition to the [nullish rules](#nullish-values), bigints are coerced as
+follows:
 
 | Raw Value (case insensitive) | Coerced Value |
 | ---------------------------- | ------------- |
@@ -241,7 +256,8 @@ In addition to the [nullish rules](#nullish-values), bigints are coerced as foll
 
 ### Date coercion
 
-In addition to the [nullish rules](#nullish-values), Dates are coerced as follows:
+In addition to the [nullish rules](#nullish-values), Dates are coerced as
+follows:
 
 | Raw Value (case insensitive)                                | Coerced Value             |
 | ----------------------------------------------------------- | ------------------------- |
@@ -281,7 +297,7 @@ class DateParam extends z.Schema<Date, unknown> {
 
 ```ts
 const DateParam = z.unknown().transform(
-  (value) => new Date(String(value)) // or your custom date parsing logic
+  (value) => new Date(String(value)), // or your custom date parsing logic
 );
 ```
 

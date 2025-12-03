@@ -1,11 +1,12 @@
-import { extendZodWithOpenApi } from "zod-openapi";
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import {
   z,
-  ParseContext,
-  SafeParseReturnType,
-  isValid,
+  type ParseContext,
+  type SafeParseReturnType,
   ZodFirstPartyTypeKind,
+  isValid,
 } from "zod";
+import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { KhulnasoftContext } from "./khulnasoft";
 import { SelectTree } from "./parseSelect";
 import { getSelects } from "./selects";
@@ -32,6 +33,23 @@ extendZodWithOpenApi(z); // https://github.com/asteasolutions/zod-to-openapi#the
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
+//////////////// Type Helpers ////////////////////
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+
+// Helper to prevent infinite recursion in toZod
+type ToZodObject<T> = z.ZodObject<
+  {
+    [k in keyof T]-?: toZod<T[k]>;
+  },
+  "strip",
+  z.ZodTypeAny,
+  any,
+  any
+>;
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
 ////////////////// Metadata //////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -39,7 +57,60 @@ extendZodWithOpenApi(z); // https://github.com/asteasolutions/zod-to-openapi#the
 declare module "zod" {
   interface ZodType<Output, Def extends ZodTypeDef, Input = Output> {
     withMetadata<M extends object>(metadata: M): ZodMetadata<this, M>;
+
+    /**
+     * Marks this schema as includable via an `include[]` query param.
+     * This should only be used on object or array of object property schemas.
+     */
+    includable(): IncludableZodType<this>;
+
+    selection<T extends z.ZodTypeAny>(
+      this: T,
+    ): z.ZodType<
+      SelectionReturn<z.output<T>>,
+      this["_def"],
+      SelectionReturn<z.input<T>>
+    >;
+
+    /**
+     * Marks this schema as selectable via a `select` query param.
+     * This should only be used on object or array of object property schemas.
+     * The property must have the name of a sibling property + `_fields`.
+     */
+    selectable(): SelectableZodType<this>;
+
+    safeParseAsync(
+      data: unknown,
+      params?: Partial<KhulnasoftParseParams>,
+    ): Promise<SafeParseReturnType<Input, Output>>;
+
+    parseAsync(
+      data: unknown,
+      params?: Partial<KhulnasoftParseParams>,
+    ): Promise<Output>;
+
+    transform<T extends z.ZodTypeAny, NewOut>(
+      this: T,
+      transform: (
+        arg: Output,
+        ctx: KhulnasoftRefinementCtx,
+      ) => NewOut | Promise<NewOut>,
+    ): z.ZodEffects<T, NewOut>;
+
+    /**
+     * Like `.transform()`, but passes the KhulnasoftContext and ParseContext
+     * to the transform.
+     * Currently this is used to implement `.prismaModelLoader()` in the
+     * Prisma plugin.
+     */
+    khulnasoftTransform<T extends z.ZodTypeAny, NewOut>(
+      this: T,
+      transform: KhulnasoftTransform<Output, NewOut>,
+    ): z.ZodEffects<T, NewOut>;
   }
+
+  // I don't know why TS errors without this, sigh
+  interface ZodTypeDef {}
 }
 
 export interface ZodMetadataDef<T extends z.ZodTypeAny, M extends object>
@@ -58,7 +129,7 @@ export interface ZodMetadataDef<T extends z.ZodTypeAny, M extends object>
  */
 export class ZodMetadata<
   T extends z.ZodTypeAny,
-  M extends object
+  M extends object,
 > extends z.ZodEffects<T> {
   constructor(def: z.ZodEffectsDef<T>, public metadata: M) {
     super(def);
@@ -71,7 +142,7 @@ export class ZodMetadata<
   static create = <T extends z.ZodTypeAny, M extends object>(
     innerType: T,
     metadata: M,
-    params?: z.RawCreateParams
+    params?: z.RawCreateParams,
   ): ZodMetadata<T, M> => {
     return new ZodMetadata(innerType.refine((x) => true)._def, metadata);
   };
@@ -79,7 +150,7 @@ export class ZodMetadata<
 
 z.ZodType.prototype.withMetadata = function withMetadata<
   T extends z.ZodTypeAny,
-  M extends object
+  M extends object,
 >(this: T, metadata: M): ZodMetadata<T, M> {
   return ZodMetadata.create(this, metadata, this._def);
 };
@@ -88,7 +159,7 @@ export const withMetadata = ZodMetadata.create;
 
 export type extractMetadata<
   T extends z.ZodTypeAny,
-  Satisfying extends object = object
+  Satisfying extends object = object,
 > = z.ZodType<any, z.ZodTypeDef, any> extends T
   ? never // bail if T is too generic, to prevent combinatorial explosion
   : T extends ZodMetadata<infer U, infer M>
@@ -128,7 +199,7 @@ function satisfies(a: unknown, b: unknown): boolean {
       a != null &&
       typeof a === "object" &&
       Object.entries(b).every(([key, value]) =>
-        satisfies((a as Record<string, unknown>)[key], value)
+        satisfies((a as Record<string, unknown>)[key], value),
       )
     );
   }
@@ -140,10 +211,10 @@ function satisfies(a: unknown, b: unknown): boolean {
 
 export function extractMetadata<
   T extends z.ZodTypeAny,
-  Satisfying extends object = object
+  Satisfying extends object = object,
 >(
   schema: T,
-  satisfying: Satisfying = {} as Satisfying
+  satisfying: Satisfying = {} as Satisfying,
 ): extractMetadata<T, Satisfying> {
   if (schema instanceof ZodMetadata) {
     if (satisfies(schema.metadata, satisfying)) {
@@ -174,7 +245,7 @@ export function extractMetadata<
 
 export type extractDeepMetadata<
   T extends z.ZodTypeAny,
-  Satisfying extends object = object
+  Satisfying extends object = object,
 > = z.ZodType<any, z.ZodTypeDef, any> extends T
   ? never // bail if T is too generic, to prevent combinatorial explosion
   : T extends ZodMetadata<infer U, infer M>
@@ -207,10 +278,10 @@ export type extractDeepMetadata<
 
 export function extractDeepMetadata<
   T extends z.ZodTypeAny,
-  Satisfying extends object = object
+  Satisfying extends object = object,
 >(
   schema: T,
-  satisfying: Satisfying = {} as Satisfying
+  satisfying: Satisfying = {} as Satisfying,
 ): extractDeepMetadata<T, Satisfying> {
   if (schema instanceof z.ZodArray)
     return extractDeepMetadata(schema.element, satisfying);
@@ -227,16 +298,6 @@ export function extractDeepMetadata<
 /////////////// Includable ///////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
-
-declare module "zod" {
-  interface ZodType<Output, Def extends ZodTypeDef, Input = Output> {
-    /**
-     * Marks this schema as includable via an `include[]` query param.
-     * This should only be used on object or array of object property schemas.
-     */
-    includable(): IncludableZodType<this>;
-  }
-}
 
 export const includableSymbol = Symbol("includable");
 
@@ -263,13 +324,13 @@ z.ZodType.prototype.includable = function includable(this: z.ZodTypeAny) {
     (
       data: unknown,
       khulnasoftContext: KhulnasoftContext<any>,
-      zodInput: z.ParseInput
+      zodInput: z.ParseInput,
     ) => {
       const { path } = zodInput;
       const include = getIncludes(khulnasoftContext);
       return include && zodPathIsIncluded(path, include) ? data : undefined;
     },
-    this.optional()
+    this.optional(),
   )
     .openapi({ effectType: "input" })
     .withMetadata({ khulnasoft: { includable: true } });
@@ -283,7 +344,7 @@ export type isIncludable<T extends z.ZodTypeAny> = extractDeepMetadata<
   : false;
 
 export function isIncludable<T extends z.ZodTypeAny>(
-  schema: T
+  schema: T,
 ): isIncludable<T> {
   return (extractDeepMetadata(schema, { khulnasoft: { includable: true } }) !=
     null) as isIncludable<T>;
@@ -291,11 +352,11 @@ export function isIncludable<T extends z.ZodTypeAny>(
 
 function zodPathIsIncluded(
   zodPath: (string | number)[],
-  include: string[]
+  include: string[],
 ): boolean {
   const zodPathStr = zodPath.filter((p) => typeof p === "string").join(".");
   return include.some(
-    (e) => e === zodPathStr || e.startsWith(`${zodPathStr}.`)
+    (e) => e === zodPathStr || e.startsWith(`${zodPathStr}.`),
   );
 }
 
@@ -304,28 +365,6 @@ function zodPathIsIncluded(
 /////////////// Selectable ///////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
-
-declare module "zod" {
-  // I don't know why TS errors without this, sigh
-  interface ZodTypeDef {}
-
-  interface ZodType<Output, Def extends ZodTypeDef, Input = Output> {
-    selection<T extends z.ZodTypeAny>(
-      this: T
-    ): z.ZodType<
-      SelectionReturn<z.output<T>>,
-      this["_def"],
-      SelectionReturn<z.input<T>>
-    >;
-
-    /**
-     * Marks this schema as selectable via a `select` query param.
-     * This should only be used on object or array of object property schemas.
-     * The property must have the name of a sibling property + `_fields`.
-     */
-    selectable(): SelectableZodType<this>;
-  }
-}
 
 export const selectableSymbol = Symbol("selectable");
 
@@ -381,7 +420,7 @@ class KhulnasoftSelectable<T extends z.ZodTypeAny> extends z.ZodOptional<T> {
     const property = path[path.length - 1];
     if (typeof property !== "string" || !property.endsWith("_fields")) {
       throw new Error(
-        `.selectable() property must be a string ending with _fields`
+        `.selectable() property must be a string ending with _fields`,
       );
     }
     const parentData = parent.data || parent.parent?.data;
@@ -390,26 +429,26 @@ class KhulnasoftSelectable<T extends z.ZodTypeAny> extends z.ZodOptional<T> {
     }
     const selectionHere = path.reduce<SelectTree | undefined>(
       (tree, elem) => (typeof elem === "number" ? tree : tree?.select?.[elem]),
-      select
+      select,
     )?.select;
     if (!selectionHere) return z.OK(undefined);
 
     const parsed = super._parse(
       Object.create(input, {
         data: { value: parentData[property.replace(/_fields$/, "")] },
-      })
+      }),
     );
 
     const pickSelected = pickBy((v, k) => selectionHere[k]);
 
     return convertParseReturn(parsed, (value) =>
-      Array.isArray(value) ? value.map(pickSelected) : pickSelected(value)
+      Array.isArray(value) ? value.map(pickSelected) : pickSelected(value),
     );
   }
 }
 
 z.ZodType.prototype.selection = function selection(
-  this: z.ZodTypeAny
+  this: z.ZodTypeAny,
 ): z.ZodTypeAny {
   if (this instanceof ZodMetadata) {
     return this.unwrap().selection();
@@ -419,7 +458,7 @@ z.ZodType.prototype.selection = function selection(
   }
   if (!(this instanceof z.ZodObject)) {
     throw new Error(
-      `.selection() must be called on a ZodObject, got ${this.constructor.name}`
+      `.selection() must be called on a ZodObject, got ${this.constructor.name}`,
     );
   }
   const { shape } = this;
@@ -427,7 +466,7 @@ z.ZodType.prototype.selection = function selection(
   // because they don't rely on the _field property
   // acually being present
   const mask = mapValues(shape, (value) =>
-    value instanceof KhulnasoftSelectable ? undefined : (true as const)
+    value instanceof KhulnasoftSelectable ? undefined : (true as const),
   );
   return this.partial(mask);
 };
@@ -442,43 +481,10 @@ z.ZodType.prototype.selectable = function selectable(this: z.ZodTypeAny) {
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-declare module "zod" {
-  interface ZodType<Output, Def extends ZodTypeDef, Input = Output> {
-    safeParseAsync(
-      data: unknown,
-      params?: Partial<KhulnasoftParseParams>
-    ): Promise<SafeParseReturnType<Input, Output>>;
-
-    parseAsync(
-      data: unknown,
-      params?: Partial<KhulnasoftParseParams>
-    ): Promise<Output>;
-
-    transform<T extends z.ZodTypeAny, NewOut>(
-      this: T,
-      transform: (
-        arg: Output,
-        ctx: KhulnasoftRefinementCtx
-      ) => NewOut | Promise<NewOut>
-    ): z.ZodEffects<T, NewOut>;
-
-    /**
-     * Like `.transform()`, but passes the KhulnasoftContext and ParseContext
-     * to the transform.
-     * Currently this is used to implement `.prismaModelLoader()` in the
-     * Prisma plugin.
-     */
-    khulnasoftTransform<T extends z.ZodTypeAny, NewOut>(
-      this: T,
-      transform: KhulnasoftTransform<Output, NewOut>
-    ): z.ZodEffects<T, NewOut>;
-  }
-}
-
 export type KhulnasoftTransform<Input, Output> = (
   input: Input,
   ctx: KhulnasoftContext<any>,
-  zodInput: z.ParseInput
+  zodInput: z.ParseInput,
 ) => Output | Promise<Output>;
 
 export interface KhulnasoftParseContext extends z.ParseContext {
@@ -498,21 +504,21 @@ export type KhulnasoftParseInput = z.ParseInput & {
 };
 
 function getKhulnasoftParseContext(
-  ctx: ParseContext
+  ctx: ParseContext,
 ): KhulnasoftParseContext["khulnasoftContext"] | undefined {
   while (ctx.parent != null) ctx = ctx.parent;
   return (ctx as any).khulnasoftContext;
 }
 function handleParseReturn<I, O>(
   result: z.ParseReturnType<I>,
-  handle: (result: z.SyncParseReturnType<I>) => z.SyncParseReturnType<O>
+  handle: (result: z.SyncParseReturnType<I>) => z.SyncParseReturnType<O>,
 ): z.ParseReturnType<O> {
   return z.isAsync(result) ? result.then(handle) : handle(result);
 }
 
 function convertParseReturn<I, O>(
   result: z.ParseReturnType<I>,
-  convert: (result: I) => O
+  convert: (result: I) => O,
 ): z.ParseReturnType<O> {
   return handleParseReturn(
     result,
@@ -525,13 +531,13 @@ function convertParseReturn<I, O>(
         case "valid":
           return z.OK(convert(result.value));
       }
-    }
+    },
   );
 }
 
 z.ZodType.prototype.safeParseAsync = async function safeParseAsync(
   data: unknown,
-  params?: Partial<KhulnasoftParseParams>
+  params?: Partial<KhulnasoftParseParams>,
 ): Promise<z.SafeParseReturnType<any, any>> {
   const ctx: KhulnasoftParseContext = {
     khulnasoftContext: params?.khulnasoftContext,
@@ -556,7 +562,7 @@ z.ZodType.prototype.safeParseAsync = async function safeParseAsync(
 
 const handleResult = <Input, Output>(
   ctx: z.ParseContext,
-  result: z.SyncParseReturnType<Output>
+  result: z.SyncParseReturnType<Output>,
 ):
   | { success: true; data: Output }
   | { success: false; error: z.ZodError<Input> } => {
@@ -581,14 +587,14 @@ const handleResult = <Input, Output>(
 
 const zodEffectsSuperParse = z.ZodEffects.prototype._parse;
 z.ZodEffects.prototype._parse = function _parse(
-  input: z.ParseInput
+  input: z.ParseInput,
 ): z.ParseReturnType<any> {
   const effect: any = this._def.effect || null;
   if (effect.khulnasoftPreprocess) {
     const khulnasoftContext = getKhulnasoftParseContext(input.parent);
     if (!khulnasoftContext) {
       throw new Error(
-        `missing khulnasoftContext in .khulnasoftTransform effect`
+        `missing khulnasoftContext in .khulnasoftTransform effect`,
       );
     }
     const { ctx } = this._processInputParams(input);
@@ -624,7 +630,7 @@ z.ZodEffects.prototype._parse = function _parse(
     const khulnasoftContext = getKhulnasoftParseContext(input.parent);
     if (!khulnasoftContext) {
       throw new Error(
-        `missing khulnasoftContext in .khulnasoftTransform effect`
+        `missing khulnasoftContext in .khulnasoftTransform effect`,
       );
     }
     const { status, ctx } = this._processInputParams(input);
@@ -638,7 +644,7 @@ z.ZodEffects.prototype._parse = function _parse(
             data: base.value,
             path: input.path,
             parent: input.parent,
-          })
+          }),
         ).then((result) => ({ status: status.value, value: result }));
       });
   }
@@ -647,7 +653,7 @@ z.ZodEffects.prototype._parse = function _parse(
 
 z.ZodType.prototype.khulnasoftTransform = function khulnasoftTransform(
   this: z.ZodTypeAny,
-  transform: KhulnasoftTransform<any, any>
+  transform: KhulnasoftTransform<any, any>,
 ) {
   return new z.ZodEffects({
     description: this._def.description,
@@ -664,12 +670,12 @@ z.ZodType.prototype.khulnasoftTransform = function khulnasoftTransform(
 export type KhulnasoftPreprocess = (
   input: unknown,
   ctx: KhulnasoftContext<any>,
-  zodInput: z.ParseInput
+  zodInput: z.ParseInput,
 ) => unknown;
 
 export function khulnasoftPreprocess<I extends z.ZodTypeAny>(
   preprocess: KhulnasoftPreprocess,
-  schema: I
+  schema: I,
 ): z.ZodEffects<I, I["_output"], unknown> {
   return new z.ZodEffects({
     description: schema._def.description,
@@ -691,7 +697,7 @@ export function khulnasoftPreprocess<I extends z.ZodTypeAny>(
 
 export function path<T extends z.ZodRawShape>(
   shape: T,
-  params?: z.RawCreateParams
+  params?: z.RawCreateParams,
 ): z.ZodObject<T, "strip"> {
   return z.object(shape, params);
 }
@@ -702,26 +708,26 @@ export class KhulnasoftParams<
   UnknownKeys extends z.UnknownKeysParam = z.UnknownKeysParam,
   Catchall extends z.ZodTypeAny = z.ZodTypeAny,
   Output = z.objectOutputType<T, Catchall, UnknownKeys>,
-  Input = z.objectInputType<T, Catchall, UnknownKeys>
+  Input = z.objectInputType<T, Catchall, UnknownKeys>,
 > extends z.ZodObject<T, UnknownKeys, Catchall, Output, Input> {}
 
 export function query<T extends z.ZodRawShape>(
   shape: T,
-  params?: z.RawCreateParams
+  params?: z.RawCreateParams,
 ): KhulnasoftParams<T, "strip"> {
   return new KhulnasoftParams(z.object(shape, params)._def) as any;
 }
 
 export function body<T extends z.ZodRawShape>(
   shape: T,
-  params?: z.RawCreateParams
+  params?: z.RawCreateParams,
 ): KhulnasoftParams<T, "strip"> {
   return new KhulnasoftParams(z.object(shape, params)._def) as any;
 }
 
 export function response<T extends z.ZodRawShape>(
   shape: T,
-  params?: z.RawCreateParams
+  params?: z.RawCreateParams,
 ): z.ZodObject<T, "strip"> {
   return z.object(shape, params);
 }
@@ -743,7 +749,7 @@ class PageResponseWrapper<I extends z.ZodTypeAny> {
 }
 
 export function pageResponse<I extends z.ZodTypeAny>(
-  item: I
+  item: I,
 ): ZodMetadata<
   ReturnType<PageResponseWrapper<I>["wrapped"]>,
   extractDeepMetadata<I> & { khulnasoft: { pageResponse: true } }
@@ -769,7 +775,7 @@ export type isPageResponse<T extends z.ZodTypeAny> = extractMetadata<
   : false;
 
 export function isPageResponse<T extends z.ZodTypeAny>(
-  schema: T
+  schema: T,
 ): isPageResponse<T> {
   return (extractMetadata(schema, { khulnasoft: { pageResponse: true } }) !=
     null) as isPageResponse<T>;
@@ -815,7 +821,7 @@ export type PaginationParams = z.infer<typeof PaginationParams>;
 
 export type CircularModel<
   Base extends z.ZodType<object, any, object>,
-  Props extends z.ZodRawShape
+  Props extends z.ZodRawShape,
 > = z.ZodType<
   z.output<Base> & { [K in keyof Props]: z.output<NonNullable<Props[K]>> },
   z.ZodTypeDef,
@@ -846,7 +852,7 @@ export class Schema<O, I = O> extends BaseSchema {
   transform(
     value: Out<I>,
     ctx: KhulnasoftContext<any>,
-    zodInput: z.ParseInput
+    zodInput: z.ParseInput,
   ): Out<O> | PromiseLike<Out<O>> {
     return value as any;
   }
@@ -922,7 +928,7 @@ export type toZod<T> = 0 extends 1 & T
   : [T] extends [PromiseLike<infer E>]
   ? z.ZodPromise<toZod<E>>
   : [T] extends [object]
-  ? z.ZodObject<{ [k in keyof T]-?: toZod<T[k]> }>
+  ? z.ZodObject<any>
   : [number] extends [T]
   ? z.ZodNumber
   : [string] extends [T]
@@ -1005,7 +1011,7 @@ export type UUID = StringSchema<{ uuid: true }>;
 export const StringSchemaSymbol = Symbol("StringSchema");
 
 export class StringSchema<
-  Props extends StringSchemaProps
+  Props extends StringSchemaProps,
 > extends Schema<string> {
   declare [StringSchemaSymbol]: true;
   declare input: string;
@@ -1037,7 +1043,7 @@ export interface NumberSchemaProps {
 export const NumberSchemaSymbol = Symbol("NumberSchema");
 
 export class NumberSchema<
-  Props extends NumberSchemaProps
+  Props extends NumberSchemaProps,
 > extends Schema<number> {
   declare [NumberSchemaSymbol]: true;
   declare input: number;
@@ -1065,7 +1071,7 @@ export interface BigIntSchemaProps {
 export const BigIntSchemaSymbol = Symbol("BigIntSchema");
 
 export class BigIntSchema<
-  Props extends BigIntSchemaProps
+  Props extends BigIntSchemaProps,
 > extends Schema<bigint> {
   declare [BigIntSchemaSymbol]: true;
   declare input: bigint;
@@ -1095,7 +1101,7 @@ export const ObjectSchemaSymbol = Symbol("ObjectSchema");
 
 export class ObjectSchema<
   T extends object,
-  Props extends ObjectSchemaProps
+  Props extends ObjectSchemaProps,
 > extends Schema<T> {
   declare [ObjectSchemaSymbol]: true;
   declare props: Props;
@@ -1140,7 +1146,7 @@ export class Includable<T> extends Schema<
 
 export class Includes<
   T,
-  Depth extends 0 | 1 | 2 | 3 | 4 | 5 = 3
+  Depth extends 0 | 1 | 2 | 3 | 4 | 5 = 3,
 > extends Schema<IncludablePaths<Out<T>, Depth>[]> {
   declare metadata: { khulnasoft: { includes: true } };
 }

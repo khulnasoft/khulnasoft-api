@@ -38,7 +38,7 @@ export const makeNextAuthPlugin =
   (khulnasoft) => ({
     async middleware<EC extends AnyEndpoint>(
       params: Params,
-      context: KhulnasoftContext<EC>
+      context: KhulnasoftContext<EC>,
     ) {
       const {
         args: [req, res],
@@ -68,7 +68,7 @@ export const makeNextAuthPlugin =
   });
 
 function requireNextServerContext(
-  context: KhulnasoftContext<any>
+  context: KhulnasoftContext<any>,
 ): NextServerContext {
   const { server } = context;
   if (server?.type !== "nextjs") {

@@ -49,7 +49,7 @@ it("context.server", async function () {
         const { server } = context;
         return { server: { type: server.type, argCount: server.args.length } };
       },
-    })
+    }),
   );
   expect(await fetch(baseUrl + "/foo").then((r) => r.json()))
     .toMatchInlineSnapshot(`
@@ -106,13 +106,13 @@ it("routing and basePathMap", async function () {
         }),
       },
     }),
-    { basePathMap: { "/api/": "/" } }
+    { basePathMap: { "/api/": "/" } },
   );
   const app = express();
   app.use(router);
   await serve(app);
   expect(
-    await fetch(baseUrl + "/posts").then((r) => r.json())
+    await fetch(baseUrl + "/posts").then((r) => r.json()),
   ).toMatchInlineSnapshot(`[]`);
 
   expect(await fetch(baseUrl + "/posts/5").then((r) => r.json()))
@@ -126,7 +126,7 @@ it("routing and basePathMap", async function () {
     await fetch(baseUrl + "/posts/5", {
       method: "POST",
       body: JSON.stringify({ content: "foobar" }),
-    }).then((r) => r.json())
+    }).then((r) => r.json()),
   ).toMatchInlineSnapshot(`
     {
       "error": "bad request",
@@ -155,25 +155,25 @@ it("routing and basePathMap", async function () {
     await fetch(baseUrl + "/posts/5", {
       method: "POST",
       body: JSON.stringify({ content: 1 }),
-    })
+    }),
   ).toHaveProperty("status", 400);
 
   expect(
     await fetch(baseUrl + "/posts/5", {
       method: "DELETE",
-    })
+    }),
   ).toHaveProperty("status", 405);
 
   expect(
     await fetch(baseUrl + "/posts/5/foo", {
       method: "GET",
-    })
+    }),
   ).toHaveProperty("status", 404);
 
   expect(
     await fetch(baseUrl + "/comments/3", {
       method: "POST",
-    })
+    }),
   ).toHaveProperty("status", 405);
 });
 
@@ -200,7 +200,7 @@ it("path and query params", async function () {
           .optional(),
       }),
       handler: (params) => params,
-    })
+    }),
   );
   expect(await fetch(baseUrl + "/posts/5/comments/3").then((r) => r.json()))
     .toMatchInlineSnapshot(`
@@ -213,9 +213,9 @@ it("path and query params", async function () {
     await fetch(
       baseUrl +
         `/posts/5/comments/3?expand[0]=user&expand[1]=${encodeURIComponent(
-          "user.posts"
-        )}`
-    ).then((r) => r.json())
+          "user.posts",
+        )}`,
+    ).then((r) => r.json()),
   ).toMatchInlineSnapshot(`
     {
       "commentId": 3,
@@ -235,7 +235,7 @@ it(`error handling`, async function () {
       handler: () => {
         throw new KhulnasoftError(427, { a: 1, b: 2 });
       },
-    })
+    }),
   );
   const response = await fetch(baseUrl + "/foo");
   expect(response).toHaveProperty("status", 427);
@@ -270,8 +270,8 @@ it(`handleErrors: false`, async function () {
           }),
         },
       }),
-      { handleErrors: false }
-    )
+      { handleErrors: false },
+    ),
   );
   let gotErr;
   app.use(
@@ -279,7 +279,7 @@ it(`handleErrors: false`, async function () {
     (err: any, req: Request, res: Response, next: NextFunction) => {
       gotErr = err;
       res.status(427).send();
-    }
+    },
   );
   await serve(app);
   expect(await fetch(baseUrl + "/comments/5")).toHaveProperty("status", 427);

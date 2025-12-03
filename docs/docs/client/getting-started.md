@@ -8,8 +8,8 @@ sidebar_position: 0
 
 :::info
 
-Make sure to use `import type` to import your api declaration,
-to make sure you don't import any server-side runtime code on the client.
+Make sure to use `import type` to import your api declaration, to make sure you
+don't import any server-side runtime code on the client.
 
 :::
 

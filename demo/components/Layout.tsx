@@ -17,8 +17,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               border-neutral-800
               flex
               flex-col
-            "
-          >
+            ">
             {children}
           </div>
           <FollowBar />

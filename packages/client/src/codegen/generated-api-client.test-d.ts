@@ -100,7 +100,7 @@ describe("Generated API Client", () => {
 
     test("can handle native enums", () => {
       expectTypeOf(
-        client.users("foo").update({}).useSuspenseQuery().data.accountType
+        client.users("foo").update({}).useSuspenseQuery().data.accountType,
       ).toMatchTypeOf<"admin" | "free" | "paid">();
     });
   });
@@ -111,7 +111,7 @@ describe("Generated API Client", () => {
 
     test("expects query params", () => {
       expectTypeOf(
-        client.cats.list({ color: "black" }).useSuspenseQuery
+        client.cats.list({ color: "black" }).useSuspenseQuery,
       ).toBeFunction();
     });
   });

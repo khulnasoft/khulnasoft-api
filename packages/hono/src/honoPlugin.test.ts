@@ -271,7 +271,7 @@ describe("hono passthrough", () => {
     const response = await app.request("/api/posts");
     expect(response).toHaveProperty("status", 500);
     expect(await response.text()).toMatchInlineSnapshot(
-      `"custom error: arbitrary error"`
+      `"custom error: arbitrary error"`,
     );
   });
 

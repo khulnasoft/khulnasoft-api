@@ -4,10 +4,12 @@ sidebar_position: 3
 
 # Infinite Queries
 
-For every paginated endpoint in your API, there will be a `useInfinite<Action>()` method on the Khulnasoft
-React Query client that wraps [`useInfiniteQuery`](https://tanstack.com/query/v4/docs/react/reference/useInfiniteQuery)
+For every paginated endpoint in your API, there will be a
+`useInfinite<Action>()` method on the Khulnasoft React Query client that wraps
+[`useInfiniteQuery`](https://tanstack.com/query/v4/docs/react/reference/useInfiniteQuery)
 
-For example, if `posts.list` is a `GET /api/posts` endpoint that returns [`z.PageData`](/khulnasoft/pagination#zpagedatai), then
+For example, if `posts.list` is a `GET /api/posts` endpoint that returns
+[`z.PageData`](/khulnasoft/pagination#zpagedatai), then
 `client.posts.useInfiniteList([query], [reactQueryOptions])` will be available:
 
 ```ts
@@ -50,23 +52,24 @@ export default InfinitePostFeed;
 
 `useInfinite<Action>([path], [query], [reactQueryOptions])`
 
-The signature of `useInfinite<Action>` methods varies depending
-on whether the endpoint has path and query parameters.
+The signature of `useInfinite<Action>` methods varies depending on whether the
+endpoint has path and query parameters.
 
 If the method has path parameters one path parameter will be the first argument
 (multiple path parameters aren't currently supported).
 
-If the method has query parameters the next argument will be the
-query; this argument is optional if all query parameters are optional.
+If the method has query parameters the next argument will be the query; this
+argument is optional if all query parameters are optional.
 
-The last argument is the `useInfiniteQuery` options (except for
-`queryKey`, `queryFn`, `getNextPageParam` and `getPreviousPageParam`, which are managed by the Khulnasoft React Query client).
+The last argument is the `useInfiniteQuery` options (except for `queryKey`,
+`queryFn`, `getNextPageParam` and `getPreviousPageParam`, which are managed by
+the Khulnasoft React Query client).
 
 ## Additional return properties
 
-`useInfinite<Action>` methods return the same properties as React Query's `useInfiniteQuery`
-plus additional helpful properties for implementing infinite scroll views with
-`react-window` or similar:
+`useInfinite<Action>` methods return the same properties as React Query's
+`useInfiniteQuery` plus additional helpful properties for implementing infinite
+scroll views with `react-window` or similar:
 
 ### `items`
 
@@ -78,8 +81,8 @@ Just `items.length`.
 
 ### `itemAndPlaceholderCount`
 
-The number of rows (columns) to display in an infinite scroll, including a loading placeholder
-at the end.
+The number of rows (columns) to display in an infinite scroll, including a
+loading placeholder at the end.
 
 ### `useItem`
 

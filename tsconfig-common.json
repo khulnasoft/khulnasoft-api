@@ -4,14 +4,15 @@
     "composite": true,
     "sourceMap": true,
     "declarationMap": true,
-    "target": "ES2016",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "useDefineForClassFields": true
   }
 }

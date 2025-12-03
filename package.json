@@ -34,6 +34,7 @@
     "start-test-server": "cd demo && pnpm start -p 3005",
     "build": "pnpm -r run prebuild && tsc -b packages/*/tsconfig*.json && (cd demo && pnpm build)",
     "build:watch": "pnpm -r run prebuild && tsc -b --watch packages/*/tsconfig*.json demo/tsconfig.json",
+    "dev:types": "tsc -p tsconfig.dev.json",
     "docs:start": "cd docs && pnpm start",
     "docs:build": "cd docs && pnpm build",
     "docs:deploy": "pnpm docs:build && netlify deploy --dir docs/build --prod",

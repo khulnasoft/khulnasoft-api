@@ -13,7 +13,7 @@ type UseMutationOptions<
   TData = unknown,
   TError = Error,
   TVariables = void,
-  TContext = unknown
+  TContext = unknown,
 > = Omit<
   ReactQuery.UseMutationOptions<TData, TError, TVariables, TContext>,
   KhulnasoftApiProvidedOpts
@@ -22,10 +22,10 @@ type UseMutationOptions<
 export type MakeExtension<Input, Output> = {
   useQuery(opts?: UseQueryOptions): ReactQuery.UseQueryResult<Output>;
   useSuspenseQuery(
-    opts?: ReactQuery.UseSuspenseQueryOptions
+    opts?: ReactQuery.UseSuspenseQueryOptions,
   ): ReactQuery.UseSuspenseQueryResult<Output>;
   useMutation(
-    opts?: UseMutationOptions<Output, unknown, Input>
+    opts?: UseMutationOptions<Output, unknown, Input>,
   ): ReactQuery.UseMutationResult<Output, unknown, Input>;
   getQueryKey(): string[];
 };
@@ -33,7 +33,7 @@ export type MakeExtension<Input, Output> = {
 export function configureMethods(
   config: Config,
   queryFn: () => Promise<any>,
-  queryKey: string[]
+  queryKey: string[],
 ): MakeExtension<any, any> {
   return {
     useQuery(options) {

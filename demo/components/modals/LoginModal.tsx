@@ -68,8 +68,7 @@ const LoginModal = () => {
             text-white 
             cursor-pointer 
             hover:underline
-          "
-        >
+          ">
           {" "}
           Create an account
         </span>

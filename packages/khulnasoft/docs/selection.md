@@ -1,8 +1,9 @@
 # Selection
 
-Selection allows you to pick what subset of fields on an associated object are returned
-in an API response, if the user requests them in a `select` query parameter. Here's an example of a
-`get /api/posts/{postId}` endpoint with an selectable `user_fields` property:
+Selection allows you to pick what subset of fields on an associated object are
+returned in an API response, if the user requests them in a `select` query
+parameter. Here's an example of a `get /api/posts/{postId}` endpoint with an
+selectable `user_fields` property:
 
 ```
 $ curl localhost:3000/api/posts/5
@@ -15,13 +16,13 @@ $ curl localhost:3000/api/posts/5 -G -d 'select=user_fields.name'
 ## Pristine convention
 
 The pristine convention is to have a selectable property as a sibling of an
-[includable](/packages/khulnasoft/docs/inclusion.md) property. So in the above example
-there would be an includable `user` property, whose type has some properties
-always defined, and a selectable `user_fields` property, whose type has all properties
-optional.
+[includable](/packages/khulnasoft/docs/inclusion.md) property. So in the above
+example there would be an includable `user` property, whose type has some
+properties always defined, and a selectable `user_fields` property, whose type
+has all properties optional.
 
-This allows for SDKs of all languages to provide better types for includable fields than
-if `select` could omit properties of the includable fields.
+This allows for SDKs of all languages to provide better types for includable
+fields than if `select` could omit properties of the includable fields.
 
 ### Select format
 
@@ -33,26 +34,25 @@ if `select` could omit properties of the includable fields.
 
 > **Note**
 >
-> It's not possible to generate precise types for `select` because the number
-> of possibilities can easily become huge. We may decide to use a different
-> format for `select` in the future to achieve better type safety (for example,
-> the same format as `include`).
+> It's not possible to generate precise types for `select` because the number of
+> possibilities can easily become huge. We may decide to use a different format
+> for `select` in the future to achieve better type safety (for example, the
+> same format as `include`).
 
 ## Implementing select without circular associations
 
-You can add support for a selectable field by marking it
-`.selectable()` in the response schema and adding
-`select: z.selects(...)` to your query schema:
+You can add support for a selectable field by marking it `.selectable()` in the
+response schema and adding `select: z.selects(...)` to your query schema:
 
 > **Warning**
 >
-> Currently, the `z.selects(...)` parameter must be named
-> `select` and declared in the `query`.
+> Currently, the `z.selects(...)` parameter must be named `select` and declared
+> in the `query`.
 
 > **Note**
 >
-> Although `.selectable()` can be called on any schema, it only works
-> with schemas of type object or array of objects.
+> Although `.selectable()` can be called on any schema, it only works with
+> schemas of type object or array of objects.
 
 ```ts
 // api/posts/index.ts
@@ -90,29 +90,33 @@ export const retrieve = khulnasoft.endpoint({
 });
 ```
 
-`z.selects(Post)` creates a schema that automatically validates
-the `select` query parameter from the response properties
-that are marked `.selectable()` (including any nested selectable
-properties).
+`z.selects(Post)` creates a schema that automatically validates the `select`
+query parameter from the response properties that are marked `.selectable()`
+(including any nested selectable properties).
 
 ## Automatic Prisma integration
 
 The `@khulnasoft-api/prisma` plugin will automatically generate the necessary
-`include` for prisma queries via [`ctx.prisma`](/packages/prisma/README.md#perform-crud-operations-on-response-prismamodel) or [`prismaModelLoader()`](/packages/prisma/README.md#use-prismamodelloader-on-a-parameter) when
-you have [declared a `.prismaModel(...)`](/packages/prisma/README.md#declare-prismamodel-on-a-response-type) on the response schema.
+`include` for prisma queries via
+[`ctx.prisma`](/packages/prisma/README.md#perform-crud-operations-on-response-prismamodel)
+or
+[`prismaModelLoader()`](/packages/prisma/README.md#use-prismamodelloader-on-a-parameter)
+when you have
+[declared a `.prismaModel(...)`](/packages/prisma/README.md#declare-prismamodel-on-a-response-type)
+on the response schema.
 
-For other use cases, you will need to write code in your handler to
-add fields to the response that requested to be selected.
+For other use cases, you will need to write code in your handler to add fields
+to the response that requested to be selected.
 
 ## Implementing selection with circular associations
 
-When the associations are circular, it becomes necessary to declare
-types for the schemas due to TypeScript limitations. Khulnasoft provides
-a `z.CircularModel` helper type to make this more manageable.
+When the associations are circular, it becomes necessary to declare types for
+the schemas due to TypeScript limitations. Khulnasoft provides a
+`z.CircularModel` helper type to make this more manageable.
 
-For example suppose the `User` also has an selectable list of `Post`s
-(in a real-world API you would want to use a paginated list endpoint
-to fetch `Post`s, but for the sake of demonstration):
+For example suppose the `User` also has an selectable list of `Post`s (in a
+real-world API you would want to use a paginated list endpoint to fetch `Post`s,
+but for the sake of demonstration):
 
 ```ts
 import { z } from "khulnasoft";
@@ -170,8 +174,9 @@ export const retrieve = khulnasoft.endpoint({
 });
 ```
 
-Now we've passed a second argument to `z.selects()`, which is the recursion depth limit (3 is the default).
-This means that the following select paths are allowed:
+Now we've passed a second argument to `z.selects()`, which is the recursion
+depth limit (3 is the default). This means that the following select paths are
+allowed:
 
 - `user_fields`
 - `user_fields.posts_fields`
@@ -180,5 +185,4 @@ This means that the following select paths are allowed:
 
 Obviously for many use cases, you would want to keep the depth limit low.
 
-> **Warning**
-> The maximum recursion depth supported by `z.includes` is 5.
+> **Warning** The maximum recursion depth supported by `z.includes` is 5.

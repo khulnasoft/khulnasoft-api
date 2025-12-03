@@ -33,26 +33,27 @@ export const posts = khulnasoft.resource({
 ```
 
 In this example, the imported `Post`, `PostPage`, and `PostSelection` are
-response [schemas](/khulnasoft/category/schemas); declaring them in `models` causes the OpenAPI
-endpoint to declare them in `#/components/schemas` and use `$ref`s to refer
-to them elsewhere in the OpenAPI spec.
+response [schemas](/khulnasoft/category/schemas); declaring them in `models`
+causes the OpenAPI endpoint to declare them in `#/components/schemas` and use
+`$ref`s to refer to them elsewhere in the OpenAPI spec.
 
-The imported `create`, `list`, and `retrieve` are [endpoints](/khulnasoft/endpoints).
-In the client they will be accessible as `client.posts.create(...)` etc.
-(assuming the API declares the `posts` resource as top level).
+The imported `create`, `list`, and `retrieve` are
+[endpoints](/khulnasoft/endpoints). In the client they will be accessible as
+`client.posts.create(...)` etc. (assuming the API declares the `posts` resource
+as top level).
 
 ## Properties
 
 ### `models`
 
-An object of named models; values must be response [schemas](/khulnasoft/category/schemas). The
-OpenAPI endpoint will declare named models in `#/components/schemas`, named by the
-keys in `models`.
+An object of named models; values must be response
+[schemas](/khulnasoft/category/schemas). The OpenAPI endpoint will declare named
+models in `#/components/schemas`, named by the keys in `models`.
 
 ### `actions`
 
-An object of [endpoints](/khulnasoft/endpoints).
-In the client they will be accessible as `client.posts.create(...)` etc.
+An object of [endpoints](/khulnasoft/endpoints). In the client they will be
+accessible as `client.posts.create(...)` etc.
 
 ### `namespacedResources`
 

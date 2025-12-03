@@ -1,14 +1,13 @@
 # @khulnasoft-api/next-auth: next-auth plugin for Khulnasoft API
 
-Use this plugin to add `next-auth` session to Khulnasoft API
-context.
+Use this plugin to add `next-auth` session to Khulnasoft API context.
 
 # Getting started
 
 > **Warning**
 >
-> This is alpha software, and we may make significant changes in the coming months.
-> We're eager for you to try it out and let us know what you think!
+> This is alpha software, and we may make significant changes in the coming
+> months. We're eager for you to try it out and let us know what you think!
 
 This guide assumes you've already set up [@khulnasoft-api/next](/packages/next).
 
@@ -58,7 +57,7 @@ export const authOptions: AuthOptions = {
 
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
-          user.hashedPassword
+          user.hashedPassword,
         );
 
         if (!isCorrectPassword) {
@@ -119,7 +118,7 @@ export const makeCurrentUserPlugin =
     async middleware<EC extends AnyEndpoint>(
       endpoint: EC,
       params: Params,
-      context: PartialKhulnasoftContext<EC>
+      context: PartialKhulnasoftContext<EC>,
     ) {
       const { session } = context;
 

@@ -59,8 +59,7 @@ const Modal: React.FC<ModalProps> = ({
           focus:outline-none
           bg-neutral-800
           bg-opacity-70
-        "
-      >
+        ">
         <div className="relative w-full lg:w-3/6 my-6 mx-auto lg:max-w-3xl h-full lg:h-auto">
           {/*content*/}
           <div
@@ -77,8 +76,7 @@ const Modal: React.FC<ModalProps> = ({
             bg-black 
             outline-none 
             focus:outline-none
-            "
-          >
+            ">
             {/*header*/}
             <div
               className="
@@ -87,8 +85,7 @@ const Modal: React.FC<ModalProps> = ({
               justify-between 
               p-10 
               rounded-t
-              "
-            >
+              ">
               <h3 className="text-3xl font-semibold text-white">{title}</h3>
               <button
                 className="
@@ -99,8 +96,7 @@ const Modal: React.FC<ModalProps> = ({
                   hover:opacity-70
                   transition
                 "
-                onClick={handleClose}
-              >
+                onClick={handleClose}>
                 <AiOutlineClose size={20} />
               </button>
             </div>

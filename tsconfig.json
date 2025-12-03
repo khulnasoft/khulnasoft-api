@@ -27,9 +27,6 @@
     },
     {
       "path": "packages/khulnasoft"
-    },
-    {
-      "path": "packages/ts-to-zod"
     }
   ],
   "compilerOptions": {

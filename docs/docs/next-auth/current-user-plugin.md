@@ -4,10 +4,10 @@ sidebar_position: 1
 
 # Add user to Khulnasoft context
 
-You may wish to set a current user property on the Khulnasoft context.
-The Khulnasoft context can be extended by declaring an interface with
-the name `KhulnasoftCustomContext` in the `khulnasoft` module.
-Here's how you can create a custom plugin to do that:
+You may wish to set a current user property on the Khulnasoft context. The
+Khulnasoft context can be extended by declaring an interface with the name
+`KhulnasoftCustomContext` in the `khulnasoft` module. Here's how you can create
+a custom plugin to do that:
 
 ```ts
 // ~/libs/currentUserPlugin.ts
@@ -24,7 +24,7 @@ export const makeCurrentUserPlugin =
     async middleware<EC extends AnyEndpoint>(
       endpoint: EC,
       params: Params,
-      context: PartialKhulnasoftContext<EC>
+      context: PartialKhulnasoftContext<EC>,
     ) {
       const { session } = context;
 

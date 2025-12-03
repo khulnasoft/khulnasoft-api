@@ -26,7 +26,7 @@ describe.skip("Client extensions", () => {
       extensions: { reactQuery: {} as Config },
     } satisfies ClientConfig;
     const client = makeClientWithInferredTypes<typeof api, typeof config>(
-      config
+      config,
     );
 
     test("adds useQuery method", () => {

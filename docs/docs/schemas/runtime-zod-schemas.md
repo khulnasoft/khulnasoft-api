@@ -4,8 +4,8 @@ sidebar_position: 2
 
 # Runtime Zod schema definition
 
-We provide a customized version of [Zod](https://zod.dev/) for declaring request and response schemas,
-available via the following import:
+We provide a customized version of [Zod](https://zod.dev/) for declaring request
+and response schemas, available via the following import:
 
 ```ts
 import { z } from "khulnasoft";
@@ -17,33 +17,36 @@ Make sure to use the above import instead of importing directly `from "zod"`.
 
 :::
 
-In addition to all of the usual Zod schema types, we provide the following specialty types and methods:
+In addition to all of the usual Zod schema types, we provide the following
+specialty types and methods:
 
 ## Zod Extensions
 
 ### `.prismaModel(model)`
 
-:::info
-this is only available if using the [`@khulnasoft-api/prisma`](/khulnasoft/prisma/getting-started) plugin.
-:::
+:::info this is only available if using the
+[`@khulnasoft-api/prisma`](/khulnasoft/prisma/getting-started) plugin. :::
 :::caution
 
-Make sure `@khulnasoft-api/prisma` gets imported before code that declares schemas is run.
+Make sure `@khulnasoft-api/prisma` gets imported before code that declares
+schemas is run.
 
 :::
 
-Allows you to declare the Prisma model associated with a response schema. In an endpoint whose
-response schema has a Prisma model declared, [special conveniences](/khulnasoft/prisma/getting-started#perform-crud-operations-on-response-prismamodel) will be available.
+Allows you to declare the Prisma model associated with a response schema. In an
+endpoint whose response schema has a Prisma model declared,
+[special conveniences](/khulnasoft/prisma/getting-started#perform-crud-operations-on-response-prismamodel)
+will be available.
 
 ### `.includable()`
 
-Marks an object property as being [includable](/khulnasoft/inclusion) via an `include` query parameter.
-This is only useful object or array of object types.
+Marks an object property as being [includable](/khulnasoft/inclusion) via an
+`include` query parameter. This is only useful object or array of object types.
 
 ### `.selectable()`
 
-Marks an object property as being [selectable](/khulnasoft/selection) via a `select` query parameter.
-This is only useful object or array of object types.
+Marks an object property as being [selectable](/khulnasoft/selection) via a
+`select` query parameter. This is only useful object or array of object types.
 
 ### `.selection()`
 
@@ -62,18 +65,18 @@ Currently, using `.partial()` instead of `.selection()` will cause nested
 
 ### `z.path(shape)`
 
-Declares the schema for path parameters. This currently just does `z.object(shape)`,
-but it may have more specialized behavior in the future.
+Declares the schema for path parameters. This currently just does
+`z.object(shape)`, but it may have more specialized behavior in the future.
 
 ### `z.query(shape)`
 
-Declares the schema for query (search) parameters. This currently just does `z.object(shape)`,
-but it may have more specialized behavior in the future.
+Declares the schema for query (search) parameters. This currently just does
+`z.object(shape)`, but it may have more specialized behavior in the future.
 
 ### `z.body(shape)`
 
-Declares the schema for request body parameters. This currently just does `z.object(shape)`,
-but it may have more specialized behavior in the future.
+Declares the schema for request body parameters. This currently just does
+`z.object(shape)`, but it may have more specialized behavior in the future.
 
 ### `z.response(shape)`
 
@@ -82,12 +85,13 @@ but it may have more specialized behavior in the future.
 
 ### `z.PaginationParams`
 
-A Zod schema for the base [request query parameters](#request-query-parameters). You may call `z.PaginationParams.extend({...})` to override defaults or add parameters to it.
+A Zod schema for the base [request query parameters](#request-query-parameters).
+You may call `z.PaginationParams.extend({...})` to override defaults or add
+parameters to it.
 
 ### `z.pageResponse(item)`
 
-Creates a Zod schema for a page response with the given `item` type
-schema.
+Creates a Zod schema for a page response with the given `item` type schema.
 
 ### `z.PageData<I>`
 
@@ -111,8 +115,8 @@ A helper for declaring response schemas with circular references.
 
 ## Example
 
-[See here](/khulnasoft/inclusion#implementing-inclusion-with-circular-associations) for a
-more complete example.
+[See here](/khulnasoft/inclusion#implementing-inclusion-with-circular-associations)
+for a more complete example.
 
 ```ts
 const UserBase = z.response({

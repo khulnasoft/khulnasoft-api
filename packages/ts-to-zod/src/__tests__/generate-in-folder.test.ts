@@ -34,7 +34,7 @@ it(`generating in folder`, async () =>
           return path.dirname(rootPackageJson);
         })(),
       },
-    })
+    }),
   ).toMatchInlineSnapshot(`
 {
   "khulnasoft-api-gen/src/__tests__/common.ts": "import { z } from "zod";

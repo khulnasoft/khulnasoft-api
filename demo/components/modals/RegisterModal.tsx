@@ -97,8 +97,7 @@ const RegisterModal = () => {
             text-white 
             cursor-pointer 
             hover:underline
-          "
-        >
+          ">
           {" "}
           Sign in
         </span>

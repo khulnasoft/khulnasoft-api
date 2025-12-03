@@ -1,8 +1,8 @@
 # Inclusion
 
-Inclusion allows you to optionally include associated objects in an API response if the
-user requests them in an `include` query parameter. Here's an example of a
-`GET /api/posts/{postId}` endpoint with an includable `user` property:
+Inclusion allows you to optionally include associated objects in an API response
+if the user requests them in an `include` query parameter. Here's an example of
+a `GET /api/posts/{postId}` endpoint with an includable `user` property:
 
 ```
 $ curl localhost:3000/api/posts/5
@@ -14,19 +14,18 @@ $ curl localhost:3000/api/posts/5 -G -d 'include[]=user'
 
 ## Implementing inclusion without circular associations
 
-You can add support for an includable field by marking it
-`.includable()` in the response schema and adding
-`include: z.includes(...)` to your query schema.
+You can add support for an includable field by marking it `.includable()` in the
+response schema and adding `include: z.includes(...)` to your query schema.
 
 > **Warning**
 >
-> Currently, the `z.includes(...)` parameter must be named
-> `include` and declared in the `query`.
+> Currently, the `z.includes(...)` parameter must be named `include` and
+> declared in the `query`.
 
 > **Note**
 >
-> Although `.includable()` can be called on any schema, it only works
-> with schemas of type object or array of objects.
+> Although `.includable()` can be called on any schema, it only works with
+> schemas of type object or array of objects.
 
 ```ts
 // api/posts/index.ts
@@ -64,29 +63,33 @@ export const retrieve = khulnasoft.endpoint({
 });
 ```
 
-`z.includes(Post)` automatically generates possible values
-for the `include` query parameter from the response properties
-that are marked `.includable()` (including any nested includable
-properties).
+`z.includes(Post)` automatically generates possible values for the `include`
+query parameter from the response properties that are marked `.includable()`
+(including any nested includable properties).
 
 ## Automatic Prisma integration
 
 The `@khulnasoft-api/prisma` plugin will automatically generate the necessary
-`include` for prisma queries via [`ctx.prisma`](/packages/prisma/README.md#perform-crud-operations-on-response-prismamodel) or [`prismaModelLoader()`](/packages/prisma/README.md#use-prismamodelloader-on-a-parameter) when
-you have [declared a `.prismaModel(...)`](/packages/prisma/README.md#declare-prismamodel-on-a-response-type) on the response schema.
+`include` for prisma queries via
+[`ctx.prisma`](/packages/prisma/README.md#perform-crud-operations-on-response-prismamodel)
+or
+[`prismaModelLoader()`](/packages/prisma/README.md#use-prismamodelloader-on-a-parameter)
+when you have
+[declared a `.prismaModel(...)`](/packages/prisma/README.md#declare-prismamodel-on-a-response-type)
+on the response schema.
 
-For other use cases, you will need to write code in your handler to
-add fields to the response that were requested to be included.
+For other use cases, you will need to write code in your handler to add fields
+to the response that were requested to be included.
 
 ## Implementing inclusion with circular associations
 
-When the associations are circular, it becomes necessary to declare
-types for the schemas due to TypeScript limitations. Khulnasoft provides
-a `z.CircularModel` helper type to make this more manageable.
+When the associations are circular, it becomes necessary to declare types for
+the schemas due to TypeScript limitations. Khulnasoft provides a
+`z.CircularModel` helper type to make this more manageable.
 
-For example suppose the `User` also has an includable list of `Post`s
-(in a real-world API you would want to use a paginated list endpoint
-to fetch `Post`s, but for the sake of demonstration):
+For example suppose the `User` also has an includable list of `Post`s (in a
+real-world API you would want to use a paginated list endpoint to fetch `Post`s,
+but for the sake of demonstration):
 
 ```ts
 import { z } from "khulnasoft";
@@ -144,8 +147,9 @@ export const retrieve = khulnasoft.endpoint({
 });
 ```
 
-Now we've passed a second argument to `z.includes()`, which is the recursion depth limit (3 is the default).
-This means that the following include paths are allowed:
+Now we've passed a second argument to `z.includes()`, which is the recursion
+depth limit (3 is the default). This means that the following include paths are
+allowed:
 
 - `user`
 - `user.posts`
@@ -154,5 +158,4 @@ This means that the following include paths are allowed:
 
 Obviously for many use cases, you would want to keep the depth limit low.
 
-> **Warning**
-> The maximum recursion depth supported by `z.includes` is 5.
+> **Warning** The maximum recursion depth supported by `z.includes` is 5.

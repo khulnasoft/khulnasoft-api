@@ -28,7 +28,7 @@ export type ClientUseInfiniteQuery<
   TQueryFnData = EndpointResponseOutput<E>,
   TError = unknown,
   TData = TQueryFnData,
-  TQueryData = TQueryFnData
+  TQueryData = TQueryFnData,
 > = E["path"] extends z.ZodTypeAny
   ? E["query"] extends z.ZodTypeAny
     ? EndpointHasRequiredQuery<E> extends true
@@ -40,7 +40,7 @@ export type ClientUseInfiniteQuery<
             TError,
             TData,
             TQueryData
-          >
+          >,
         ) => UseInfiniteQueryResult<TData, TError>
       : (
           path: EndpointPathParam<E>,
@@ -50,7 +50,7 @@ export type ClientUseInfiniteQuery<
             TError,
             TData,
             TQueryData
-          >
+          >,
         ) => UseInfiniteQueryResult<TData, TError>
     : (
         path: EndpointPathParam<E>,
@@ -59,7 +59,7 @@ export type ClientUseInfiniteQuery<
           TError,
           TData,
           TQueryData
-        >
+        >,
       ) => UseInfiniteQueryResult<TData, TError>
   : E["query"] extends z.ZodTypeAny
   ? EndpointHasRequiredQuery<E> extends true
@@ -70,7 +70,7 @@ export type ClientUseInfiniteQuery<
           TError,
           TData,
           TQueryData
-        >
+        >,
       ) => UseInfiniteQueryResult<TData, TError>
     : (
         query?: EndpointQueryInput<E>,
@@ -79,17 +79,22 @@ export type ClientUseInfiniteQuery<
           TError,
           TData,
           TQueryData
-        >
+        >,
       ) => UseInfiniteQueryResult<TData, TError>
   : (
-      options?: UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryData>
+      options?: UseInfiniteQueryOptions<
+        TQueryFnData,
+        TError,
+        TData,
+        TQueryData
+      >,
     ) => UseInfiniteQueryResult<TData, TError>;
 
 export type UseInfiniteQueryOptions<
   TQueryFnData = unknown,
   TError = unknown,
   TData = TQueryFnData,
-  TQueryData = TQueryFnData
+  TQueryData = TQueryFnData,
 > = Omit<
   BaseUseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryData>,
   "queryKey" | "queryFn" | "getNextPageParam" | "getPreviousPageParam"
@@ -137,13 +142,15 @@ const useInfiniteQueryOptionsKeys: KeysEnum<
 };
 
 export const isUseInfiniteQueryOptions = (
-  obj: unknown
+  obj: unknown,
 ): obj is BaseUseInfiniteQueryOptions => {
   return (
     typeof obj === "object" &&
     obj !== null &&
     !isEmpty(obj) &&
-    Object.keys(obj).every((k) => Object.hasOwn(useInfiniteQueryOptionsKeys, k))
+    Object.keys(obj).every((k) =>
+      Object.prototype.hasOwnProperty.call(useInfiniteQueryOptionsKeys, k),
+    )
   );
 };
 

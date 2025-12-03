@@ -6,8 +6,8 @@ sidebar_position: 0
 
 :::caution
 
-This is alpha software, and we may make significant changes in the coming months.
-But we're eager for you to try it out and let us know what you think!
+This is alpha software, and we may make significant changes in the coming
+months. But we're eager for you to try it out and let us know what you think!
 
 :::
 
@@ -36,8 +36,9 @@ export const useClient = createUseReactQueryClient<typeof api>("/api");
 ## Use queries
 
 If `posts.retrieve` is a `GET /api/posts/{postId}` endpoint, then
-`client.posts.useRetrieve(postId, [query], [reactQueryOptions])` will be available
-as a wrapper for [`useQuery`](https://tanstack.com/query/v4/docs/react/reference/useQuery):
+`client.posts.useRetrieve(postId, [query], [reactQueryOptions])` will be
+available as a wrapper for
+[`useQuery`](https://tanstack.com/query/v4/docs/react/reference/useQuery):
 
 ```ts
 // ~/pages/posts/[postId].tsx
@@ -53,7 +54,7 @@ const PostView = () => {
   const { data: fetchedPost, isLoading } = client.posts.useRetrieve(
     typeof postId === "string" ? postId : "",
     { include: ["user", "comments.user"] },
-    { enabled: typeof postId === "string" }
+    { enabled: typeof postId === "string" },
   );
 
   // ...
@@ -62,9 +63,11 @@ const PostView = () => {
 
 ## Use infinite queries for paginated methods
 
-If `posts.list` is a `GET /api/posts` endpoint that returns [`z.PageData`](/khulnasoft/pagination#zpagedatai), then
+If `posts.list` is a `GET /api/posts` endpoint that returns
+[`z.PageData`](/khulnasoft/pagination#zpagedatai), then
 `client.posts.useInfiniteList([query], [reactQueryOptions])` will be available
-as a wrapper for [`useInfiniteQuery`](https://tanstack.com/query/v4/docs/react/reference/useInfiniteQuery):
+as a wrapper for
+[`useInfiniteQuery`](https://tanstack.com/query/v4/docs/react/reference/useInfiniteQuery):
 
 ```ts
 // ~/components/posts/InfinitePostFeed.tsx

@@ -1,24 +1,24 @@
 # Pagination with `@khulnasoft-api/prisma`
 
 `@khulnasoft-api/prisma` provides a variety of helpers for implementing
-paginated list endpoints following the [Pristine standard](/packages/khulnasoft/docs/pagination.md#pristine-convention).
+paginated list endpoints following the
+[Pristine standard](/packages/khulnasoft/docs/pagination.md#pristine-convention).
 
 > **Warning**
 >
-> At the moment, `@khulnasoft-api/prisma` doesn't support multi-column
-> sort order in pagination.
+> At the moment, `@khulnasoft-api/prisma` doesn't support multi-column sort
+> order in pagination.
 >
-> Also, `@khulnasoft-api/prisma` current treats `sortBy` as a column name
-> and uses it to determine the cursor of each row.
+> Also, `@khulnasoft-api/prisma` current treats `sortBy` as a column name and
+> uses it to determine the cursor of each row.
 >
 > We plan to remove these limitations in the future.
 
 ## Easiest method: `ctx.prisma.paginate(options)`
 
-If your endpoint `response` declares a `.prismaModel()`, you will
-be able to call `ctx.prisma.paginate()`, and it will make the
-necessary `findMany` for the pagination params from the query and
-and additional options you provide:
+If your endpoint `response` declares a `.prismaModel()`, you will be able to
+call `ctx.prisma.paginate()`, and it will make the necessary `findMany` for the
+pagination params from the query and and additional options you provide:
 
 ```ts
 // ~/api/posts/list.ts
@@ -51,62 +51,64 @@ export const list = khulnasoft.endpoint({
 
 > **Warning**
 >
-> Currently `ctx.prisma.paginate` doesn't custom names for `PaginationParams`
-> or `response` fields.
+> Currently `ctx.prisma.paginate` doesn't custom names for `PaginationParams` or
+> `response` fields.
 
 ## Lower level: `ctx.prisma.findMany(options)`
 
-`ctx.prisma.findMany()` also injects Prisma options from pagination
-params, but unlike [`paginate()`](#easiest-method-ctxprismapaginateoptions), it resolves to the array of items
-directly from Prisma.
+`ctx.prisma.findMany()` also injects Prisma options from pagination params, but
+unlike [`paginate()`](#easiest-method-ctxprismapaginateoptions), it resolves to
+the array of items directly from Prisma.
 
-We plan to make [`z.pageResponse()`](/packages/khulnasoft/docs/pagination.md#zpageresponseitem)
-schemas accept an array of items
-as input soon, but currently you must pass the items to
+We plan to make
+[`z.pageResponse()`](/packages/khulnasoft/docs/pagination.md#zpageresponseitem)
+schemas accept an array of items as input soon, but currently you must pass the
+items to
 [`khulnasoft.plugins.prisma.pagination.makeResponse()`](#khulnasoftpluginsprismapaginationmakeresponsepaginationparams-items)
 or build the response manually.
 
 > **Note**
 >
-> `ctx.prisma.findMany()` will inject `limit: pageSize + 1` so that
-> it's possible to > determine `hasPreviousPage` or `hasNextPage` by
-> the presence or absence of an extra item in the query results.
-> If the extra item is present it should not be included in the
-> response, and will be removed by `makeResponse()`.
+> `ctx.prisma.findMany()` will inject `limit: pageSize + 1` so that it's
+> possible to > determine `hasPreviousPage` or `hasNextPage` by the presence or
+> absence of an extra item in the query results. If the extra item is present it
+> should not be included in the response, and will be removed by
+> `makeResponse()`.
 
 ## Lower level: `khulnasoft.plugins.prisma.paginate(prismaModel, options)`
 
-Performs `prismaModel.findMany()` with the given `options` (which
-includes both standard Prisma `findMany()` options and pagination
-parameters) and resolves to a [z.PageData](/packages/khulnasoft/docs/pagination.md#zpagedatai) response.
+Performs `prismaModel.findMany()` with the given `options` (which includes both
+standard Prisma `findMany()` options and pagination parameters) and resolves to
+a [z.PageData](/packages/khulnasoft/docs/pagination.md#zpagedatai) response.
 
 ## Lowest-level methods
 
-You can use the following lowest-level methods if the above methods
-don't suit your needs for some reason, for instance if you want
-to use different parameter or response field names.
+You can use the following lowest-level methods if the above methods don't suit
+your needs for some reason, for instance if you want to use different parameter
+or response field names.
 
-`@khulnasoft-api/prisma` adds the following methods to your `khulnasoft` instance:
+`@khulnasoft-api/prisma` adds the following methods to your `khulnasoft`
+instance:
 
 ### `khulnasoft.plugins.prisma.pagination.wrapQuery(paginationParams, query)`
 
-Combines the given prisma `query` (`findMany()` options) with values
-from the given `paginationParams`, and returns the combined `findMany()` options.
+Combines the given prisma `query` (`findMany()` options) with values from the
+given `paginationParams`, and returns the combined `findMany()` options.
 
 > **Note**
 >
-> `wrapQuery()` will inject `limit: pageSize + 1` so that it's
-> possible to > determine `hasPreviousPage` or `hasNextPage` by
-> the presence or absence of an extra item in the query results.
-> If the extra item is present it should not be included in the
-> response, and will be removed by `makeResponse()`.
+> `wrapQuery()` will inject `limit: pageSize + 1` so that it's possible to >
+> determine `hasPreviousPage` or `hasNextPage` by the presence or absence of an
+> extra item in the query results. If the extra item is present it should not be
+> included in the response, and will be removed by `makeResponse()`.
 
 ### `khulnasoft.plugins.prisma.pagination.makeResponse(paginationParams, items)`
 
-Creates a [`z.PageData`](/packages/khulnasoft/docs/pagination.md#zpagedatai) response from the given items.
+Creates a [`z.PageData`](/packages/khulnasoft/docs/pagination.md#zpagedatai)
+response from the given items.
 
 > **Note**
 >
-> `makeResponse()` will determine `hasPreviousPage` or `hasNextPage`
-> based upon whether `items.length` > `params.pageSize`.
-> It will remove any `items` beyond `params.pageSize`.
+> `makeResponse()` will determine `hasPreviousPage` or `hasNextPage` based upon
+> whether `items.length` > `params.pageSize`. It will remove any `items` beyond
+> `params.pageSize`.

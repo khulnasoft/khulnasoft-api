@@ -16,7 +16,7 @@ interface PostItemProps {
 
 const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
   { item = {}, userId, style },
-  ref
+  ref,
 ) {
   const router = useRouter();
   const loginModal = useLoginModal();
@@ -29,7 +29,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
       ev.stopPropagation();
       router.push(`/users/${item.user.id}`);
     },
-    [router, item.user.id]
+    [router, item.user.id],
   );
 
   const goToPost = useCallback(() => {
@@ -46,7 +46,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
 
       toggleLike();
     },
-    [loginModal, currentUser, toggleLike]
+    [loginModal, currentUser, toggleLike],
   );
 
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
@@ -71,8 +71,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
         cursor-pointer 
         hover:bg-neutral-900 
         transition
-      "
-    >
+      ">
       <div className="flex flex-row items-start gap-3">
         <Avatar userId={item.user.id} />
         <div>
@@ -84,8 +83,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
                 font-semibold 
                 cursor-pointer 
                 hover:underline
-            "
-            >
+            ">
               {item.user.name}
             </p>
             <span
@@ -96,8 +94,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
                 hover:underline
                 hidden
                 md:block
-            "
-            >
+            ">
               @{item.user.username}
             </span>
             <span className="text-neutral-500 text-sm">{createdAt}</span>
@@ -114,8 +111,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
                 cursor-pointer 
                 transition 
                 hover:text-sky-500
-            "
-            >
+            ">
               <AiOutlineMessage size={20} />
               <p>{item.comments?.length || 0}</p>
             </div>
@@ -130,8 +126,7 @@ const PostItem = forwardRef<HTMLDivElement, PostItemProps>(function PostItem(
                 cursor-pointer 
                 transition 
                 hover:text-red-500
-            "
-            >
+            ">
               <LikeIcon color={hasLiked ? "red" : ""} size={20} />
               <p>{item.likedIds.length}</p>
             </div>

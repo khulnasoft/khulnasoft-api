@@ -6,8 +6,8 @@ sidebar_position: 0
 
 :::caution
 
-This is alpha software, and we may make significant changes in the coming months.
-We're eager for you to try it out and let us know what you think!
+This is alpha software, and we may make significant changes in the coming
+months. We're eager for you to try it out and let us know what you think!
 
 :::
 
@@ -45,9 +45,9 @@ See [`AddEndpointsToExpressOptions`](#addendpointstoexpressoptions).
 
 #### Notes
 
-`apiRouter` is provided as a convenience; for production use
-cases you'll probably want to use more fine-grained methods below
-that enable greater customization.
+`apiRouter` is provided as a convenience; for production use cases you'll
+probably want to use more fine-grained methods below that enable greater
+customization.
 
 `apiRouter` installs default json, text and raw middleware on the router:
 
@@ -81,9 +81,9 @@ See [`AddEndpointsToExpressOptions`](#addendpointstoexpressoptions).
 
 #### Notes
 
-`resourceRouter` is provided as a convenience; for production use
-cases you'll probably want to use more fine-grained methods below
-that enable greater customization.
+`resourceRouter` is provided as a convenience; for production use cases you'll
+probably want to use more fine-grained methods below that enable greater
+customization.
 
 `resourceRouter` installs default json, text and raw middleware on the router:
 
@@ -114,7 +114,7 @@ export const app = express();
 app.get(
   "/api/posts/:postId",
   express.json(),
-  khulnasoftExpressRouteHandler(retrievePosts)
+  khulnasoftExpressRouteHandler(retrievePosts),
 );
 ```
 
@@ -149,7 +149,7 @@ app.get("/api/posts/:postId", express.json(), (req: Request, res: Response) => {
   const response = await khulnasoftExecuteExpressRequest(
     retrievePosts,
     req,
-    res
+    res,
   );
   res.status(200).json(response);
 });
@@ -177,7 +177,7 @@ app.get("/api/posts/:postId", express.json(), (req: Request, res: Response) => {
   const [{ postId }, khulnasoftContext] = await khulnasoftPrepareExpressRequest(
     retrievePosts,
     req,
-    res
+    res,
   );
   const post = await prisma.posts.findUniqueOrThrow({ where: { id: postId } });
   const repsonse = await retrievePosts.response.parseAsync(responseInput, {
@@ -193,31 +193,31 @@ app.get("/api/posts/:postId", express.json(), (req: Request, res: Response) => {
 
 #### `basePathMap?: Record<string, string>`
 
-Mappings to apply to Khulnasoft API Endpoint paths. For example
-with `basePathMap: { '/api/', '/api/v2/' }, the endpoint
-`GET /api/posts`would GET transformed to `GET /api/v2/posts`
+Mappings to apply to Khulnasoft API Endpoint paths. For example with
+`basePathMap: { '/api/', '/api/v2/' }, the endpoint `GET
+/api/posts`would GET transformed to `GET /api/v2/posts`
 
 #### `handleErrors?: boolean` (default: `true`)
 
-If `false`, errors will be passed to the `next` middleware;
-otherwise the created express handler will send the appropriate
-response if an error is caught.
+If `false`, errors will be passed to the `next` middleware; otherwise the
+created express handler will send the appropriate response if an error is
+caught.
 
 #### `addMethodNotAllowedHandlers?: boolean` (default: `true`)
 
-Whether to add 405 method not allowed handlers to the Express
-`Router` or `Application`
+Whether to add 405 method not allowed handlers to the Express `Router` or
+`Application`
 
 ### `AddToExpressOptions`
 
 #### `basePathMap?: Record<string, string>`
 
-Mappings to apply to Khulnasoft API Endpoint paths. For example
-with `basePathMap: { '/api/', '/api/v2/' }, the endpoint
-`GET /api/posts`would get transformed to `GET /api/v2/posts`
+Mappings to apply to Khulnasoft API Endpoint paths. For example with
+`basePathMap: { '/api/', '/api/v2/' }, the endpoint `GET
+/api/posts`would get transformed to `GET /api/v2/posts`
 
 #### `handleErrors?: boolean` (default: `true`)
 
-If `false`, errors will be passed to the `next` middleware;
-otherwise the created express handler will send the appropriate
-response if an error is caught.
+If `false`, errors will be passed to the `next` middleware; otherwise the
+created express handler will send the appropriate response if an error is
+caught.

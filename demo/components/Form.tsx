@@ -84,8 +84,7 @@ const Form: React.FC<FormProps> = ({ placeholder, isComment, postId }) => {
                 placeholder-neutral-500
                 text-white
               "
-              placeholder={placeholder}
-            ></textarea>
+              placeholder={placeholder}></textarea>
             <hr
               className="
                 opacity-0

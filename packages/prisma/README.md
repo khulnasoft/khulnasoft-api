@@ -6,8 +6,8 @@ Provides highly productive ways of creating APIs with Prisma and Khulnasoft.
 
 > **Warning**
 >
-> This is alpha software, and we may make significant changes in the coming months.
-> We're eager for you to try it out and let us know what you think!
+> This is alpha software, and we may make significant changes in the coming
+> months. We're eager for you to try it out and let us know what you think!
 
 ## Installation
 
@@ -49,22 +49,25 @@ export const Post = z.response({
 
 ## Perform CRUD operations on response `prismaModel`
 
-Any endpoint whose `response` has a `prismaModel` declared with have `ctx.prisma`
-available in its `handler`. `ctx.prisma` provides wrappers for the following methods
-that magically inject options for [`include`](/packages/khulnasoft/docs/inclusion.md)
-and [`select`](/packages/khulnasoft/docs/selection.md) params as necessary:
+Any endpoint whose `response` has a `prismaModel` declared with have
+`ctx.prisma` available in its `handler`. `ctx.prisma` provides wrappers for the
+following methods that magically inject options for
+[`include`](/packages/khulnasoft/docs/inclusion.md) and
+[`select`](/packages/khulnasoft/docs/selection.md) params as necessary:
 
 - `findUnique`
 - `findUniqueOrThrow`
-- `findMany` (also magically [injects pagination options](/packages/prisma/docs/pagination.md#lower-level-ctxprismafindmanyoptions) from parameters)
+- `findMany` (also magically
+  [injects pagination options](/packages/prisma/docs/pagination.md#lower-level-ctxprismafindmanyoptions)
+  from parameters)
 - `create`
 - `update`
 - `delete`
 
 > **Warning**
 >
-> This currently only works if the primary key is named `id`.
-> We plan to remove this limitation soon.
+> This currently only works if the primary key is named `id`. We plan to remove
+> this limitation soon.
 
 ```ts
 // ~/api/posts/retrieve.ts
@@ -117,15 +120,14 @@ export const create = khulnasoft.endpoint({
 
 ## Use `prismaModelLoader` on a parameter
 
-The following `post: z.string().prismaModelLoader(prisma.post)`
-parameter takes a string `id` as input from the `{post}` path
-parameter and is transformed to the fetched model instance in
-the `handler`.
+The following `post: z.string().prismaModelLoader(prisma.post)` parameter takes
+a string `id` as input from the `{post}` path parameter and is transformed to
+the fetched model instance in the `handler`.
 
 > **Warning**
 >
-> This currently only works if the primary key is named `id`.
-> We plan to remove this limitation soon.
+> This currently only works if the primary key is named `id`. We plan to remove
+> this limitation soon.
 
 ```ts
 // ~/api/posts/retrieve.ts

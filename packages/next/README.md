@@ -6,8 +6,8 @@ Use this plugin to serve a Khulnasoft API in a Next.js app.
 
 > **Warning**
 >
-> This is alpha software, and we may make significant changes in the coming months.
-> We're eager for you to try it out and let us know what you think!
+> This is alpha software, and we may make significant changes in the coming
+> months. We're eager for you to try it out and let us know what you think!
 
 ## Installation
 
@@ -83,7 +83,7 @@ import { khulnasoftNextPageRoute } from "@khulnasoft-api/next";
 
 export default khulnasoftNextPageRoute(
   posts.actions.list,
-  posts.actions.create
+  posts.actions.create,
 );
 ```
 
@@ -96,9 +96,10 @@ export const list = khulnasoft.endpoint({
   endpoint: "GET /api/posts",
 ```
 
-And you want to serve them under `/api/v2` instead, you can
-pass `basePathMap: { "/api/": "/api/v2/" }` in the second argument
-of `khulnasoftNextPageRoute`, `khulnasoftNextPageCatchAllRouter`, `khulnasoftNextAppRoute`, or `khulnasoftNextAppCatchAllRouter`:
+And you want to serve them under `/api/v2` instead, you can pass
+`basePathMap: { "/api/": "/api/v2/" }` in the second argument of
+`khulnasoftNextPageRoute`, `khulnasoftNextPageCatchAllRouter`,
+`khulnasoftNextAppRoute`, or `khulnasoftNextAppCatchAllRouter`:
 
 ```ts
 // ~/app/api/v2/[...catchall]/route.ts

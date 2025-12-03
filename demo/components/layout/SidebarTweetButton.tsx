@@ -35,8 +35,7 @@ const SidebarTweetButton = () => {
         hover:bg-opacity-80 
         transition 
         cursor-pointer
-      "
-      >
+      ">
         <FaFeather size={24} color="white" />
       </div>
       <div
@@ -50,8 +49,7 @@ const SidebarTweetButton = () => {
         bg-sky-500
         hover:bg-opacity-90 
         cursor-pointer
-      "
-      >
+      ">
         <p
           className="
             hidden 
@@ -60,8 +58,7 @@ const SidebarTweetButton = () => {
             font-semibold
             text-white 
             text-[20px]
-        "
-        >
+        ">
           Tweet
         </p>
       </div>

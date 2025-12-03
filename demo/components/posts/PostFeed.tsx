@@ -55,8 +55,7 @@ function LoadMoreButton({
         w-full
       "
       disabled={loading}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {loading ? "Loading..." : "Load more..."}
     </button>
   );

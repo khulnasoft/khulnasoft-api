@@ -1,6 +1,6 @@
 import * as z from "./z";
 import { openapiSpec } from "./openapiSpec";
-import type { OpenAPIObject } from "zod-openapi/lib-types/openapi3-ts/dist/oas31";
+import type { OpenAPIObject } from "openapi3-ts/oas31";
 import { fromZodError } from "zod-validation-error/v3";
 import coerceParams from "./coerceParams";
 export { openapiSpec };
@@ -56,7 +56,7 @@ export type GetHttpEndpointUrl<E extends HttpEndpoint> =
   E extends `${HttpMethod} ${infer Url}` ? Url : never;
 
 export function parseEndpoint<E extends HttpEndpoint>(
-  endpoint: E
+  endpoint: E,
 ): [GetHttpEndpointMethod<E>, GetHttpEndpointUrl<E>] {
   const [method, path] = endpoint.split(/\s+/, 2);
   switch (method) {
@@ -73,7 +73,7 @@ export function parseEndpoint<E extends HttpEndpoint>(
   }
   if (!path.startsWith("/")) {
     throw new Error(
-      `Invalid path must start with a slash (/); got: "${endpoint}"`
+      `Invalid path must start with a slash (/); got: "${endpoint}"`,
     );
   }
   return [method as GetHttpEndpointMethod<E>, path as GetHttpEndpointUrl<E>];
@@ -94,12 +94,12 @@ export type Handler<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response
+  Response,
 > = (
   /** request object with parsed params */
   request: RequestData<Path, Query, Body>,
   /** context with khulnasoft, plugin, and user-provided data */
-  ctx: Ctx
+  ctx: Ctx,
 ) => Response | Promise<Response>;
 
 /**
@@ -108,7 +108,7 @@ export type Handler<
 export type RequestData<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
-  Body extends ZodObjectSchema | undefined
+  Body extends ZodObjectSchema | undefined,
 > = (Path extends z.ZodTypeAny ? z.infer<Path> : {}) &
   (Query extends z.ZodTypeAny ? z.infer<Query> : {}) &
   (Body extends z.ZodTypeAny ? z.infer<Body> : {});
@@ -155,7 +155,7 @@ export interface BaseEndpoint<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny | undefined
+  Response extends z.ZodTypeAny | undefined,
 > {
   khulnasoft: Khulnasoft<any>;
   summary?: string;
@@ -182,7 +182,7 @@ export interface Endpoint<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny | undefined
+  Response extends z.ZodTypeAny | undefined,
 > extends BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, Response> {
   handler?: Handler<
     KhulnasoftContext<
@@ -229,14 +229,14 @@ export type EndpointResponseOutput<E extends AnyEndpoint> =
 export function allEndpoints(
   resource:
     | AnyResourceConfig
-    | Pick<AnyResourceConfig, "actions" | "namespacedResources">
+    | Pick<AnyResourceConfig, "actions" | "namespacedResources">,
 ): AnyEndpoint[] {
   return [
     ...Object.keys(resource.actions || {})
       .map((k) => resource.actions[k])
       .filter(Boolean),
     ...Object.keys(resource.namespacedResources || {}).flatMap((k) =>
-      allEndpoints(resource.namespacedResources[k])
+      allEndpoints(resource.namespacedResources[k]),
     ),
   ];
 }
@@ -251,7 +251,7 @@ export type ResourceConfig<
   NamespacedResources extends
     | Record<string, ResourceConfig<any, any, any>>
     | undefined,
-  Models extends Record<string, z.ZodTypeAny> | undefined
+  Models extends Record<string, z.ZodTypeAny> | undefined,
 > = {
   summary: string;
   internal?: boolean;
@@ -281,7 +281,7 @@ export function isAPIDescription(value: unknown): value is AnyAPIDescription {
 export type APIDescription<
   BasePath extends HttpPath,
   TopLevel extends ResourceConfig<AnyActionsConfig, undefined, any> | undefined,
-  Resources extends Record<string, AnyResourceConfig> | undefined
+  Resources extends Record<string, AnyResourceConfig> | undefined,
 > = {
   [apiSymbol]: true;
   basePath: BasePath;
@@ -325,7 +325,7 @@ export class KhulnasoftError extends Error {
    */
   constructor(
     public statusCode: number,
-    public response?: Record<string, any>
+    public response?: Record<string, any>,
   ) {
     super(JSON.stringify(response));
   }
@@ -378,7 +378,7 @@ export class NotFoundError extends KhulnasoftError {
 type AnyStatics = Record<string, any>; // TODO?
 
 export type KhulnasoftPlugin<
-  Statics extends AnyStatics | undefined = undefined
+  Statics extends AnyStatics | undefined = undefined,
 > = {
   /**
    * Optionally provide data to every endpoint handler.
@@ -395,7 +395,7 @@ export type KhulnasoftPlugin<
    */
   middleware?: <EC extends AnyEndpoint>(
     params: Params,
-    context: KhulnasoftContext<EC>
+    context: KhulnasoftContext<EC>,
   ) => void | Promise<void>;
 };
 
@@ -405,7 +405,7 @@ export type KhulnasoftPlugin<
  */
 export type MakeKhulnasoftPlugin<
   Statics extends AnyStatics | undefined = undefined,
-  Plugins extends AnyPlugins = {}
+  Plugins extends AnyPlugins = {},
 > = (khulnasoft: Khulnasoft<Plugins>) => KhulnasoftPlugin<Statics>;
 
 type AnyPlugins = Record<string, MakeKhulnasoftPlugin<any, any>>;
@@ -534,7 +534,7 @@ type OpenAPITopLevel<
     | {
         endpoint?: HttpEndpoint | false;
       }
-    | undefined
+    | undefined,
 > = openapi extends {
   endpoint: false;
 }
@@ -548,7 +548,7 @@ interface CreateEndpointOptions<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny = z.ZodVoid
+  Response extends z.ZodTypeAny = z.ZodVoid,
 > {
   /**
    * a string declaring the HTTP method
@@ -590,7 +590,7 @@ interface CreateEndpointOptions<
 interface CreateResourceOptions<
   Actions extends AnyActionsConfig | undefined,
   Resources extends Record<string, ResourceConfig<any, any, any>> | undefined,
-  Models extends Record<string, z.ZodTypeAny> | undefined
+  Models extends Record<string, z.ZodTypeAny> | undefined,
 > {
   /**
    * A summary describing the resource;
@@ -613,7 +613,7 @@ interface CreateApiOptions<
   TopLevel extends
     | ResourceConfig<AnyActionsConfig, undefined, any>
     | undefined = undefined,
-  Resources extends Record<string, AnyResourceConfig> | undefined = undefined
+  Resources extends Record<string, AnyResourceConfig> | undefined = undefined,
 > {
   basePath: BasePath;
   /**
@@ -686,7 +686,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
    * @returns initialized context
    */
   initContext<EC extends AnyEndpoint>(
-    c: KhulnasoftContext<EC>
+    c: KhulnasoftContext<EC>,
   ): KhulnasoftContext<EC> {
     return c;
   }
@@ -712,7 +712,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     ) {
       if (!this.typeSchemas) {
         throw new Error(
-          "Failed to provide `typeSchemas` to khulnasoft instance while using codegen schemas"
+          "Failed to provide `typeSchemas` to khulnasoft instance while using codegen schemas",
         );
       }
       try {
@@ -726,7 +726,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
           throw new Error(
             "error encountered while handling endpoint " +
               endpoint.endpoint +
-              ": no schema found. run the `khulnasoft` cli on the project to generate the schema for the endpoint."
+              ": no schema found. run the `khulnasoft` cli on the project to generate the schema for the endpoint.",
           );
         }
       } catch (e) {
@@ -747,7 +747,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
    */
   async parseParams<EC extends AnyEndpoint>(
     params: Params,
-    context: KhulnasoftContext<EC>
+    context: KhulnasoftContext<EC>,
   ): Promise<RequestData<EC["path"], EC["query"], EC["body"]>> {
     return (await this.parseParamsWithContext(params, context))[0];
   }
@@ -765,7 +765,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
    */
   async parseParamsWithContext<EC extends AnyEndpoint>(
     params: Params,
-    context: KhulnasoftContext<EC>
+    context: KhulnasoftContext<EC>,
   ): Promise<
     [RequestData<EC["path"], EC["query"], EC["body"]>, KhulnasoftContext<EC>]
   > {
@@ -833,7 +833,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
    */
   async execute<EC extends AnyEndpoint>(
     params: Params,
-    context: KhulnasoftContext<EC>
+    context: KhulnasoftContext<EC>,
   ): Promise<ExtractExecuteResponse<EC>> {
     const { endpoint } = context;
     if (!endpoint.handler) {
@@ -895,7 +895,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     Path extends ZodObjectSchema | undefined,
     Query extends ZodObjectSchema | undefined,
     Body extends ZodObjectSchema | undefined,
-    Response extends z.ZodTypeAny = z.ZodVoid
+    Response extends z.ZodTypeAny = z.ZodVoid,
   >(
     params: CreateEndpointOptions<
       MethodAndUrl,
@@ -904,7 +904,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
       Query,
       Body,
       Response
-    >
+    >,
   ): Endpoint<Config, MethodAndUrl, Path, Query, Body, Response> {
     const { config, response, path, query, body, ...rest } = params;
     return {
@@ -951,7 +951,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
   resource<
     Actions extends AnyActionsConfig | undefined,
     Resources extends Record<string, ResourceConfig<any, any, any>> | undefined,
-    Models extends Record<string, z.ZodTypeAny> | undefined
+    Models extends Record<string, z.ZodTypeAny> | undefined,
   >({
     actions,
     namespacedResources,
@@ -1002,7 +1002,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     TopLevel extends
       | ResourceConfig<AnyActionsConfig, undefined, any>
       | undefined = undefined,
-    Resources extends Record<string, AnyResourceConfig> | undefined = undefined
+    Resources extends Record<string, AnyResourceConfig> | undefined = undefined,
   >({
     basePath,
     openapi,
@@ -1147,7 +1147,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     return {
       endpoint: <
         MethodAndUrl extends HttpEndpoint,
-        Config extends EndpointConfig | undefined
+        Config extends EndpointConfig | undefined,
       >({
         endpoint,
         config,
@@ -1181,7 +1181,7 @@ type TypeArgToZod<T extends Types, K extends keyof Types> = K extends keyof T
 
 type TypeArgToZodObject<
   T extends Types,
-  K extends keyof Types
+  K extends keyof Types,
 > = K extends keyof T
   ? z.toZod<T[K]> extends infer U extends ZodObjectSchema
     ? U
@@ -1201,7 +1201,7 @@ interface TypeEndpointParams<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny = z.ZodVoid
+  Response extends z.ZodTypeAny = z.ZodVoid,
 > {
   endpoint: MethodAndUrl;
   config?: Config;
@@ -1220,11 +1220,11 @@ interface TypeEndpointBuilder<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  Response extends z.ZodTypeAny = z.ZodVoid
+  Response extends z.ZodTypeAny = z.ZodVoid,
 > {
   endpoint<
     MethodAndUrl extends HttpEndpoint,
-    Config extends EndpointConfig | undefined
+    Config extends EndpointConfig | undefined,
   >(
     params: TypeEndpointParams<
       MethodAndUrl,
@@ -1233,7 +1233,7 @@ interface TypeEndpointBuilder<
       Query,
       Body,
       Response
-    >
+    >,
   ): Endpoint<Config, MethodAndUrl, Path, Query, Body, Response>;
 }
 

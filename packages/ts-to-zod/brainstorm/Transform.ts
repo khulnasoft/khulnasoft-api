@@ -94,7 +94,7 @@ class ToDate<I extends TypeSchema<string | number | Date>> extends Transform<
 }
 
 class ToBigInt<
-  I extends TypeSchema<string | number | bigint | boolean>
+  I extends TypeSchema<string | number | bigint | boolean>,
 > extends Transform<bigint, I> {
   async transform(value: output<I>): Promise<bigint> {
     return BigInt(value);

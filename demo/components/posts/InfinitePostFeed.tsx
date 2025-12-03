@@ -50,12 +50,11 @@ const StatusItem = React.forwardRef<HTMLDivElement, StatusItemProps>(
         hover:bg-neutral-900
         transition
         w-full
-      "
-      >
+      ">
         {children}
       </div>
     );
-  }
+  },
 );
 
 const LoadingItem = React.forwardRef<HTMLDivElement, LoadingProps<any>>(
@@ -65,7 +64,7 @@ const LoadingItem = React.forwardRef<HTMLDivElement, LoadingProps<any>>(
         Loading...
       </StatusItem>
     );
-  }
+  },
 );
 
 const ErrorItem = React.forwardRef<HTMLDivElement, ErrorProps<any>>(
@@ -75,5 +74,5 @@ const ErrorItem = React.forwardRef<HTMLDivElement, ErrorProps<any>>(
         Error: {error.message}
       </StatusItem>
     );
-  }
+  },
 );
