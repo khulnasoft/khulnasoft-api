@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "khulnasoft": "github:khulnasoft/khulnasoft-api#khulnasoft-0.0.1",
+    "khulnasoft": "github:khulnasoft-api/khulnasoft-api#khulnasoft-0.0.1",
     "zod": "^3.25.76"
   },
   "peerDependencies": {

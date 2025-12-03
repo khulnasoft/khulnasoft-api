@@ -5,5 +5,9 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "references": [{ "path": "../khulnasoft" }]
+  "references": [
+    {
+      "path": "../khulnasoft"
+    }
+  ]
 }
