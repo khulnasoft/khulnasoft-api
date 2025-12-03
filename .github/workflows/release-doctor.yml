@@ -2,7 +2,7 @@ name: Release Doctor
 on:
   pull_request:
     branches:
-      - master
+      - python
   workflow_dispatch:
 
 jobs:

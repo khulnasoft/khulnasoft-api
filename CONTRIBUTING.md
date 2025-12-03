@@ -32,7 +32,7 @@ func main() {
 ```
 
 ```sh
-$ pip install git+ssh://git@github.com/khulnasoft/khulnasoft-api#master.git
+$ pip install git+ssh://git@github.com/khulnasoft/khulnasoft-api#python.git
 ```
 
 ## Using the repository from source
