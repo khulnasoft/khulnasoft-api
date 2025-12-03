@@ -1,6 +1,6 @@
 import * as z from "./z";
 import { openapiSpec } from "./openapiSpec";
-
+import type { OpenAPIObject } from "zod-openapi/lib-types/openapi3-ts/dist/oas31";
 import { fromZodError } from "zod-validation-error/v3";
 import coerceParams from "./coerceParams";
 export { openapiSpec };
@@ -94,13 +94,13 @@ export type Handler<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  TResponseSchema
+  Response
 > = (
   /** request object with parsed params */
   request: RequestData<Path, Query, Body>,
   /** context with khulnasoft, plugin, and user-provided data */
   ctx: Ctx
-) => TResponseSchema | Promise<TResponseSchema>;
+) => Response | Promise<Response>;
 
 /**
  * An object merging properties from path, query, and body params
@@ -155,13 +155,13 @@ export interface BaseEndpoint<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  TResponseSchema extends z.ZodTypeAny | undefined
+  Response extends z.ZodTypeAny | undefined
 > {
   khulnasoft: Khulnasoft<any>;
   summary?: string;
   description?: string;
   endpoint: MethodAndUrl;
-  response: TResponseSchema;
+  response: Response;
   config: Config;
   path: Path;
   [coercedPath]?: Path;
@@ -182,16 +182,16 @@ export interface Endpoint<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  TResponseSchema extends z.ZodTypeAny | undefined
-> {
+  Response extends z.ZodTypeAny | undefined
+> extends BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, Response> {
   handler?: Handler<
     KhulnasoftContext<
-      BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, TResponseSchema>
+      BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, Response>
     >,
     Path,
     Query,
     Body,
-    HandlerResponseInputType<TResponseSchema>
+    Response extends z.ZodTypeAny ? z.input<Response> : undefined
   >;
 }
 
@@ -265,7 +265,7 @@ export type AnyResourceConfig = ResourceConfig<any, any, any>;
 
 type OpenAPIConfig = {
   endpoint: HttpEndpoint | false;
-  // spec: OpenAPIObject;
+  spec: OpenAPIObject;
 };
 
 export const apiSymbol = Symbol("api");
@@ -548,7 +548,7 @@ interface CreateEndpointOptions<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  TResponseSchema extends z.ZodTypeAny = z.ZodVoid
+  Response extends z.ZodTypeAny = z.ZodVoid
 > {
   /**
    * a string declaring the HTTP method
@@ -562,7 +562,7 @@ interface CreateEndpointOptions<
   /** Optional plugin configuration specific to the endpoint. */
   config?: Config;
   /** The schema for the response defining its properties. */
-  response?: TResponseSchema;
+  response?: Response;
   /** The schema for the path parameters. */
   path?: Path;
   /** The schema for the query (search) parameters. */
@@ -577,12 +577,12 @@ interface CreateEndpointOptions<
    */
   handler?: Handler<
     KhulnasoftContext<
-      BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, TResponseSchema>
+      BaseEndpoint<Config, MethodAndUrl, Path, Query, Body, Response>
     >,
     Path,
     Query,
     Body,
-    HandlerResponseInputType<TResponseSchema>
+    Response extends z.ZodTypeAny ? z.input<Response> : undefined
   >;
 }
 
@@ -650,7 +650,7 @@ interface CreateApiOptions<
  * ```
  *
  * For a higher-level overview of how to use `Khulnasoft` to build APIs,
- * see [the docs](https://khulnasoft.com/khulnasoft/getting-started).
+ * see [the docs](https://khulnasoftapi.com/khulnasoft/getting-started).
  */
 export class Khulnasoft<Plugins extends AnyPlugins> {
   // this gets filled in later, we just declare the type here.
@@ -895,7 +895,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     Path extends ZodObjectSchema | undefined,
     Query extends ZodObjectSchema | undefined,
     Body extends ZodObjectSchema | undefined,
-    TResponse extends z.ZodTypeAny = z.ZodVoid
+    Response extends z.ZodTypeAny = z.ZodVoid
   >(
     params: CreateEndpointOptions<
       MethodAndUrl,
@@ -903,9 +903,9 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
       Path,
       Query,
       Body,
-      TResponse
+      Response
     >
-  ): Endpoint<Config, MethodAndUrl, Path, Query, Body, TResponse> {
+  ): Endpoint<Config, MethodAndUrl, Path, Query, Body, Response> {
     const { config, response, path, query, body, ...rest } = params;
     return {
       khulnasoft: this,
@@ -1066,11 +1066,11 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
    * it relies on change. This can be automated via the `khulnasoft` CLI watch mode.
    *
    * For more information on using the `khulnasoft` CLI, see the
-   * [CLI docs](https://khulnasoft.com/khulnasoft/cli.md).
+   * [CLI docs](https://khulnasoftapi.com/khulnasoft/cli.md).
    * For more details on advanced conversion functionality,
    * including adding custom validation and transformation logic
    * to generated schemas, see the
-   * [codegen schema docs](https://khulnasoft.com/khulnasoft/schemas/schemas-from-types.md).
+   * [codegen schema docs](https://khulnasoftapi.com/khulnasoft/schemas/schemas-from-types.md).
    *
    * ## Example
    * ```ts
@@ -1104,11 +1104,11 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
    * via the `khulnasoft` CLI watch mode.
    *
    * For more information on using the `khulnasoft` CLI, see the
-   * [CLI docs](https://khulnasoft.com/khulnasoft/cli.md).
+   * [CLI docs](https://khulnasoftapi.com/khulnasoft/cli.md).
    * For more details on advanced conversion functionality,
    * including adding custom validation and transformation logic
    * to generated schemas, see the
-   * [codegen schema docs](https://khulnasoft.com/khulnasoft/schemas/schemas-from-types.md).
+   * [codegen schema docs](https://khulnasoftapi.com/khulnasoft/schemas/schemas-from-types.md).
    *
    * ## Example
    * ```ts
@@ -1136,12 +1136,12 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
     TypeArgToZodObject<T, "path">,
     TypeArgToZodObject<T, "query">,
     TypeArgToZodObject<T, "body">,
-    any
+    "response" extends keyof T ? z.toZod<T["response"]> : z.ZodVoid
   > {
     type Path = TypeArgToZodObject<T, "path">;
     type Query = TypeArgToZodObject<T, "query">;
     type Body = TypeArgToZodObject<T, "body">;
-    type TResponse = "response" extends keyof T
+    type Response = "response" extends keyof T
       ? z.toZod<T["response"]>
       : z.ZodVoid;
     return {
@@ -1158,8 +1158,8 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
         Path,
         Query,
         Body,
-        TResponse
-      >): Endpoint<Config, MethodAndUrl, Path, Query, Body, TResponse> => {
+        Response
+      >): Endpoint<Config, MethodAndUrl, Path, Query, Body, Response> => {
         return {
           khulnasoft: this,
           endpoint,
@@ -1168,7 +1168,7 @@ export class Khulnasoft<Plugins extends AnyPlugins> {
           path: undefined as Path,
           query: undefined as Query,
           body: undefined as Body,
-          response: TResponse,
+          response: undefined as any as Response,
         };
       },
     };
@@ -1201,7 +1201,7 @@ interface TypeEndpointParams<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  TResponse extends z.ZodTypeAny = z.ZodVoid
+  Response extends z.ZodTypeAny = z.ZodVoid
 > {
   endpoint: MethodAndUrl;
   config?: Config;
@@ -1212,14 +1212,15 @@ interface TypeEndpointParams<
     Path,
     Query,
     Body,
-    z.input<Response>
+    Response extends z.ZodTypeAny ? z.input<Response> : undefined
   >;
 }
+
 interface TypeEndpointBuilder<
   Path extends ZodObjectSchema | undefined,
   Query extends ZodObjectSchema | undefined,
   Body extends ZodObjectSchema | undefined,
-  TResponse extends z.ZodTypeAny = z.ZodVoid
+  Response extends z.ZodTypeAny = z.ZodVoid
 > {
   endpoint<
     MethodAndUrl extends HttpEndpoint,

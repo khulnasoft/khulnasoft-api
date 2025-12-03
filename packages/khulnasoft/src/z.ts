@@ -1,3 +1,4 @@
+import { extendZodWithOpenApi } from "zod-openapi";
 import {
   z,
   ParseContext,
@@ -27,7 +28,7 @@ export {
  * in any file that uses z.openapi(),
  * including the file that calls khulnasoft.openapiSpec().
  */
-// extendZodWithOpenApi(z); // https://github.com/asteasolutions/zod-to-openapi#the-openapi-method
+extendZodWithOpenApi(z); // https://github.com/asteasolutions/zod-to-openapi#the-openapi-method
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -51,7 +52,7 @@ export interface ZodMetadataDef<T extends z.ZodTypeAny, M extends object>
  * Class for storing custom metadata like `prismaModel`,
  * `pageResponse: true`, `includable: true`, etc.
  *
- 
+ * zod-openapi errors out on any new class that extends the base
  * ZodType, so I made this extend a no-op refinement for compatibility.
  * Extending ZodLazy would be another option
  */
@@ -258,22 +259,20 @@ export type IncludableZodType<T extends z.ZodTypeAny> = ZodMetadata<
 >;
 
 z.ZodType.prototype.includable = function includable(this: z.ZodTypeAny) {
-  return (
-    khulnasoftPreprocess(
-      (
-        data: unknown,
-        khulnasoftContext: KhulnasoftContext<any>,
-        zodInput: z.ParseInput
-      ) => {
-        const { path } = zodInput;
-        const include = getIncludes(khulnasoftContext);
-        return include && zodPathIsIncluded(path, include) ? data : undefined;
-      },
-      this.optional()
-    )
-      // .openapi({ effectType: "input" })
-      .withMetadata({ khulnasoft: { includable: true } })
-  );
+  return khulnasoftPreprocess(
+    (
+      data: unknown,
+      khulnasoftContext: KhulnasoftContext<any>,
+      zodInput: z.ParseInput
+    ) => {
+      const { path } = zodInput;
+      const include = getIncludes(khulnasoftContext);
+      return include && zodPathIsIncluded(path, include) ? data : undefined;
+    },
+    this.optional()
+  )
+    .openapi({ effectType: "input" })
+    .withMetadata({ khulnasoft: { includable: true } });
 };
 
 export type isIncludable<T extends z.ZodTypeAny> = extractDeepMetadata<
@@ -902,31 +901,37 @@ export type Out<T> = 0 extends 1 & T
 
 export type toZod<T> = 0 extends 1 & T
   ? any
-  : T extends z.ZodTypeAny
+  : [null | undefined] extends [T]
+  ? z.ZodOptional<z.ZodNullable<toZod<NonNullable<T>>>>
+  : [null] extends [T]
+  ? z.ZodNullable<toZod<NonNullable<T>>>
+  : [undefined] extends [T]
+  ? z.ZodOptional<toZod<NonNullable<T>>>
+  : [T] extends [z.ZodTypeAny]
   ? T
-  : T extends BaseSchema
+  : [T] extends [BaseSchema]
   ? schemaTypeToZod<T>
-  : T extends Date
+  : [T] extends [Date]
   ? z.ZodDate
-  : T extends Array<infer E>
+  : [T] extends [Array<infer E>]
   ? z.ZodArray<toZod<E>>
-  : T extends Set<infer E>
+  : [T] extends [Set<infer E>]
   ? z.ZodSet<toZod<E>>
-  : T extends Map<infer K, infer V>
+  : [T] extends [Map<infer K, infer V>]
   ? z.ZodMap<toZod<K>, toZod<V>>
-  : T extends PromiseLike<infer E>
+  : [T] extends [PromiseLike<infer E>]
   ? z.ZodPromise<toZod<E>>
-  : T extends object
-  ? z.ZodObject<{ [k in keyof T]-?: toZod<NonNullable<T[k]>> }>
-  : T extends number
+  : [T] extends [object]
+  ? z.ZodObject<{ [k in keyof T]-?: toZod<T[k]> }>
+  : [number] extends [T]
   ? z.ZodNumber
-  : T extends string
+  : [string] extends [T]
   ? z.ZodString
-  : T extends boolean
+  : [boolean] extends [T]
   ? z.ZodBoolean
-  : T extends bigint
+  : [bigint] extends [T]
   ? z.ZodBigInt
-  : z.ZodType<Out<T>, any, In<T>>; // Fallback for any other type
+  : z.ZodType<Out<T>, any, In<T>>;
 
 type schemaTypeToZod<T extends BaseSchema> = T extends {
   metadata: infer M extends object;
