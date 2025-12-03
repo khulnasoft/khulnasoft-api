@@ -4,8 +4,8 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-echo "==> Running lints"
-rye run lint
+echo "==> Running Go build"
+go build ./...
 
-echo "==> Making sure it imports"
-rye run python -c 'import khulnasoft_api'
+echo "==> Checking tests compile"
+go test -run=^$ ./...

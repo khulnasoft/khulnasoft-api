@@ -1,17 +1,15 @@
-# Khulnasoft API Python API library
+# Khulnasoft API Go API Library
 
-<!-- prettier-ignore -->
-[![PyPI version](https://img.shields.io/pypi/v/khulnasoft_api.svg?label=pypi%20(stable))](https://pypi.org/project/khulnasoft_api/)
+<!-- x-release-please-start-version -->
 
-The Khulnasoft API Python library provides convenient access to the Khulnasoft API REST API from any Python 3.9+
-application. The library includes type definitions for all request params and response fields,
-and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
+<a href="https://pkg.go.dev/github.com/stainless-sdks/khulnasoft-api-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/khulnasoft-api-go.svg" alt="Go Reference"></a>
+
+<!-- x-release-please-end -->
+
+The Khulnasoft API Go library provides convenient access to the Khulnasoft API REST API
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
-
-## Documentation
-
-The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
@@ -31,250 +29,362 @@ The full API of this library can be found in [api.md](api.md).
 import os
 from khulnasoft_api import KhulnasoftAPI
 
-client = KhulnasoftAPI(
-    api_key=os.environ.get("KHULNASOFT_API_API_KEY"),  # This is the default and can be omitted
-)
-
-pet = client.pet.update(
-    name="doggie",
-    photo_urls=["string"],
-)
-print(pet.id)
+```sh
+go get -u 'github.com/stainless-sdks/khulnasoft-api-go@v0.0.1'
 ```
 
-While you can provide an `api_key` keyword argument,
-we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
-to add `KHULNASOFT_API_API_KEY="My API Key"` to your `.env` file
-so that your API Key is not stored in source control.
+## Requirements
 
-## Async usage
+This library requires Go 1.22+.
 
-Simply import `AsyncKhulnasoftAPI` instead of `KhulnasoftAPI` and use `await` with each API call:
+## Usage
 
-```python
-import os
-import asyncio
-from khulnasoft_api import AsyncKhulnasoftAPI
+The full API of this library can be found in [api.md](api.md).
 
-client = AsyncKhulnasoftAPI(
-    api_key=os.environ.get("KHULNASOFT_API_API_KEY"),  # This is the default and can be omitted
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/stainless-sdks/khulnasoft-api-go"
+	"github.com/stainless-sdks/khulnasoft-api-go/option"
 )
 
+func main() {
+	client := khulnasoftapi.NewClient(
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("KHULNASOFT_API_API_KEY")
+	)
+	pet, err := client.Pet.Update(context.TODO(), khulnasoftapi.PetUpdateParams{
+		Pet: khulnasoftapi.PetParam{
+			Name:      "doggie",
+			PhotoURLs: []string{"string"},
+		},
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("%+v\n", pet.ID)
+}
 
-async def main() -> None:
-    pet = await client.pet.update(
-        name="doggie",
-        photo_urls=["string"],
-    )
-    print(pet.id)
-
-
-asyncio.run(main())
 ```
 
-Functionality between the synchronous and asynchronous clients is otherwise identical.
+### Request fields
 
-### With aiohttp
+The khulnasoftapi library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+semantics from the Go 1.24+ `encoding/json` release for request fields.
 
-By default, the async client uses `httpx` for HTTP requests. However, for improved concurrency performance you may also use `aiohttp` as the HTTP backend.
+Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:"...,required"\`</code>. These
+fields are always serialized, even their zero values.
 
-You can enable this by installing `aiohttp`:
+Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `khulnasoftapi.String(string)`, `khulnasoftapi.Int(int64)`, etc.
 
 ```sh
 # install from the production repo
 pip install 'khulnasoft_api[aiohttp] @ git+ssh://git@github.com/khulnasoft/khulnasoft-api#master.git'
 ```
 
-Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
+The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
 
-```python
-import os
-import asyncio
-from khulnasoft_api import DefaultAioHttpClient
-from khulnasoft_api import AsyncKhulnasoftAPI
+```go
+p := khulnasoftapi.ExampleParams{
+	ID:   "id_xxx",                    // required property
+	Name: khulnasoftapi.String("..."), // optional property
 
+	Point: khulnasoftapi.Point{
+		X: 0,                    // required field will serialize as 0
+		Y: khulnasoftapi.Int(1), // optional field will serialize as 1
+		// ... omitted non-required fields will not be serialized
+	},
 
-async def main() -> None:
-    async with AsyncKhulnasoftAPI(
-        api_key=os.environ.get("KHULNASOFT_API_API_KEY"),  # This is the default and can be omitted
-        http_client=DefaultAioHttpClient(),
-    ) as client:
-        pet = await client.pet.update(
-            name="doggie",
-            photo_urls=["string"],
-        )
-        print(pet.id)
-
-
-asyncio.run(main())
+	Origin: khulnasoftapi.Origin{}, // the zero value of [Origin] is considered omitted
+}
 ```
 
-## Using types
+To send `null` instead of a `param.Opt[T]`, use `param.Null[T]()`.
+To send `null` instead of a struct `T`, use `param.NullStruct[T]()`.
 
-Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typing.html#typing.TypedDict). Responses are [Pydantic models](https://docs.pydantic.dev) which also provide helper methods for things like:
+```go
+p.Name = param.Null[string]()       // 'null' instead of string
+p.Point = param.NullStruct[Point]() // 'null' instead of struct
 
-- Serializing back into JSON, `model.to_json()`
-- Converting to a dictionary, `model.to_dict()`
+param.IsNull(p.Name)  // true
+param.IsNull(p.Point) // true
+```
 
-Typed requests and responses provide autocomplete and documentation within your editor. If you would like to see type errors in VS Code to help catch bugs earlier, set `python.analysis.typeCheckingMode` to `basic`.
+Request structs contain a `.SetExtraFields(map[string]any)` method which can send non-conforming
+fields in the request body. Extra fields overwrite any struct fields with a matching
+key. For security reasons, only use `SetExtraFields` with trusted data.
 
-## Nested params
+To send a custom value instead of a struct, use `param.Override[T](value)`.
 
-Nested parameters are dictionaries, typed using `TypedDict`, for example:
+```go
+// In cases where the API specifies a given type,
+// but you want to send something else, use [SetExtraFields]:
+p.SetExtraFields(map[string]any{
+	"x": 0.01, // send "x" as a float instead of int
+})
 
-```python
-from khulnasoft_api import KhulnasoftAPI
+// Send a number instead of an object
+custom := param.Override[khulnasoftapi.FooParams](12)
+```
 
-client = KhulnasoftAPI()
+### Request unions
 
-pet = client.pet.update(
-    name="doggie",
-    photo_urls=["string"],
-    category={},
+Unions are represented as a struct with fields prefixed by "Of" for each of its variants,
+only one field can be non-zero. The non-zero field will be serialized.
+
+Sub-properties of the union can be accessed via methods on the union struct.
+These methods return a mutable pointer to the underlying data, if present.
+
+```go
+// Only one field can be non-zero, use param.IsOmitted() to check if a field is set
+type AnimalUnionParam struct {
+	OfCat *Cat `json:",omitzero,inline`
+	OfDog *Dog `json:",omitzero,inline`
+}
+
+animal := AnimalUnionParam{
+	OfCat: &Cat{
+		Name: "Whiskers",
+		Owner: PersonParam{
+			Address: AddressParam{Street: "3333 Coyote Hill Rd", Zip: 0},
+		},
+	},
+}
+
+// Mutating a field
+if address := animal.GetOwner().GetAddress(); address != nil {
+	address.ZipCode = 94304
+}
+```
+
+### Response objects
+
+All fields in response structs are ordinary value types (not pointers or wrappers).
+Response structs also include a special `JSON` field containing metadata about
+each property.
+
+```go
+type Animal struct {
+	Name   string `json:"name,nullable"`
+	Owners int    `json:"owners"`
+	Age    int    `json:"age"`
+	JSON   struct {
+		Name        respjson.Field
+		Owner       respjson.Field
+		Age         respjson.Field
+		ExtraFields map[string]respjson.Field
+	} `json:"-"`
+}
+```
+
+To handle optional data, use the `.Valid()` method on the JSON field.
+`.Valid()` returns true if a field is not `null`, not present, or couldn't be marshaled.
+
+If `.Valid()` is false, the corresponding field will simply be its zero value.
+
+```go
+raw := `{"owners": 1, "name": null}`
+
+var res Animal
+json.Unmarshal([]byte(raw), &res)
+
+// Accessing regular fields
+
+res.Owners // 1
+res.Name   // ""
+res.Age    // 0
+
+// Optional field checks
+
+res.JSON.Owners.Valid() // true
+res.JSON.Name.Valid()   // false
+res.JSON.Age.Valid()    // false
+
+// Raw JSON values
+
+res.JSON.Owners.Raw()                  // "1"
+res.JSON.Name.Raw() == "null"          // true
+res.JSON.Name.Raw() == respjson.Null   // true
+res.JSON.Age.Raw() == ""               // true
+res.JSON.Age.Raw() == respjson.Omitted // true
+```
+
+These `.JSON` structs also include an `ExtraFields` map containing
+any properties in the json response that were not specified
+in the struct. This can be useful for API features not yet
+present in the SDK.
+
+```go
+body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
+```
+
+### Response Unions
+
+In responses, unions are represented by a flattened struct containing all possible fields from each of the
+object variants.
+To convert it to a variant use the `.AsFooVariant()` method or the `.AsAny()` method if present.
+
+If a response value union contains primitive values, primitive fields will be alongside
+the properties but prefixed with `Of` and feature the tag `json:"...,inline"`.
+
+```go
+type AnimalUnion struct {
+	// From variants [Dog], [Cat]
+	Owner Person `json:"owner"`
+	// From variant [Dog]
+	DogBreed string `json:"dog_breed"`
+	// From variant [Cat]
+	CatBreed string `json:"cat_breed"`
+	// ...
+
+	JSON struct {
+		Owner respjson.Field
+		// ...
+	} `json:"-"`
+}
+
+// If animal variant
+if animal.Owner.Address.ZipCode == "" {
+	panic("missing zip code")
+}
+
+// Switch on the variant
+switch variant := animal.AsAny().(type) {
+case Dog:
+case Cat:
+default:
+	panic("unexpected type")
+}
+```
+
+### RequestOptions
+
+This library uses the functional options pattern. Functions defined in the
+`option` package return a `RequestOption`, which is a closure that mutates a
+`RequestConfig`. These options can be supplied to the client or at individual
+requests. For example:
+
+```go
+client := khulnasoftapi.NewClient(
+	// Adds a header to every request made by the client
+	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
-print(pet.category)
-```
 
-## Handling errors
-
-When the library is unable to connect to the API (for example, due to network connection problems or a timeout), a subclass of `khulnasoft_api.APIConnectionError` is raised.
-
-When the API returns a non-success status code (that is, 4xx or 5xx
-response), a subclass of `khulnasoft_api.APIStatusError` is raised, containing `status_code` and `response` properties.
-
-All errors inherit from `khulnasoft_api.APIError`.
-
-```python
-import khulnasoft_api
-from khulnasoft_api import KhulnasoftAPI
-
-client = KhulnasoftAPI()
-
-try:
-    client.pet.update(
-        name="doggie",
-        photo_urls=["string"],
-    )
-except khulnasoft_api.APIConnectionError as e:
-    print("The server could not be reached")
-    print(e.__cause__)  # an underlying Exception, likely raised within httpx.
-except khulnasoft_api.RateLimitError as e:
-    print("A 429 status code was received; we should back off a bit.")
-except khulnasoft_api.APIStatusError as e:
-    print("Another non-200-range status code was received")
-    print(e.status_code)
-    print(e.response)
-```
-
-Error codes are as follows:
-
-| Status Code | Error Type                 |
-| ----------- | -------------------------- |
-| 400         | `BadRequestError`          |
-| 401         | `AuthenticationError`      |
-| 403         | `PermissionDeniedError`    |
-| 404         | `NotFoundError`            |
-| 422         | `UnprocessableEntityError` |
-| 429         | `RateLimitError`           |
-| >=500       | `InternalServerError`      |
-| N/A         | `APIConnectionError`       |
-
-### Retries
-
-Certain errors are automatically retried 2 times by default, with a short exponential backoff.
-Connection errors (for example, due to a network connectivity problem), 408 Request Timeout, 409 Conflict,
-429 Rate Limit, and >=500 Internal errors are all retried by default.
-
-You can use the `max_retries` option to configure or disable retry settings:
-
-```python
-from khulnasoft_api import KhulnasoftAPI
-
-# Configure the default for all requests:
-client = KhulnasoftAPI(
-    # default is 2
-    max_retries=0,
-)
-
-# Or, configure per-request:
-client.with_options(max_retries=5).pet.update(
-    name="doggie",
-    photo_urls=["string"],
+client.Pet.Update(context.TODO(), ...,
+	// Override the header
+	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
+	// Add an undocumented field to the request body, using sjson syntax
+	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
 )
 ```
+
+The request option `option.WithDebugLog(nil)` may be helpful while debugging.
+
+See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/khulnasoft-api-go/option).
+
+### Pagination
+
+This library provides some conveniences for working with paginated list endpoints.
+
+You can use `.ListAutoPaging()` methods to iterate through items across all pages:
+
+Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
+with additional helper methods like `.GetNextPage()`, e.g.:
+
+### Errors
+
+When the API returns a non-success status code, we return an error with type
+`*khulnasoftapi.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*http.Response` values of the request, as well as the JSON of the error body
+(much like other response objects in the SDK).
+
+To handle errors, we recommend that you use the `errors.As` pattern:
+
+```go
+_, err := client.Pet.Update(context.TODO(), khulnasoftapi.PetUpdateParams{
+	Pet: khulnasoftapi.PetParam{
+		Name:      "doggie",
+		PhotoURLs: []string{"string"},
+	},
+})
+if err != nil {
+	var apierr *khulnasoftapi.Error
+	if errors.As(err, &apierr) {
+		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
+		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
+	}
+	panic(err.Error()) // GET "/pet": 400 Bad Request { ... }
+}
+```
+
+When other errors occur, they are returned unwrapped; for example,
+if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
 
 ### Timeouts
 
-By default requests time out after 1 minute. You can configure this with a `timeout` option,
-which accepts a float or an [`httpx.Timeout`](https://www.python-httpx.org/advanced/timeouts/#fine-tuning-the-configuration) object:
+Requests do not time out by default; use context to configure a timeout for a request lifecycle.
 
-```python
-from khulnasoft_api import KhulnasoftAPI
+Note that if a request is [retried](#retries), the context timeout does not start over.
+To set a per-retry timeout, use `option.WithRequestTimeout()`.
 
-# Configure the default for all requests:
-client = KhulnasoftAPI(
-    # 20 seconds (default is 1 minute)
-    timeout=20.0,
-)
-
-# More granular control:
-client = KhulnasoftAPI(
-    timeout=httpx.Timeout(60.0, read=5.0, write=10.0, connect=2.0),
-)
-
-# Override per-request:
-client.with_options(timeout=5.0).pet.update(
-    name="doggie",
-    photo_urls=["string"],
+```go
+// This sets the timeout for the request, including all the retries.
+ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+defer cancel()
+client.Pet.Update(
+	ctx,
+	khulnasoftapi.PetUpdateParams{
+		Pet: khulnasoftapi.PetParam{
+			Name:      "doggie",
+			PhotoURLs: []string{"string"},
+		},
+	},
+	// This sets the per-retry timeout
+	option.WithRequestTimeout(20*time.Second),
 )
 ```
 
-On timeout, an `APITimeoutError` is thrown.
+### File uploads
 
-Note that requests that time out are [retried twice by default](#retries).
+Request parameters that correspond to file uploads in multipart requests are typed as
+`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
+part with the file name of "anonymous_file" and content-type of "application/octet-stream".
 
-## Advanced
+The file name and content-type can be customized by implementing `Name() string` or `ContentType()
+string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
+file returned by `os.Open` will be sent with the file name on disk.
 
-### Logging
+We also provide a helper `khulnasoftapi.File(reader io.Reader, filename string, contentType string)`
+which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
-We use the standard library [`logging`](https://docs.python.org/3/library/logging.html) module.
+### Retries
 
-You can enable logging by setting the environment variable `KHULNASOFT_API_LOG` to `info`.
+Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
+We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
+and >=500 Internal errors.
 
-```shell
-$ export KHULNASOFT_API_LOG=info
-```
+You can use the `WithMaxRetries` option to configure or disable this:
 
-Or to `debug` for more verbose logging.
-
-### How to tell whether `None` means `null` or missing
-
-In an API response, a field may be explicitly `null`, or missing entirely; in either case, its value is `None` in this library. You can differentiate the two cases with `.model_fields_set`:
-
-```py
-if response.my_field is None:
-  if 'my_field' not in response.model_fields_set:
-    print('Got json like {}, without a "my_field" key present at all.')
-  else:
-    print('Got json like {"my_field": null}.')
-```
-
-### Accessing raw response data (e.g. headers)
-
-The "raw" Response object can be accessed by prefixing `.with_raw_response.` to any HTTP method call, e.g.,
-
-```py
-from khulnasoft_api import KhulnasoftAPI
-
-client = KhulnasoftAPI()
-response = client.pet.with_raw_response.update(
-    name="doggie",
-    photo_urls=["string"],
+```go
+// Configure the default for all requests:
+client := khulnasoftapi.NewClient(
+	option.WithMaxRetries(0), // default is 2
 )
-print(response.headers.get('X-My-Header'))
 
-pet = response.parse()  # get the object that `pet.update()` would have returned
-print(pet.id)
+// Override per-request:
+client.Pet.Update(
+	context.TODO(),
+	khulnasoftapi.PetUpdateParams{
+		Pet: khulnasoftapi.PetParam{
+			Name:      "doggie",
+			PhotoURLs: []string{"string"},
+		},
+	},
+	option.WithMaxRetries(5),
+)
 ```
 
 These methods return an [`APIResponse`](https://github.com/khulnasoft/khulnasoft-api/tree/master/src/khulnasoft_api/_response.py) object.
@@ -294,95 +404,102 @@ with client.pet.with_streaming_response.update(
 ) as response:
     print(response.headers.get("X-My-Header"))
 
-    for line in response.iter_lines():
-        print(line)
+fmt.Printf("Status Code: %d\n", response.StatusCode)
+fmt.Printf("Headers: %+#v\n", response.Header)
 ```
-
-The context manager is required so that the response will reliably be closed.
 
 ### Making custom/undocumented requests
 
-This library is typed for convenient access to the documented API.
-
-If you need to access undocumented endpoints, params, or response properties, the library can still be used.
+This library is typed for convenient access to the documented API. If you need to access undocumented
+endpoints, params, or response properties, the library can still be used.
 
 #### Undocumented endpoints
 
-To make requests to undocumented endpoints, you can make requests using `client.get`, `client.post`, and other
-http verbs. Options on the client will be respected (such as retries) when making this request.
+To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs.
+`RequestOptions` on the client, such as retries, will be respected when making these requests.
 
-```py
-import httpx
+```go
+var (
+    // params can be an io.Reader, a []byte, an encoding/json serializable object,
+    // or a "…Params" struct defined in this library.
+    params map[string]any
 
-response = client.post(
-    "/foo",
-    cast_to=httpx.Response,
-    body={"my_param": True},
+    // result can be an []byte, *http.Response, a encoding/json deserializable object,
+    // or a model defined in this library.
+    result *http.Response
 )
-
-print(response.headers.get("x-foo"))
+err := client.Post(context.Background(), "/unspecified", params, &result)
+if err != nil {
+    …
+}
 ```
 
 #### Undocumented request params
 
-If you want to explicitly send an extra param, you can do so with the `extra_query`, `extra_body`, and `extra_headers` request
-options.
+To make requests using undocumented parameters, you may use either the `option.WithQuerySet()`
+or the `option.WithJSONSet()` methods.
+
+```go
+params := FooNewParams{
+    ID:   "id_xxxx",
+    Data: FooNewParamsData{
+        FirstName: khulnasoftapi.String("John"),
+    },
+}
+client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
+```
 
 #### Undocumented response properties
 
-To access undocumented response properties, you can access the extra fields like `response.unknown_prop`. You
-can also get all the extra fields on the Pydantic model as a dict with
-[`response.model_extra`](https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_extra).
+To access undocumented response properties, you may either access the raw JSON of the response as a string
+with `result.JSON.RawJSON()`, or get the raw JSON of a particular field on the result with
+`result.JSON.Foo.Raw()`.
 
-### Configuring the HTTP client
+Any fields that are not present on the response struct will be saved and can be accessed by `result.JSON.ExtraFields()` which returns the extra fields as a `map[string]Field`.
 
-You can directly override the [httpx client](https://www.python-httpx.org/api/#client) to customize it for your use case, including:
+### Middleware
 
-- Support for [proxies](https://www.python-httpx.org/advanced/proxies/)
-- Custom [transports](https://www.python-httpx.org/advanced/transports/)
-- Additional [advanced](https://www.python-httpx.org/advanced/clients/) functionality
+We provide `option.WithMiddleware` which applies the given
+middleware to requests.
 
-```python
-import httpx
-from khulnasoft_api import KhulnasoftAPI, DefaultHttpxClient
+```go
+func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
+	// Before the request
+	start := time.Now()
+	LogReq(req)
 
-client = KhulnasoftAPI(
-    # Or use the `KHULNASOFT_API_BASE_URL` env var
-    base_url="http://my.test.server.example.com:8083",
-    http_client=DefaultHttpxClient(
-        proxy="http://my.test.proxy.example.com",
-        transport=httpx.HTTPTransport(local_address="0.0.0.0"),
-    ),
+	// Forward the request to the next handler
+	res, err = next(req)
+
+	// Handle stuff after the request
+	end := time.Now()
+	LogRes(res, err, start - end)
+
+    return res, err
+}
+
+client := khulnasoftapi.NewClient(
+	option.WithMiddleware(Logger),
 )
 ```
 
-You can also customize the client on a per-request basis by using `with_options()`:
+When multiple middlewares are provided as variadic arguments, the middlewares
+are applied left to right. If `option.WithMiddleware` is given
+multiple times, for example first in the client then the method, the
+middleware in the client will run first and the middleware given in the method
+will run next.
 
-```python
-client.with_options(http_client=DefaultHttpxClient(...))
-```
+You may also replace the default `http.Client` with
+`option.WithHTTPClient(client)`. Only one http client is
+accepted (this overwrites any previous client) and receives requests after any
+middleware has been applied.
 
-### Managing HTTP resources
-
-By default the library closes underlying HTTP connections whenever the client is [garbage collected](https://docs.python.org/3/reference/datamodel.html#object.__del__). You can manually close the client using the `.close()` method if desired, or with a context manager that closes when exiting.
-
-```py
-from khulnasoft_api import KhulnasoftAPI
-
-with KhulnasoftAPI() as client:
-  # make requests here
-  ...
-
-# HTTP client is now closed
-```
-
-## Versioning
+## Semantic versioning
 
 This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
 
-1. Changes that only affect static types, without breaking runtime behavior.
-2. Changes to library internals which are technically public but not intended or documented for external use. _(Please open a GitHub issue to let us know if you are relying on such internals.)_
-3. Changes that we do not expect to impact the vast majority of users in practice.
+1. Changes to library internals which are technically public but not intended or documented for external use. _(Please open a GitHub issue to let us know if you are relying on such internals.)_
+2. Changes that we do not expect to impact the vast majority of users in practice.
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 

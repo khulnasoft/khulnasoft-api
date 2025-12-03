@@ -19,9 +19,6 @@ if [ -f "Brewfile" ] && [ "$(uname -s)" = "Darwin" ] && [ "$SKIP_BREW" != "1" ] 
   }
 fi
 
-echo "==> Installing Python dependencies…"
+echo "==> Installing Go dependencies…"
 
-# experimental uv support makes installations significantly faster
-rye config --set-bool behavior.use-uv=true
-
-rye sync --all-features
+go mod tidy -e
