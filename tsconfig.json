@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig-common.json",
+  "include": ["src", "scripts"],
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "references": [
+    {
+      "path": "../khulnasoft"
+    }
+  ]
+}
