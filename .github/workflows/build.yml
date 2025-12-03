@@ -1,0 +1,53 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+name: build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: prisma
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.9.0
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+
+      - name: Check format
+        run: pnpm prettier:check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Set up db
+        run: |
+          cd demo
+          cp .env-ci .env
+          pnpm prisma migrate dev
+
+      - name: Test
+        run: pnpm test:ci

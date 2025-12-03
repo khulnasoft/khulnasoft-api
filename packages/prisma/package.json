@@ -1,0 +1,40 @@
+{
+  "name": "@khulnasoft-api/prisma",
+  "version": "0.0.1",
+  "description": "prisma plugin for KhulnaSoft api",
+  "author": "dev@khulnasoft.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khulnasoft/khulnasoft-api.git",
+    "directory": "packages/prisma"
+  },
+  "homepage": "https://github.com/khulnasoft/khulnasoft-api/tree/main/packages/prisma",
+  "bugs": {
+    "url": "https://github.com/khulnasoft/khulnasoft-api/issues"
+  },
+  "keywords": [
+    "khulnasoft",
+    "api",
+    "prisma"
+  ],
+  "license": "ISC",
+  "source": "src/prismaPlugin.ts",
+  "main": "dist/prismaPlugin.js",
+  "types": "dist/prismaPlugin.d.ts",
+  "scripts": {
+    "clean": "rimraf dist *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.10.3",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "khulnasoft": "workspace:*",
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "prisma": "^4.0.0"
+  }
+}

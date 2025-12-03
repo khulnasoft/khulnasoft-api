@@ -1,0 +1,283 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Getting started
+
+:::caution
+
+This is alpha software, and we may make significant changes in the coming months.
+We're eager for you to try it out and let us know what you think!
+
+:::
+
+At the moment, Khulnasoft can be used with Next.js and Express.
+Support for standalone apps is coming soon.
+We will soon provide a `create-khulnasoft-app` API. Until then:
+
+## Installation
+
+For now, you can install packages from versioned GitHub branches, like so:
+
+```bash
+npm i --save  'khulnasoft/khulnasoft-api#khulnasoft-0.0.3' \
+              'khulnasoft/khulnasoft-api#next-0.0.3' \
+              'khulnasoft/khulnasoft-api#react-query-0.0.3' \
+              'khulnasoft/khulnasoft-api#cli-0.0.3'
+
+# Optional plugins:
+npm i --save 'khulnasoft/khulnasoft-api#next-auth-0.0.3'  # If you are using next-auth
+npm i --save 'khulnasoft/khulnasoft-api#prisma-0.0.3'     # If you are using Prisma
+```
+
+In the future, we will publish to npm packages like `khulnasoft`, `@khulnasoft-api/next`, etc.
+
+## Create Khulnasoft instance
+
+```ts
+// ~/libs/khulnasoft.ts
+
+import { Khulnasoft } from "khulnasoft";
+import { makeNextPlugin } from "@khulnasoft-api/next";
+
+const plugins = {
+  next: makeNextPlugin(),
+};
+
+export const khulnasoft = new Khulnasoft({
+  plugins,
+});
+```
+
+## Create a model
+
+<Tabs groupId="schema-variants">
+
+<TabItem value="codegen" label="Codegen types">
+
+```ts
+// ~/api/users/models.ts
+
+import { t } from "khulnasoft";
+import { PrismaModel } from "@khulnasoft-api/prisma";
+import prisma from "~/libs/prisma";
+
+export class User extends PrismaModel {
+  declare input: {
+    id: z.StringSchema<{ uuid: true }>;
+
+    username: string | null;
+    email: string | null;
+    name: string | null;
+
+    createdAt: Date;
+    updatedAt: Date;
+
+    followingIds: z.StringSchema<{ uuid: true }>[];
+    hasNotification: boolean | null;
+    followersCount: number;
+  };
+
+  model = prisma.user;
+}
+```
+
+</TabItem>
+
+<TabItem value="runtime" label="Zod schemas">
+
+```ts
+// ~/api/users/models.ts
+
+import { z } from "khulnasoft";
+import prisma from "~/libs/prisma";
+
+export const User = z
+  .response({
+    id: z.string().uuid(),
+
+    username: z.string().nullable(),
+    email: z.string().nullable(),
+    name: z.string().nullable(),
+
+    createdAt: z.date(),
+    updatedAt: z.date(),
+
+    followingIds: z.array(z.string().uuid()),
+    hasNotification: z.boolean().nullable(),
+    followersCount: z.number(),
+  })
+  .prismaModel(prisma.user);
+```
+
+</TabItem>
+</Tabs>
+
+## Create an endpoint
+
+<Tabs groupId="schema-variants">
+<TabItem value="codegen" label="Codegen types">
+
+```ts
+// ~/api/users/retrieve.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { NotFoundError, z } from "khulnasoft";
+import prisma from "~/libs/prismadb";
+import { User } from "./models";
+
+type Path = {
+  userId: string;
+};
+
+export const retrieve = khulnasoft
+  .types<{ path: Path; response: User }>()
+  .endpoint({
+    endpoint: "GET /api/users/{userId}",
+
+    async handler({ userId }, ctx) {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      if (!user) throw new NotFoundError();
+      return user;
+    },
+  });
+```
+
+</TabItem>
+
+<TabItem value="runtime" label="Zod schemas">
+
+```ts
+// ~/api/users/retrieve.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { NotFoundError, z } from "khulnasoft";
+import prisma from "~/libs/prismadb";
+import { User } from "./models";
+
+export const retrieve = khulnasoft.endpoint({
+  endpoint: "GET /api/users/{userId}",
+  response: User,
+  path: z.object({
+    userId: z.string(),
+  }),
+  async handler({ userId }, ctx) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) throw new NotFoundError();
+    return user;
+  },
+});
+```
+
+</TabItem>
+</Tabs>
+
+## Create a resource
+
+```ts
+// ~/api/users/index.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { retrieve } from "./retrieve";
+import { User } from "./models";
+
+export const users = khulnasoft.resource({
+  summary: "Users",
+  models: {
+    User,
+  },
+  actions: {
+    retrieve,
+  },
+});
+```
+
+## Create API
+
+```ts
+// ~/api/index.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { users } from "./users";
+
+export const api = khulnasoft.api({
+  openapi: {
+    endpoint: "GET /api/openapi",
+  },
+  resources: {
+    users,
+  },
+});
+```
+
+:::caution
+
+Currently the names of `resources` have to match the URL paths for
+the [client](#use-client) to work. For example if the base URL is
+`/api` and there is a `GET /api/users` endpoint, the resource must
+be named `users` here. If it were named `user`, then `client.user.list(...)`
+would `GET /api/user`, the wrong URL. We plan to make a build watch
+process to compile a list of endpoint URLs for the client to remove
+this limitation.
+
+:::
+
+## Add API route
+
+```ts
+// ~/app/api/[...catchall]/route.ts
+
+import { api } from "~/api/index";
+import { khulnasoftNextAppCatchAllRouter } from "@khulnasoft-api/next";
+
+const { GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS } =
+  khulnasoftNextAppCatchAllRouter(api, {
+    catchAllParam: "catchall",
+  });
+
+export { GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS };
+```
+
+## Create client
+
+```ts
+// ~/api/client.ts
+
+import { createReactQueryClient } from "@khulnasoft-api/react-query";
+import type { api } from "./index";
+
+export const client = createReactQueryClient<typeof api>("/api");
+```
+
+## Use client
+
+```ts
+// ~/app/users/[userId]/page.tsx
+
+import * as React from "react";
+import client from "~/api/client.ts";
+
+export default function UserPage({
+  params: { userId },
+}: {
+  params: { userId: string };
+}): React.ReactElement {
+  const { status, error, data: user } = client.users.useRetrieve(userId);
+
+  if (status === "loading") return <LoadingAlert>Loading user...</LoadingAlert>;
+  if (error) return <ErrorAlert error={error} />;
+
+  return <UserDetailsPanel user={user}>
+}
+```

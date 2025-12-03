@@ -1,0 +1,168 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Pagination
+
+:::caution
+
+At the moment, `@khulnasoft-api/prisma` doesn't support multi-column
+sort order in pagination.
+
+Also, `@khulnasoft-api/prisma` current treats `sortBy` as a column name
+and uses it to determine the cursor of each row.
+
+We plan to remove these limitations in the future.
+
+:::
+
+## Easiest method: `ctx.prisma.paginate(options)`
+
+If your endpoint `response` declares a `z.PrismaModel<>`, you will
+be able to call `ctx.prisma.paginate()`, and it will make the
+necessary `findMany` for the pagination params from the query and
+and additional options you provide:
+
+<Tabs groupId="schema-variants">
+<TabItem value="codegen" label="Codegen schemas">
+
+```ts
+// ~/api/posts/list.ts
+
+import { t } from "khulnasoft";
+import prisma from "~/libs/prismadb";
+import { khulnasoft } from "~/libs/khulnasoft";
+import { PostResponse } from "./models";
+
+// This assumes Post has a PrismaModel
+// declaration attached to it; z.PageResponse inherits
+// the prisma model.
+type PagePostResponse = z.PageResponse<PostResponse>;
+
+type QueryParams = {
+  // TODO: add support for default values
+  sortBy: "id";
+  userId?: string;
+  // TODO: add default value of 20
+  pageSize: number;
+};
+
+export const list = khulnasoft
+  .types<{ response: PagePostResponse; query: QueryParams }>()
+  .endpoint({
+    endpoint: "GET /api/posts",
+    async handler({ userId }, ctx) {
+      return await ctx.prisma.paginate({
+        where: userId ? { userId } : {},
+      });
+    },
+  });
+```
+
+</TabItem>
+<TabItem value="runtime" label="Zod schemas">
+
+```ts
+// ~/api/posts/list.ts
+
+import { z } from "khulnasoft";
+import prisma from "~/libs/prismadb";
+import { khulnasoft } from "~/libs/khulnasoft";
+import { Post } from "./models";
+
+// This assumes Post has a .prismaModel(prisma.post)
+// declaration attached to it; z.pageResponse inherits
+// the .prismaModel.
+const response = z.pageResponse(Post);
+
+export const list = khulnasoft.endpoint({
+  endpoint: "GET /api/posts",
+  response,
+  query: z.PaginationParams.extend({
+    sortBy: z.enum(["id"]).default("id"),
+    userId: z.string().optional(),
+    pageSize: z.coerce.number().default(20),
+  }),
+  async handler({ userId }, ctx) {
+    return await ctx.prisma.paginate({
+      where: userId ? { userId } : {},
+    });
+  },
+});
+```
+
+</TabItem>
+</Tabs>
+
+:::caution
+
+Currently `ctx.prisma.paginate` doesn't custom names for `PaginationParams`
+or `response` fields.
+
+:::
+
+## Lower level: `ctx.prisma.findMany(options)`
+
+`ctx.prisma.findMany()` also injects Prisma options from pagination
+params, but unlike [`paginate()`](#easiest-method-ctxprismapaginateoptions), it resolves to the array of items
+directly from Prisma.
+
+We plan to make [`z.PageResponse<>`](/khulnasoft/pagination#tpageresponseitem)
+schemas accept an array of items
+as input soon, but currently you must pass the items to
+[`khulnasoft.plugins.prisma.pagination.makeResponse()`](#khulnasoftpluginsprismapaginationmakeresponsepaginationparams-items)
+or build the response manually.
+
+:::info
+
+`ctx.prisma.findMany()` will inject `limit: pageSize + 1` so that
+it's possible to > determine `hasPreviousPage` or `hasNextPage` by
+the presence or absence of an extra item in the query results.
+If the extra item is present it should not be included in the
+response, and will be removed by `makeResponse()`.
+
+:::
+
+## Lower level: `khulnasoft.plugins.prisma.paginate(prismaModel, options)`
+
+Performs `prismaModel.findMany()` with the given `options` (which
+includes both standard Prisma `findMany()` options and pagination
+parameters) and resolves to a [z.PageData](/khulnasoft/pagination#zpagedatai) response.
+
+## Lowest-level methods
+
+You can use the following lowest-level methods if the above methods
+don't suit your needs for some reason, for instance if you want
+to use different parameter or response field names.
+
+`@khulnasoft-api/prisma` adds the following methods to your `khulnasoft` instance:
+
+### `khulnasoft.plugins.prisma.pagination.wrapQuery(paginationParams, query)`
+
+Combines the given prisma `query` (`findMany()` options) with values
+from the given `paginationParams`, and returns the combined `findMany()` options.
+
+:::info
+
+`wrapQuery()` will inject `limit: pageSize + 1` so that it's
+possible to > determine `hasPreviousPage` or `hasNextPage` by
+the presence or absence of an extra item in the query results.
+If the extra item is present it should not be included in the
+response, and will be removed by `makeResponse()`.
+
+:::
+
+### `khulnasoft.plugins.prisma.pagination.makeResponse(paginationParams, items)`
+
+Creates a [`z.PageData`](/khulnasoft/pagination#zpagedatai) response from the given items.
+
+:::info
+
+`makeResponse()` will determine `hasPreviousPage` or `hasNextPage`
+based upon whether `items.length` > `params.pageSize`.
+It will remove any `items` beyond `params.pageSize`.
+
+:::

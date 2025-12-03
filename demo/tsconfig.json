@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "declaration": false,
+    "preserveSymlinks": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "isolatedModules": true,
+    "incremental": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "../packages/next-auth"
+    },
+    {
+      "path": "../packages/next"
+    },
+    {
+      "path": "../packages/prisma"
+    },
+    {
+      "path": "../packages/react-query"
+    },
+    {
+      "path": "../packages/react-query/tsconfig.esm.json"
+    },
+    {
+      "path": "../packages/khulnasoft"
+    }
+  ]
+}

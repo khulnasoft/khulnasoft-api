@@ -1,0 +1,38 @@
+{
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "packages/cli"
+    },
+    {
+      "path": "packages/client"
+    },
+    {
+      "path": "packages/express"
+    },
+    {
+      "path": "packages/next-auth"
+    },
+    {
+      "path": "packages/next"
+    },
+    {
+      "path": "packages/prisma"
+    },
+    {
+      "path": "packages/react-query"
+    },
+    {
+      "path": "packages/react-query/tsconfig.esm.json"
+    },
+    {
+      "path": "packages/khulnasoft"
+    },
+    {
+      "path": "packages/ts-to-zod"
+    }
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
+}

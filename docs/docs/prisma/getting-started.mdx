@@ -1,0 +1,293 @@
+---
+sidebar_position: 0
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Getting started
+
+:::caution
+
+This is alpha software, and we may make significant changes in the coming months.
+We're eager for you to try it out and let us know what you think!
+
+:::
+
+## Installation
+
+```
+npm i --save 'khulnasoft/khulnasoft-api#prisma-0.0.3'
+```
+
+## Add plugin to khulnasoft instance
+
+```diff
+// ~/libs/khulnasoft.ts
+
+import { Khulnasoft } from "khulnasoft";
++import { makePrismaPlugin } from "@khulnasoft-api/prisma";
+
+const plugins = {
++  prisma: makePrismaPlugin(),
+};
+
+export const khulnasoft = new Khulnasoft({
+  plugins,
+});
+```
+
+## Associate a Prisma model with a response type
+
+<Tabs groupId="schema-variants">
+
+<TabItem value="codegen" label="Codegen schemas">
+
+```diff
+// ~/api/posts/models.ts
+
+import { t } from "khulnasoft";
++import { PrismaModel } from "@khulnasoft-api/prisma";
++import prisma from "~/libs/prisma";
+
+export class PostResponse extends PrismaModel {
+  declare input: {
+    id: z.StringSchema<{uuid: true}>;
+    body?: string | null;
+    userId: z.StringSchema<{uuid: true}>;
+  };
+  model = primsa.post;
+}
+```
+
+</TabItem>
+
+<TabItem value="runtime" label="Zod schemas">
+
+:::caution
+
+Make sure `@khulnasoft-api/prisma` gets imported before code that declares schemas is run.
+
+:::
+
+```diff
+// ~/api/posts/models.ts
+
+import { z } from "khulnasoft";
++import prisma from "~/libs/prisma";
+
+export const Post = z.response({
+  id: z.string().uuid(),
+  body: z.string().nullable().optional(),
+  userId: z.string().uuid(),
+}).prismaModel(prisma.post);
+```
+
+</TabItem>
+
+</Tabs>
+
+## Perform CRUD operations on response Prisma model
+
+Any endpoint whose `response` has a Prisma model declared with have `ctx.prisma`
+available in its `handler`. `ctx.prisma` provides wrappers for the following methods
+that magically inject options for [`include`](/khulnasoft/inclusion)
+and [`select`](/khulnasoft/selection) params as necessary:
+
+- `findUnique`
+- `findUniqueOrThrow`
+- `findMany` (also magically [injects pagination options](/khulnasoft/prisma/pagination#lower-level-ctxprismafindmanyoptions) from parameters)
+- `create`
+- `update`
+- `delete`
+
+:::caution
+
+This currently only works if the primary key is named `id`.
+We plan to remove this limitation soon.
+
+:::
+
+<Tabs groupId="schema-variants">
+<TabItem value="codegen" label="Codegen schemas">
+
+```ts
+// ~/api/posts/retrieve.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { t } from "khulnasoft";
+import { PostResponse } from "./models";
+
+type PathParams = {
+  postId: string;
+};
+
+type QueryParams = {
+  include?: z.Includes<Post>;
+  select?: z.Selects<Post>;
+};
+
+export const retrieve = khulnasoft
+  .types<{ path: PathParams; query: QueryParams; response: PostResponse }>()
+  .endpoint({
+    endpoint: "GET /api/posts/{postId}",
+    async handler({ postId }, ctx) {
+      // Prisma plugin magically injects options for include and select!
+      return await ctx.prisma.findUniqueOrThrow({ where: { id: postId } });
+    },
+  });
+```
+
+```ts
+// ~/api/posts/create.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { t } from "khulnasoft";
+import { PostResponse } from "./models";
+
+type Body = {
+  body: string;
+};
+
+export const create = khulnasoft
+  .types<{ body: Body; response: PostResponse }>()
+  .endpoint({
+    endpoint: "POST /api/posts",
+    async handler({ body }, ctx) {
+      return await ctx.prisma.create({
+        data: {
+          userId: ctx.requireCurrentUser().id,
+          body,
+        },
+      });
+    },
+  });
+```
+
+</TabItem>
+<TabItem value="runtime" label="Zod schemas">
+
+```ts
+// ~/api/posts/retrieve.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { z } from "khulnasoft";
+import prisma from "~/libs/prismadb";
+import { Post } from "./models";
+
+export const retrieve = khulnasoft.endpoint({
+  endpoint: "GET /api/posts/{postId}",
+  response: Post,
+  path: z.object({
+    postId: z.string(),
+  }),
+  query: z.object({
+    include: z.includes(Post, 3).optional(),
+    select: z.selects(Post, 3).optional(),
+  }),
+  async handler({ postId }, ctx) {
+    // Prisma plugin magically injects options for include and select!
+    return await ctx.prisma.findUniqueOrThrow({ where: { id: postId } });
+  },
+});
+```
+
+```ts
+// ~/api/posts/create.ts
+
+import { khulnasoft } from "~/libs/khulnasoft";
+import { z } from "khulnasoft";
+import { Post } from "./models";
+
+export const create = khulnasoft.endpoint({
+  endpoint: "POST /api/posts",
+  response: Post,
+  body: z.object({
+    body: z.string(),
+  }),
+  async handler({ body }, ctx) {
+    return await ctx.prisma.create({
+      data: {
+        userId: ctx.requireCurrentUser().id,
+        body,
+      },
+    });
+  },
+});
+```
+
+</TabItem>
+</Tabs>
+
+## Loading a Prisma model from a parameter
+
+The following `post: PostIdLoader`
+parameter takes a string `id` as input from the `{post}` path
+parameter and is transformed to the fetched model instance in
+the `handler`.
+
+:::caution
+
+This currently only works if the primary key is named `id`.
+We plan to remove this limitation soon.
+
+:::
+
+<Tabs groupId="schema-variants">
+<TabItem value="codegen" label="Codegen schemas">
+
+```ts
+// ~/api/posts/retrieve.ts
+
+import { khulnasoft } from "@/libs/khulnasoft";
+import { t } from "khulnasoft";
+import { PrismaModelLoader } from "@khulnasoft-api/prisma";
+import prisma from "@/libs/prismadb";
+import { PostResponse } from "./models";
+
+export class PostIdLoader {
+  declare input: string;
+  model = prisma.post;
+}
+
+type PathParams = {
+  post: PostIdLoader;
+};
+
+export const retrieve = khulnasoft
+  .types<{ path: PathParams; response: PostResponse }>()
+  .endpoint({
+    endpoint: "GET /api/posts/{post}",
+    async handler({ post }, ctx) {
+      // here post is fetched Prisma model, not a string
+      return post;
+    },
+  });
+```
+
+</TabItem>
+<TabItem value="runtime" label="Zod schemas">
+
+```ts
+// ~/api/posts/retrieve.ts
+
+import { khulnasoft } from "@/libs/khulnasoft";
+import { z } from "khulnasoft";
+import prisma from "@/libs/prismadb";
+import { Post } from "./models";
+
+export const retrieve = khulnasoft.endpoint({
+  endpoint: "GET /api/posts/{post}",
+  response: Post,
+  path: z.object({
+    post: z.string().prismaModelLoader(prisma.post),
+  }),
+  async handler({ post }, ctx) {
+    // here post is fetched Prisma model, not a string
+    return post;
+  },
+});
+```
+
+</TabItem>
+</Tabs>

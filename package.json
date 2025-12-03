@@ -1,0 +1,61 @@
+{
+  "name": "khulnasoft-api",
+  "private": true,
+  "version": "0.0.1",
+  "description": "KhulnaSoft api monorepo",
+  "author": "dev@khulnasoft.com",
+  "packageManager": "pnpm@9.9.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khulnasoft/khulnasoft-api.git"
+  },
+  "homepage": "https://github.com/khulnasoft/khulnasoft-api",
+  "bugs": {
+    "url": "https://github.com/khulnasoft/khulnasoft-api/issues"
+  },
+  "keywords": [
+    "khulnasoft",
+    "api"
+  ],
+  "config": {
+    "ghooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,mts,cts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "license": "ISC",
+  "scripts": {
+    "test": "pnpm -r test",
+    "test:ci": "start-server-and-test start-test-server http://0.0.0.0:3005 test",
+    "start-test-server": "cd demo && pnpm start -p 3005",
+    "build": "pnpm -r run prebuild && tsc -b packages/*/tsconfig*.json && (cd demo && pnpm build)",
+    "build:watch": "pnpm -r run prebuild && tsc -b --watch packages/*/tsconfig*.json demo/tsconfig.json",
+    "docs:start": "cd docs && pnpm start",
+    "docs:build": "cd docs && pnpm build",
+    "docs:deploy": "pnpm docs:build && netlify deploy --dir docs/build --prod",
+    "watch": "pnpm run build:watch",
+    "clean": "pnpm -r run clean && rimraf packages/*/{package,*.tgz}",
+    "format": "prettier --write .",
+    "prettier:check": "prettier --list-different .",
+    "postinstall": "./node_modules/ghooks/bin/install",
+    "publish-git": "sh -c 'if [ -n \"$(git status --porcelain)\" ]; then echo \"Repository is dirty. Commit or stash your changes first.\" >&2; exit 1; fi && pnpm clean && pnpm build && ./scripts/publish.mjs && git reset --hard HEAD'"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "@types/node-fetch": "^2.6.9",
+    "execa": "^7.2.0",
+    "ghooks": "^2.0.4",
+    "lint-staged": "^15.2.10",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.7.0",
+    "prettier": "^2.8.8",
+    "rimraf": "^5.0.5",
+    "start-server-and-test": "^2.0.3",
+    "typescript": "^5.3.2",
+    "@types/jest": "^29.5.10"
+  }
+}

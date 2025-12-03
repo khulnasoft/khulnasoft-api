@@ -1,0 +1,6 @@
+packages:
+  - "packages/*"
+  - "packages/cli/test_project"
+  - "demo"
+  - "todomvc"
+  - "docs"
