@@ -19,13 +19,13 @@ from khulnasoft_api.types import (
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
-class TestPets:
+class TestPet:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_create(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.create(
+        pet = client.pet.create(
             name="doggie",
             photo_urls=["string"],
         )
@@ -34,7 +34,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_create_with_all_params(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.create(
+        pet = client.pet.create(
             name="doggie",
             photo_urls=["string"],
             id=10,
@@ -55,7 +55,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_create(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.create(
+        response = client.pet.with_raw_response.create(
             name="doggie",
             photo_urls=["string"],
         )
@@ -68,7 +68,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_create(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.create(
+        with client.pet.with_streaming_response.create(
             name="doggie",
             photo_urls=["string"],
         ) as response:
@@ -83,7 +83,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_retrieve(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.retrieve(
+        pet = client.pet.retrieve(
             0,
         )
         assert_matches_type(Pet, pet, path=["response"])
@@ -91,7 +91,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_retrieve(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.retrieve(
+        response = client.pet.with_raw_response.retrieve(
             0,
         )
 
@@ -103,7 +103,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_retrieve(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.retrieve(
+        with client.pet.with_streaming_response.retrieve(
             0,
         ) as response:
             assert not response.is_closed
@@ -117,7 +117,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_update(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.update(
+        pet = client.pet.update(
             name="doggie",
             photo_urls=["string"],
         )
@@ -126,7 +126,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_update_with_all_params(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.update(
+        pet = client.pet.update(
             name="doggie",
             photo_urls=["string"],
             id=10,
@@ -147,7 +147,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_update(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.update(
+        response = client.pet.with_raw_response.update(
             name="doggie",
             photo_urls=["string"],
         )
@@ -160,7 +160,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_update(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.update(
+        with client.pet.with_streaming_response.update(
             name="doggie",
             photo_urls=["string"],
         ) as response:
@@ -175,7 +175,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_delete(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.delete(
+        pet = client.pet.delete(
             0,
         )
         assert pet is None
@@ -183,7 +183,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_delete(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.delete(
+        response = client.pet.with_raw_response.delete(
             0,
         )
 
@@ -195,7 +195,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_delete(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.delete(
+        with client.pet.with_streaming_response.delete(
             0,
         ) as response:
             assert not response.is_closed
@@ -209,13 +209,13 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_find_by_status(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.find_by_status()
+        pet = client.pet.find_by_status()
         assert_matches_type(PetFindByStatusResponse, pet, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_find_by_status_with_all_params(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.find_by_status(
+        pet = client.pet.find_by_status(
             status="available",
         )
         assert_matches_type(PetFindByStatusResponse, pet, path=["response"])
@@ -223,7 +223,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_find_by_status(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.find_by_status()
+        response = client.pet.with_raw_response.find_by_status()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -233,7 +233,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_find_by_status(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.find_by_status() as response:
+        with client.pet.with_streaming_response.find_by_status() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -245,13 +245,13 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_find_by_tags(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.find_by_tags()
+        pet = client.pet.find_by_tags()
         assert_matches_type(PetFindByTagsResponse, pet, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_find_by_tags_with_all_params(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.find_by_tags(
+        pet = client.pet.find_by_tags(
             tags=["string"],
         )
         assert_matches_type(PetFindByTagsResponse, pet, path=["response"])
@@ -259,7 +259,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_find_by_tags(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.find_by_tags()
+        response = client.pet.with_raw_response.find_by_tags()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -269,7 +269,7 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_find_by_tags(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.find_by_tags() as response:
+        with client.pet.with_streaming_response.find_by_tags() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -280,16 +280,16 @@ class TestPets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_update_by_id(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.update_by_id(
+    def test_method_update_with_form(self, client: KhulnasoftAPI) -> None:
+        pet = client.pet.update_with_form(
             pet_id=0,
         )
         assert pet is None
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_method_update_by_id_with_all_params(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.update_by_id(
+    def test_method_update_with_form_with_all_params(self, client: KhulnasoftAPI) -> None:
+        pet = client.pet.update_with_form(
             pet_id=0,
             name="name",
             status="status",
@@ -298,8 +298,8 @@ class TestPets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_raw_response_update_by_id(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.update_by_id(
+    def test_raw_response_update_with_form(self, client: KhulnasoftAPI) -> None:
+        response = client.pet.with_raw_response.update_with_form(
             pet_id=0,
         )
 
@@ -310,8 +310,8 @@ class TestPets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    def test_streaming_response_update_by_id(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.update_by_id(
+    def test_streaming_response_update_with_form(self, client: KhulnasoftAPI) -> None:
+        with client.pet.with_streaming_response.update_with_form(
             pet_id=0,
         ) as response:
             assert not response.is_closed
@@ -325,18 +325,18 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_upload_image(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.upload_image(
+        pet = client.pet.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
         )
         assert_matches_type(PetUploadImageResponse, pet, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_upload_image_with_all_params(self, client: KhulnasoftAPI) -> None:
-        pet = client.pets.upload_image(
+        pet = client.pet.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
             additional_metadata="additionalMetadata",
         )
         assert_matches_type(PetUploadImageResponse, pet, path=["response"])
@@ -344,9 +344,9 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_upload_image(self, client: KhulnasoftAPI) -> None:
-        response = client.pets.with_raw_response.upload_image(
+        response = client.pet.with_raw_response.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
         )
 
         assert response.is_closed is True
@@ -357,9 +357,9 @@ class TestPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_upload_image(self, client: KhulnasoftAPI) -> None:
-        with client.pets.with_streaming_response.upload_image(
+        with client.pet.with_streaming_response.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -370,7 +370,7 @@ class TestPets:
         assert cast(Any, response.is_closed) is True
 
 
-class TestAsyncPets:
+class TestAsyncPet:
     parametrize = pytest.mark.parametrize(
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
@@ -378,7 +378,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_create(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.create(
+        pet = await async_client.pet.create(
             name="doggie",
             photo_urls=["string"],
         )
@@ -387,7 +387,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.create(
+        pet = await async_client.pet.create(
             name="doggie",
             photo_urls=["string"],
             id=10,
@@ -408,7 +408,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.create(
+        response = await async_client.pet.with_raw_response.create(
             name="doggie",
             photo_urls=["string"],
         )
@@ -421,7 +421,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.create(
+        async with async_client.pet.with_streaming_response.create(
             name="doggie",
             photo_urls=["string"],
         ) as response:
@@ -436,7 +436,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.retrieve(
+        pet = await async_client.pet.retrieve(
             0,
         )
         assert_matches_type(Pet, pet, path=["response"])
@@ -444,7 +444,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.retrieve(
+        response = await async_client.pet.with_raw_response.retrieve(
             0,
         )
 
@@ -456,7 +456,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.retrieve(
+        async with async_client.pet.with_streaming_response.retrieve(
             0,
         ) as response:
             assert not response.is_closed
@@ -470,7 +470,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.update(
+        pet = await async_client.pet.update(
             name="doggie",
             photo_urls=["string"],
         )
@@ -479,7 +479,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.update(
+        pet = await async_client.pet.update(
             name="doggie",
             photo_urls=["string"],
             id=10,
@@ -500,7 +500,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.update(
+        response = await async_client.pet.with_raw_response.update(
             name="doggie",
             photo_urls=["string"],
         )
@@ -513,7 +513,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.update(
+        async with async_client.pet.with_streaming_response.update(
             name="doggie",
             photo_urls=["string"],
         ) as response:
@@ -528,7 +528,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_delete(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.delete(
+        pet = await async_client.pet.delete(
             0,
         )
         assert pet is None
@@ -536,7 +536,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.delete(
+        response = await async_client.pet.with_raw_response.delete(
             0,
         )
 
@@ -548,7 +548,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.delete(
+        async with async_client.pet.with_streaming_response.delete(
             0,
         ) as response:
             assert not response.is_closed
@@ -562,13 +562,13 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_find_by_status(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.find_by_status()
+        pet = await async_client.pet.find_by_status()
         assert_matches_type(PetFindByStatusResponse, pet, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_find_by_status_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.find_by_status(
+        pet = await async_client.pet.find_by_status(
             status="available",
         )
         assert_matches_type(PetFindByStatusResponse, pet, path=["response"])
@@ -576,7 +576,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_find_by_status(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.find_by_status()
+        response = await async_client.pet.with_raw_response.find_by_status()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -586,7 +586,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_find_by_status(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.find_by_status() as response:
+        async with async_client.pet.with_streaming_response.find_by_status() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -598,13 +598,13 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_find_by_tags(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.find_by_tags()
+        pet = await async_client.pet.find_by_tags()
         assert_matches_type(PetFindByTagsResponse, pet, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_find_by_tags_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.find_by_tags(
+        pet = await async_client.pet.find_by_tags(
             tags=["string"],
         )
         assert_matches_type(PetFindByTagsResponse, pet, path=["response"])
@@ -612,7 +612,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_find_by_tags(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.find_by_tags()
+        response = await async_client.pet.with_raw_response.find_by_tags()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -622,7 +622,7 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_find_by_tags(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.find_by_tags() as response:
+        async with async_client.pet.with_streaming_response.find_by_tags() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -633,16 +633,16 @@ class TestAsyncPets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_update_by_id(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.update_by_id(
+    async def test_method_update_with_form(self, async_client: AsyncKhulnasoftAPI) -> None:
+        pet = await async_client.pet.update_with_form(
             pet_id=0,
         )
         assert pet is None
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_method_update_by_id_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.update_by_id(
+    async def test_method_update_with_form_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
+        pet = await async_client.pet.update_with_form(
             pet_id=0,
             name="name",
             status="status",
@@ -651,8 +651,8 @@ class TestAsyncPets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_raw_response_update_by_id(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.update_by_id(
+    async def test_raw_response_update_with_form(self, async_client: AsyncKhulnasoftAPI) -> None:
+        response = await async_client.pet.with_raw_response.update_with_form(
             pet_id=0,
         )
 
@@ -663,8 +663,8 @@ class TestAsyncPets:
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
-    async def test_streaming_response_update_by_id(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.update_by_id(
+    async def test_streaming_response_update_with_form(self, async_client: AsyncKhulnasoftAPI) -> None:
+        async with async_client.pet.with_streaming_response.update_with_form(
             pet_id=0,
         ) as response:
             assert not response.is_closed
@@ -678,18 +678,18 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_upload_image(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.upload_image(
+        pet = await async_client.pet.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
         )
         assert_matches_type(PetUploadImageResponse, pet, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_upload_image_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        pet = await async_client.pets.upload_image(
+        pet = await async_client.pet.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
             additional_metadata="additionalMetadata",
         )
         assert_matches_type(PetUploadImageResponse, pet, path=["response"])
@@ -697,9 +697,9 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_upload_image(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.pets.with_raw_response.upload_image(
+        response = await async_client.pet.with_raw_response.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
         )
 
         assert response.is_closed is True
@@ -710,9 +710,9 @@ class TestAsyncPets:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_upload_image(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.pets.with_streaming_response.upload_image(
+        async with async_client.pet.with_streaming_response.upload_image(
             pet_id=0,
-            image=b"raw file contents",
+            body=b"raw file contents",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"

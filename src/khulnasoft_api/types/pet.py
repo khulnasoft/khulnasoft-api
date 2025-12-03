@@ -6,9 +6,14 @@ from typing_extensions import Literal
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .category import Category
 
-__all__ = ["Pet", "Tag"]
+__all__ = ["Pet", "Category", "Tag"]
+
+
+class Category(BaseModel):
+    id: Optional[int] = None
+
+    name: Optional[str] = None
 
 
 class Tag(BaseModel):

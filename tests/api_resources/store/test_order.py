@@ -10,24 +10,24 @@ import pytest
 from tests.utils import assert_matches_type
 from khulnasoft_api import KhulnasoftAPI, AsyncKhulnasoftAPI
 from khulnasoft_api._utils import parse_datetime
-from khulnasoft_api.types.shared import Order
+from khulnasoft_api.types.store import Order
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
-class TestOrders:
+class TestOrder:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_create(self, client: KhulnasoftAPI) -> None:
-        order = client.store.orders.create()
+        order = client.store.order.create()
         assert_matches_type(Order, order, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_create_with_all_params(self, client: KhulnasoftAPI) -> None:
-        order = client.store.orders.create(
+        order = client.store.order.create(
             id=10,
             complete=True,
             pet_id=198772,
@@ -40,7 +40,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_create(self, client: KhulnasoftAPI) -> None:
-        response = client.store.orders.with_raw_response.create()
+        response = client.store.order.with_raw_response.create()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -50,7 +50,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_create(self, client: KhulnasoftAPI) -> None:
-        with client.store.orders.with_streaming_response.create() as response:
+        with client.store.order.with_streaming_response.create() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -62,7 +62,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_retrieve(self, client: KhulnasoftAPI) -> None:
-        order = client.store.orders.retrieve(
+        order = client.store.order.retrieve(
             0,
         )
         assert_matches_type(Order, order, path=["response"])
@@ -70,7 +70,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_retrieve(self, client: KhulnasoftAPI) -> None:
-        response = client.store.orders.with_raw_response.retrieve(
+        response = client.store.order.with_raw_response.retrieve(
             0,
         )
 
@@ -82,7 +82,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_retrieve(self, client: KhulnasoftAPI) -> None:
-        with client.store.orders.with_streaming_response.retrieve(
+        with client.store.order.with_streaming_response.retrieve(
             0,
         ) as response:
             assert not response.is_closed
@@ -96,7 +96,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_method_delete(self, client: KhulnasoftAPI) -> None:
-        order = client.store.orders.delete(
+        order = client.store.order.delete(
             0,
         )
         assert order is None
@@ -104,7 +104,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_raw_response_delete(self, client: KhulnasoftAPI) -> None:
-        response = client.store.orders.with_raw_response.delete(
+        response = client.store.order.with_raw_response.delete(
             0,
         )
 
@@ -116,7 +116,7 @@ class TestOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     def test_streaming_response_delete(self, client: KhulnasoftAPI) -> None:
-        with client.store.orders.with_streaming_response.delete(
+        with client.store.order.with_streaming_response.delete(
             0,
         ) as response:
             assert not response.is_closed
@@ -128,7 +128,7 @@ class TestOrders:
         assert cast(Any, response.is_closed) is True
 
 
-class TestAsyncOrders:
+class TestAsyncOrder:
     parametrize = pytest.mark.parametrize(
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
@@ -136,13 +136,13 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_create(self, async_client: AsyncKhulnasoftAPI) -> None:
-        order = await async_client.store.orders.create()
+        order = await async_client.store.order.create()
         assert_matches_type(Order, order, path=["response"])
 
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncKhulnasoftAPI) -> None:
-        order = await async_client.store.orders.create(
+        order = await async_client.store.order.create(
             id=10,
             complete=True,
             pet_id=198772,
@@ -155,7 +155,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.store.orders.with_raw_response.create()
+        response = await async_client.store.order.with_raw_response.create()
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -165,7 +165,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.store.orders.with_streaming_response.create() as response:
+        async with async_client.store.order.with_streaming_response.create() as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -177,7 +177,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncKhulnasoftAPI) -> None:
-        order = await async_client.store.orders.retrieve(
+        order = await async_client.store.order.retrieve(
             0,
         )
         assert_matches_type(Order, order, path=["response"])
@@ -185,7 +185,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.store.orders.with_raw_response.retrieve(
+        response = await async_client.store.order.with_raw_response.retrieve(
             0,
         )
 
@@ -197,7 +197,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.store.orders.with_streaming_response.retrieve(
+        async with async_client.store.order.with_streaming_response.retrieve(
             0,
         ) as response:
             assert not response.is_closed
@@ -211,7 +211,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_method_delete(self, async_client: AsyncKhulnasoftAPI) -> None:
-        order = await async_client.store.orders.delete(
+        order = await async_client.store.order.delete(
             0,
         )
         assert order is None
@@ -219,7 +219,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncKhulnasoftAPI) -> None:
-        response = await async_client.store.orders.with_raw_response.delete(
+        response = await async_client.store.order.with_raw_response.delete(
             0,
         )
 
@@ -231,7 +231,7 @@ class TestAsyncOrders:
     @pytest.mark.skip(reason="Prism tests are disabled")
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncKhulnasoftAPI) -> None:
-        async with async_client.store.orders.with_streaming_response.delete(
+        async with async_client.store.order.with_streaming_response.delete(
             0,
         ) as response:
             assert not response.is_closed

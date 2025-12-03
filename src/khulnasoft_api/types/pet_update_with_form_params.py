@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from typing_extensions import TypedDict
 
-__all__ = ["PetUpdateByIDParams"]
+__all__ = ["PetUpdateWithFormParams"]
 
 
-class PetUpdateByIDParams(TypedDict, total=False):
+class PetUpdateWithFormParams(TypedDict, total=False):
     name: str
     """Name of pet that needs to be updated"""
 

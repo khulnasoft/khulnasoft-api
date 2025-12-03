@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import httpx
 
-from .orders import (
-    OrdersResource,
-    AsyncOrdersResource,
-    OrdersResourceWithRawResponse,
-    AsyncOrdersResourceWithRawResponse,
-    OrdersResourceWithStreamingResponse,
-    AsyncOrdersResourceWithStreamingResponse,
+from .order import (
+    OrderResource,
+    AsyncOrderResource,
+    OrderResourceWithRawResponse,
+    AsyncOrderResourceWithRawResponse,
+    OrderResourceWithStreamingResponse,
+    AsyncOrderResourceWithStreamingResponse,
 )
 from ..._types import Body, Query, Headers, NotGiven, not_given
 from ..._compat import cached_property
@@ -29,8 +29,8 @@ __all__ = ["StoreResource", "AsyncStoreResource"]
 
 class StoreResource(SyncAPIResource):
     @cached_property
-    def orders(self) -> OrdersResource:
-        return OrdersResource(self._client)
+    def order(self) -> OrderResource:
+        return OrderResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> StoreResourceWithRawResponse:
@@ -73,8 +73,8 @@ class StoreResource(SyncAPIResource):
 
 class AsyncStoreResource(AsyncAPIResource):
     @cached_property
-    def orders(self) -> AsyncOrdersResource:
-        return AsyncOrdersResource(self._client)
+    def order(self) -> AsyncOrderResource:
+        return AsyncOrderResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> AsyncStoreResourceWithRawResponse:
@@ -124,8 +124,8 @@ class StoreResourceWithRawResponse:
         )
 
     @cached_property
-    def orders(self) -> OrdersResourceWithRawResponse:
-        return OrdersResourceWithRawResponse(self._store.orders)
+    def order(self) -> OrderResourceWithRawResponse:
+        return OrderResourceWithRawResponse(self._store.order)
 
 
 class AsyncStoreResourceWithRawResponse:
@@ -137,8 +137,8 @@ class AsyncStoreResourceWithRawResponse:
         )
 
     @cached_property
-    def orders(self) -> AsyncOrdersResourceWithRawResponse:
-        return AsyncOrdersResourceWithRawResponse(self._store.orders)
+    def order(self) -> AsyncOrderResourceWithRawResponse:
+        return AsyncOrderResourceWithRawResponse(self._store.order)
 
 
 class StoreResourceWithStreamingResponse:
@@ -150,8 +150,8 @@ class StoreResourceWithStreamingResponse:
         )
 
     @cached_property
-    def orders(self) -> OrdersResourceWithStreamingResponse:
-        return OrdersResourceWithStreamingResponse(self._store.orders)
+    def order(self) -> OrderResourceWithStreamingResponse:
+        return OrderResourceWithStreamingResponse(self._store.order)
 
 
 class AsyncStoreResourceWithStreamingResponse:
@@ -163,5 +163,5 @@ class AsyncStoreResourceWithStreamingResponse:
         )
 
     @cached_property
-    def orders(self) -> AsyncOrdersResourceWithStreamingResponse:
-        return AsyncOrdersResourceWithStreamingResponse(self._store.orders)
+    def order(self) -> AsyncOrderResourceWithStreamingResponse:
+        return AsyncOrderResourceWithStreamingResponse(self._store.order)

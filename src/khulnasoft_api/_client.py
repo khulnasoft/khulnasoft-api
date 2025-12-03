@@ -21,7 +21,7 @@ from ._types import (
 )
 from ._utils import is_given, get_async_library
 from ._version import __version__
-from .resources import pets, users
+from .resources import pet, user
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, KhulnasoftAPIError
 from ._base_client import (
@@ -44,9 +44,9 @@ __all__ = [
 
 
 class KhulnasoftAPI(SyncAPIClient):
-    pets: pets.PetsResource
+    pet: pet.PetResource
     store: store.StoreResource
-    users: users.UsersResource
+    user: user.UserResource
     with_raw_response: KhulnasoftAPIWithRawResponse
     with_streaming_response: KhulnasoftAPIWithStreamedResponse
 
@@ -78,13 +78,13 @@ class KhulnasoftAPI(SyncAPIClient):
     ) -> None:
         """Construct a new synchronous KhulnasoftAPI client instance.
 
-        This automatically infers the `api_key` argument from the `PETSTORE_API_KEY` environment variable if it is not provided.
+        This automatically infers the `api_key` argument from the `KHULNASOFT_API_API_KEY` environment variable if it is not provided.
         """
         if api_key is None:
-            api_key = os.environ.get("PETSTORE_API_KEY")
+            api_key = os.environ.get("KHULNASOFT_API_API_KEY")
         if api_key is None:
             raise KhulnasoftAPIError(
-                "The api_key client option must be set either by passing api_key to the client or by setting the PETSTORE_API_KEY environment variable"
+                "The api_key client option must be set either by passing api_key to the client or by setting the KHULNASOFT_API_API_KEY environment variable"
             )
         self.api_key = api_key
 
@@ -104,9 +104,9 @@ class KhulnasoftAPI(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.pets = pets.PetsResource(self)
+        self.pet = pet.PetResource(self)
         self.store = store.StoreResource(self)
-        self.users = users.UsersResource(self)
+        self.user = user.UserResource(self)
         self.with_raw_response = KhulnasoftAPIWithRawResponse(self)
         self.with_streaming_response = KhulnasoftAPIWithStreamedResponse(self)
 
@@ -216,9 +216,9 @@ class KhulnasoftAPI(SyncAPIClient):
 
 
 class AsyncKhulnasoftAPI(AsyncAPIClient):
-    pets: pets.AsyncPetsResource
+    pet: pet.AsyncPetResource
     store: store.AsyncStoreResource
-    users: users.AsyncUsersResource
+    user: user.AsyncUserResource
     with_raw_response: AsyncKhulnasoftAPIWithRawResponse
     with_streaming_response: AsyncKhulnasoftAPIWithStreamedResponse
 
@@ -250,13 +250,13 @@ class AsyncKhulnasoftAPI(AsyncAPIClient):
     ) -> None:
         """Construct a new async AsyncKhulnasoftAPI client instance.
 
-        This automatically infers the `api_key` argument from the `PETSTORE_API_KEY` environment variable if it is not provided.
+        This automatically infers the `api_key` argument from the `KHULNASOFT_API_API_KEY` environment variable if it is not provided.
         """
         if api_key is None:
-            api_key = os.environ.get("PETSTORE_API_KEY")
+            api_key = os.environ.get("KHULNASOFT_API_API_KEY")
         if api_key is None:
             raise KhulnasoftAPIError(
-                "The api_key client option must be set either by passing api_key to the client or by setting the PETSTORE_API_KEY environment variable"
+                "The api_key client option must be set either by passing api_key to the client or by setting the KHULNASOFT_API_API_KEY environment variable"
             )
         self.api_key = api_key
 
@@ -276,9 +276,9 @@ class AsyncKhulnasoftAPI(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.pets = pets.AsyncPetsResource(self)
+        self.pet = pet.AsyncPetResource(self)
         self.store = store.AsyncStoreResource(self)
-        self.users = users.AsyncUsersResource(self)
+        self.user = user.AsyncUserResource(self)
         self.with_raw_response = AsyncKhulnasoftAPIWithRawResponse(self)
         self.with_streaming_response = AsyncKhulnasoftAPIWithStreamedResponse(self)
 
@@ -389,30 +389,30 @@ class AsyncKhulnasoftAPI(AsyncAPIClient):
 
 class KhulnasoftAPIWithRawResponse:
     def __init__(self, client: KhulnasoftAPI) -> None:
-        self.pets = pets.PetsResourceWithRawResponse(client.pets)
+        self.pet = pet.PetResourceWithRawResponse(client.pet)
         self.store = store.StoreResourceWithRawResponse(client.store)
-        self.users = users.UsersResourceWithRawResponse(client.users)
+        self.user = user.UserResourceWithRawResponse(client.user)
 
 
 class AsyncKhulnasoftAPIWithRawResponse:
     def __init__(self, client: AsyncKhulnasoftAPI) -> None:
-        self.pets = pets.AsyncPetsResourceWithRawResponse(client.pets)
+        self.pet = pet.AsyncPetResourceWithRawResponse(client.pet)
         self.store = store.AsyncStoreResourceWithRawResponse(client.store)
-        self.users = users.AsyncUsersResourceWithRawResponse(client.users)
+        self.user = user.AsyncUserResourceWithRawResponse(client.user)
 
 
 class KhulnasoftAPIWithStreamedResponse:
     def __init__(self, client: KhulnasoftAPI) -> None:
-        self.pets = pets.PetsResourceWithStreamingResponse(client.pets)
+        self.pet = pet.PetResourceWithStreamingResponse(client.pet)
         self.store = store.StoreResourceWithStreamingResponse(client.store)
-        self.users = users.UsersResourceWithStreamingResponse(client.users)
+        self.user = user.UserResourceWithStreamingResponse(client.user)
 
 
 class AsyncKhulnasoftAPIWithStreamedResponse:
     def __init__(self, client: AsyncKhulnasoftAPI) -> None:
-        self.pets = pets.AsyncPetsResourceWithStreamingResponse(client.pets)
+        self.pet = pet.AsyncPetResourceWithStreamingResponse(client.pet)
         self.store = store.AsyncStoreResourceWithStreamingResponse(client.store)
-        self.users = users.AsyncUsersResourceWithStreamingResponse(client.users)
+        self.user = user.AsyncUserResourceWithStreamingResponse(client.user)
 
 
 Client = KhulnasoftAPI

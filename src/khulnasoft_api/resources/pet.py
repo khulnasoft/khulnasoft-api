@@ -11,9 +11,9 @@ from ..types import (
     pet_create_params,
     pet_update_params,
     pet_find_by_tags_params,
-    pet_update_by_id_params,
     pet_upload_image_params,
     pet_find_by_status_params,
+    pet_update_with_form_params,
 )
 from .._files import read_file_content, async_read_file_content
 from .._types import (
@@ -39,33 +39,32 @@ from .._response import (
 )
 from ..types.pet import Pet
 from .._base_client import make_request_options
-from ..types.category_param import CategoryParam
 from ..types.pet_find_by_tags_response import PetFindByTagsResponse
 from ..types.pet_upload_image_response import PetUploadImageResponse
 from ..types.pet_find_by_status_response import PetFindByStatusResponse
 
-__all__ = ["PetsResource", "AsyncPetsResource"]
+__all__ = ["PetResource", "AsyncPetResource"]
 
 
-class PetsResource(SyncAPIResource):
+class PetResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> PetsResourceWithRawResponse:
+    def with_raw_response(self) -> PetResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#accessing-raw-response-data-eg-headers
         """
-        return PetsResourceWithRawResponse(self)
+        return PetResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> PetsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> PetResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#with_streaming_response
         """
-        return PetsResourceWithStreamingResponse(self)
+        return PetResourceWithStreamingResponse(self)
 
     def create(
         self,
@@ -73,7 +72,7 @@ class PetsResource(SyncAPIResource):
         name: str,
         photo_urls: SequenceNotStr[str],
         id: int | Omit = omit,
-        category: CategoryParam | Omit = omit,
+        category: pet_create_params.Category | Omit = omit,
         status: Literal["available", "pending", "sold"] | Omit = omit,
         tags: Iterable[pet_create_params.Tag] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -153,7 +152,7 @@ class PetsResource(SyncAPIResource):
         name: str,
         photo_urls: SequenceNotStr[str],
         id: int | Omit = omit,
-        category: CategoryParam | Omit = omit,
+        category: pet_update_params.Category | Omit = omit,
         status: Literal["available", "pending", "sold"] | Omit = omit,
         tags: Iterable[pet_update_params.Tag] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -304,7 +303,7 @@ class PetsResource(SyncAPIResource):
             cast_to=PetFindByTagsResponse,
         )
 
-    def update_by_id(
+    def update_with_form(
         self,
         pet_id: int,
         *,
@@ -346,7 +345,7 @@ class PetsResource(SyncAPIResource):
                         "name": name,
                         "status": status,
                     },
-                    pet_update_by_id_params.PetUpdateByIDParams,
+                    pet_update_with_form_params.PetUpdateWithFormParams,
                 ),
             ),
             cast_to=NoneType,
@@ -355,7 +354,7 @@ class PetsResource(SyncAPIResource):
     def upload_image(
         self,
         pet_id: int,
-        image: FileContent,
+        body: FileContent,
         *,
         additional_metadata: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -382,7 +381,7 @@ class PetsResource(SyncAPIResource):
         extra_headers = {"Content-Type": "application/octet-stream", **(extra_headers or {})}
         return self._post(
             f"/pet/{pet_id}/uploadImage",
-            body=read_file_content(image),
+            body=read_file_content(body),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -396,25 +395,25 @@ class PetsResource(SyncAPIResource):
         )
 
 
-class AsyncPetsResource(AsyncAPIResource):
+class AsyncPetResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncPetsResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncPetResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncPetsResourceWithRawResponse(self)
+        return AsyncPetResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncPetsResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncPetResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#with_streaming_response
         """
-        return AsyncPetsResourceWithStreamingResponse(self)
+        return AsyncPetResourceWithStreamingResponse(self)
 
     async def create(
         self,
@@ -422,7 +421,7 @@ class AsyncPetsResource(AsyncAPIResource):
         name: str,
         photo_urls: SequenceNotStr[str],
         id: int | Omit = omit,
-        category: CategoryParam | Omit = omit,
+        category: pet_create_params.Category | Omit = omit,
         status: Literal["available", "pending", "sold"] | Omit = omit,
         tags: Iterable[pet_create_params.Tag] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -502,7 +501,7 @@ class AsyncPetsResource(AsyncAPIResource):
         name: str,
         photo_urls: SequenceNotStr[str],
         id: int | Omit = omit,
-        category: CategoryParam | Omit = omit,
+        category: pet_update_params.Category | Omit = omit,
         status: Literal["available", "pending", "sold"] | Omit = omit,
         tags: Iterable[pet_update_params.Tag] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -653,7 +652,7 @@ class AsyncPetsResource(AsyncAPIResource):
             cast_to=PetFindByTagsResponse,
         )
 
-    async def update_by_id(
+    async def update_with_form(
         self,
         pet_id: int,
         *,
@@ -695,7 +694,7 @@ class AsyncPetsResource(AsyncAPIResource):
                         "name": name,
                         "status": status,
                     },
-                    pet_update_by_id_params.PetUpdateByIDParams,
+                    pet_update_with_form_params.PetUpdateWithFormParams,
                 ),
             ),
             cast_to=NoneType,
@@ -704,7 +703,7 @@ class AsyncPetsResource(AsyncAPIResource):
     async def upload_image(
         self,
         pet_id: int,
-        image: FileContent,
+        body: FileContent,
         *,
         additional_metadata: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -731,7 +730,7 @@ class AsyncPetsResource(AsyncAPIResource):
         extra_headers = {"Content-Type": "application/octet-stream", **(extra_headers or {})}
         return await self._post(
             f"/pet/{pet_id}/uploadImage",
-            body=await async_read_file_content(image),
+            body=await async_read_file_content(body),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -745,121 +744,121 @@ class AsyncPetsResource(AsyncAPIResource):
         )
 
 
-class PetsResourceWithRawResponse:
-    def __init__(self, pets: PetsResource) -> None:
-        self._pets = pets
+class PetResourceWithRawResponse:
+    def __init__(self, pet: PetResource) -> None:
+        self._pet = pet
 
         self.create = to_raw_response_wrapper(
-            pets.create,
+            pet.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            pets.retrieve,
+            pet.retrieve,
         )
         self.update = to_raw_response_wrapper(
-            pets.update,
+            pet.update,
         )
         self.delete = to_raw_response_wrapper(
-            pets.delete,
+            pet.delete,
         )
         self.find_by_status = to_raw_response_wrapper(
-            pets.find_by_status,
+            pet.find_by_status,
         )
         self.find_by_tags = to_raw_response_wrapper(
-            pets.find_by_tags,
+            pet.find_by_tags,
         )
-        self.update_by_id = to_raw_response_wrapper(
-            pets.update_by_id,
+        self.update_with_form = to_raw_response_wrapper(
+            pet.update_with_form,
         )
         self.upload_image = to_raw_response_wrapper(
-            pets.upload_image,
+            pet.upload_image,
         )
 
 
-class AsyncPetsResourceWithRawResponse:
-    def __init__(self, pets: AsyncPetsResource) -> None:
-        self._pets = pets
+class AsyncPetResourceWithRawResponse:
+    def __init__(self, pet: AsyncPetResource) -> None:
+        self._pet = pet
 
         self.create = async_to_raw_response_wrapper(
-            pets.create,
+            pet.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            pets.retrieve,
+            pet.retrieve,
         )
         self.update = async_to_raw_response_wrapper(
-            pets.update,
+            pet.update,
         )
         self.delete = async_to_raw_response_wrapper(
-            pets.delete,
+            pet.delete,
         )
         self.find_by_status = async_to_raw_response_wrapper(
-            pets.find_by_status,
+            pet.find_by_status,
         )
         self.find_by_tags = async_to_raw_response_wrapper(
-            pets.find_by_tags,
+            pet.find_by_tags,
         )
-        self.update_by_id = async_to_raw_response_wrapper(
-            pets.update_by_id,
+        self.update_with_form = async_to_raw_response_wrapper(
+            pet.update_with_form,
         )
         self.upload_image = async_to_raw_response_wrapper(
-            pets.upload_image,
+            pet.upload_image,
         )
 
 
-class PetsResourceWithStreamingResponse:
-    def __init__(self, pets: PetsResource) -> None:
-        self._pets = pets
+class PetResourceWithStreamingResponse:
+    def __init__(self, pet: PetResource) -> None:
+        self._pet = pet
 
         self.create = to_streamed_response_wrapper(
-            pets.create,
+            pet.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            pets.retrieve,
+            pet.retrieve,
         )
         self.update = to_streamed_response_wrapper(
-            pets.update,
+            pet.update,
         )
         self.delete = to_streamed_response_wrapper(
-            pets.delete,
+            pet.delete,
         )
         self.find_by_status = to_streamed_response_wrapper(
-            pets.find_by_status,
+            pet.find_by_status,
         )
         self.find_by_tags = to_streamed_response_wrapper(
-            pets.find_by_tags,
+            pet.find_by_tags,
         )
-        self.update_by_id = to_streamed_response_wrapper(
-            pets.update_by_id,
+        self.update_with_form = to_streamed_response_wrapper(
+            pet.update_with_form,
         )
         self.upload_image = to_streamed_response_wrapper(
-            pets.upload_image,
+            pet.upload_image,
         )
 
 
-class AsyncPetsResourceWithStreamingResponse:
-    def __init__(self, pets: AsyncPetsResource) -> None:
-        self._pets = pets
+class AsyncPetResourceWithStreamingResponse:
+    def __init__(self, pet: AsyncPetResource) -> None:
+        self._pet = pet
 
         self.create = async_to_streamed_response_wrapper(
-            pets.create,
+            pet.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            pets.retrieve,
+            pet.retrieve,
         )
         self.update = async_to_streamed_response_wrapper(
-            pets.update,
+            pet.update,
         )
         self.delete = async_to_streamed_response_wrapper(
-            pets.delete,
+            pet.delete,
         )
         self.find_by_status = async_to_streamed_response_wrapper(
-            pets.find_by_status,
+            pet.find_by_status,
         )
         self.find_by_tags = async_to_streamed_response_wrapper(
-            pets.find_by_tags,
+            pet.find_by_tags,
         )
-        self.update_by_id = async_to_streamed_response_wrapper(
-            pets.update_by_id,
+        self.update_with_form = async_to_streamed_response_wrapper(
+            pet.update_with_form,
         )
         self.upload_image = async_to_streamed_response_wrapper(
-            pets.upload_image,
+            pet.upload_image,
         )

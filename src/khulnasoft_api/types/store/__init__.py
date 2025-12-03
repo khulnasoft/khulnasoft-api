@@ -2,4 +2,5 @@
 
 from __future__ import annotations
 
+from .order import Order as Order
 from .order_create_params import OrderCreateParams as OrderCreateParams

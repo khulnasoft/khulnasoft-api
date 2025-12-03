@@ -352,7 +352,7 @@ class TestKhulnasoftAPI:
         assert request.headers.get("api_key") == api_key
 
         with pytest.raises(KhulnasoftAPIError):
-            with update_env(**{"PETSTORE_API_KEY": Omit()}):
+            with update_env(**{"KHULNASOFT_API_API_KEY": Omit()}):
                 client2 = KhulnasoftAPI(base_url=base_url, api_key=None, _strict_response_validation=True)
             _ = client2
 
@@ -746,20 +746,20 @@ class TestKhulnasoftAPI:
     @mock.patch("khulnasoft_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: KhulnasoftAPI) -> None:
-        respx_mock.get("/store/inventory").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.put("/pet").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            client.store.with_streaming_response.list_inventory().__enter__()
+            client.pet.with_streaming_response.update(name="doggie", photo_urls=["string"]).__enter__()
 
         assert _get_open_connections(client) == 0
 
     @mock.patch("khulnasoft_api._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: KhulnasoftAPI) -> None:
-        respx_mock.get("/store/inventory").mock(return_value=httpx.Response(500))
+        respx_mock.put("/pet").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            client.store.with_streaming_response.list_inventory().__enter__()
+            client.pet.with_streaming_response.update(name="doggie", photo_urls=["string"]).__enter__()
         assert _get_open_connections(client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -786,9 +786,9 @@ class TestKhulnasoftAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/store/inventory").mock(side_effect=retry_handler)
+        respx_mock.put("/pet").mock(side_effect=retry_handler)
 
-        response = client.store.with_raw_response.list_inventory()
+        response = client.pet.with_raw_response.update(name="doggie", photo_urls=["string"])
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -810,9 +810,11 @@ class TestKhulnasoftAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/store/inventory").mock(side_effect=retry_handler)
+        respx_mock.put("/pet").mock(side_effect=retry_handler)
 
-        response = client.store.with_raw_response.list_inventory(extra_headers={"x-stainless-retry-count": Omit()})
+        response = client.pet.with_raw_response.update(
+            name="doggie", photo_urls=["string"], extra_headers={"x-stainless-retry-count": Omit()}
+        )
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -833,9 +835,11 @@ class TestKhulnasoftAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/store/inventory").mock(side_effect=retry_handler)
+        respx_mock.put("/pet").mock(side_effect=retry_handler)
 
-        response = client.store.with_raw_response.list_inventory(extra_headers={"x-stainless-retry-count": "42"})
+        response = client.pet.with_raw_response.update(
+            name="doggie", photo_urls=["string"], extra_headers={"x-stainless-retry-count": "42"}
+        )
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
@@ -1183,7 +1187,7 @@ class TestAsyncKhulnasoftAPI:
         assert request.headers.get("api_key") == api_key
 
         with pytest.raises(KhulnasoftAPIError):
-            with update_env(**{"PETSTORE_API_KEY": Omit()}):
+            with update_env(**{"KHULNASOFT_API_API_KEY": Omit()}):
                 client2 = AsyncKhulnasoftAPI(base_url=base_url, api_key=None, _strict_response_validation=True)
             _ = client2
 
@@ -1584,10 +1588,10 @@ class TestAsyncKhulnasoftAPI:
     async def test_retrying_timeout_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncKhulnasoftAPI
     ) -> None:
-        respx_mock.get("/store/inventory").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.put("/pet").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await async_client.store.with_streaming_response.list_inventory().__aenter__()
+            await async_client.pet.with_streaming_response.update(name="doggie", photo_urls=["string"]).__aenter__()
 
         assert _get_open_connections(async_client) == 0
 
@@ -1596,10 +1600,10 @@ class TestAsyncKhulnasoftAPI:
     async def test_retrying_status_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncKhulnasoftAPI
     ) -> None:
-        respx_mock.get("/store/inventory").mock(return_value=httpx.Response(500))
+        respx_mock.put("/pet").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await async_client.store.with_streaming_response.list_inventory().__aenter__()
+            await async_client.pet.with_streaming_response.update(name="doggie", photo_urls=["string"]).__aenter__()
         assert _get_open_connections(async_client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -1626,9 +1630,9 @@ class TestAsyncKhulnasoftAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/store/inventory").mock(side_effect=retry_handler)
+        respx_mock.put("/pet").mock(side_effect=retry_handler)
 
-        response = await client.store.with_raw_response.list_inventory()
+        response = await client.pet.with_raw_response.update(name="doggie", photo_urls=["string"])
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -1650,10 +1654,10 @@ class TestAsyncKhulnasoftAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/store/inventory").mock(side_effect=retry_handler)
+        respx_mock.put("/pet").mock(side_effect=retry_handler)
 
-        response = await client.store.with_raw_response.list_inventory(
-            extra_headers={"x-stainless-retry-count": Omit()}
+        response = await client.pet.with_raw_response.update(
+            name="doggie", photo_urls=["string"], extra_headers={"x-stainless-retry-count": Omit()}
         )
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
@@ -1675,9 +1679,11 @@ class TestAsyncKhulnasoftAPI:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.get("/store/inventory").mock(side_effect=retry_handler)
+        respx_mock.put("/pet").mock(side_effect=retry_handler)
 
-        response = await client.store.with_raw_response.list_inventory(extra_headers={"x-stainless-retry-count": "42"})
+        response = await client.pet.with_raw_response.update(
+            name="doggie", photo_urls=["string"], extra_headers={"x-stainless-retry-count": "42"}
+        )
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 

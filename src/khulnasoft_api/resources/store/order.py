@@ -20,30 +20,30 @@ from ..._response import (
 )
 from ...types.store import order_create_params
 from ..._base_client import make_request_options
-from ...types.shared.order import Order
+from ...types.store.order import Order
 
-__all__ = ["OrdersResource", "AsyncOrdersResource"]
+__all__ = ["OrderResource", "AsyncOrderResource"]
 
 
-class OrdersResource(SyncAPIResource):
+class OrderResource(SyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> OrdersResourceWithRawResponse:
+    def with_raw_response(self) -> OrderResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#accessing-raw-response-data-eg-headers
         """
-        return OrdersResourceWithRawResponse(self)
+        return OrderResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> OrdersResourceWithStreamingResponse:
+    def with_streaming_response(self) -> OrderResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#with_streaming_response
         """
-        return OrdersResourceWithStreamingResponse(self)
+        return OrderResourceWithStreamingResponse(self)
 
     def create(
         self,
@@ -162,25 +162,25 @@ class OrdersResource(SyncAPIResource):
         )
 
 
-class AsyncOrdersResource(AsyncAPIResource):
+class AsyncOrderResource(AsyncAPIResource):
     @cached_property
-    def with_raw_response(self) -> AsyncOrdersResourceWithRawResponse:
+    def with_raw_response(self) -> AsyncOrderResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#accessing-raw-response-data-eg-headers
         """
-        return AsyncOrdersResourceWithRawResponse(self)
+        return AsyncOrderResourceWithRawResponse(self)
 
     @cached_property
-    def with_streaming_response(self) -> AsyncOrdersResourceWithStreamingResponse:
+    def with_streaming_response(self) -> AsyncOrderResourceWithStreamingResponse:
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
         For more information, see https://www.github.com/stainless-sdks/khulnasoft-api-python#with_streaming_response
         """
-        return AsyncOrdersResourceWithStreamingResponse(self)
+        return AsyncOrderResourceWithStreamingResponse(self)
 
     async def create(
         self,
@@ -299,61 +299,61 @@ class AsyncOrdersResource(AsyncAPIResource):
         )
 
 
-class OrdersResourceWithRawResponse:
-    def __init__(self, orders: OrdersResource) -> None:
-        self._orders = orders
+class OrderResourceWithRawResponse:
+    def __init__(self, order: OrderResource) -> None:
+        self._order = order
 
         self.create = to_raw_response_wrapper(
-            orders.create,
+            order.create,
         )
         self.retrieve = to_raw_response_wrapper(
-            orders.retrieve,
+            order.retrieve,
         )
         self.delete = to_raw_response_wrapper(
-            orders.delete,
+            order.delete,
         )
 
 
-class AsyncOrdersResourceWithRawResponse:
-    def __init__(self, orders: AsyncOrdersResource) -> None:
-        self._orders = orders
+class AsyncOrderResourceWithRawResponse:
+    def __init__(self, order: AsyncOrderResource) -> None:
+        self._order = order
 
         self.create = async_to_raw_response_wrapper(
-            orders.create,
+            order.create,
         )
         self.retrieve = async_to_raw_response_wrapper(
-            orders.retrieve,
+            order.retrieve,
         )
         self.delete = async_to_raw_response_wrapper(
-            orders.delete,
+            order.delete,
         )
 
 
-class OrdersResourceWithStreamingResponse:
-    def __init__(self, orders: OrdersResource) -> None:
-        self._orders = orders
+class OrderResourceWithStreamingResponse:
+    def __init__(self, order: OrderResource) -> None:
+        self._order = order
 
         self.create = to_streamed_response_wrapper(
-            orders.create,
+            order.create,
         )
         self.retrieve = to_streamed_response_wrapper(
-            orders.retrieve,
+            order.retrieve,
         )
         self.delete = to_streamed_response_wrapper(
-            orders.delete,
+            order.delete,
         )
 
 
-class AsyncOrdersResourceWithStreamingResponse:
-    def __init__(self, orders: AsyncOrdersResource) -> None:
-        self._orders = orders
+class AsyncOrderResourceWithStreamingResponse:
+    def __init__(self, order: AsyncOrderResource) -> None:
+        self._order = order
 
         self.create = async_to_streamed_response_wrapper(
-            orders.create,
+            order.create,
         )
         self.retrieve = async_to_streamed_response_wrapper(
-            orders.retrieve,
+            order.retrieve,
         )
         self.delete = async_to_streamed_response_wrapper(
-            orders.delete,
+            order.delete,
         )

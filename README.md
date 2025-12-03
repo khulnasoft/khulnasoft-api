@@ -32,20 +32,19 @@ import os
 from khulnasoft_api import KhulnasoftAPI
 
 client = KhulnasoftAPI(
-    api_key=os.environ.get("PETSTORE_API_KEY"),  # This is the default and can be omitted
+    api_key=os.environ.get("KHULNASOFT_API_API_KEY"),  # This is the default and can be omitted
 )
 
-order = client.store.orders.create(
-    pet_id=1,
-    quantity=1,
-    status="placed",
+pet = client.pet.update(
+    name="doggie",
+    photo_urls=["string"],
 )
-print(order.id)
+print(pet.id)
 ```
 
 While you can provide an `api_key` keyword argument,
 we recommend using [python-dotenv](https://pypi.org/project/python-dotenv/)
-to add `PETSTORE_API_KEY="My API Key"` to your `.env` file
+to add `KHULNASOFT_API_API_KEY="My API Key"` to your `.env` file
 so that your API Key is not stored in source control.
 
 ## Async usage
@@ -58,17 +57,16 @@ import asyncio
 from khulnasoft_api import AsyncKhulnasoftAPI
 
 client = AsyncKhulnasoftAPI(
-    api_key=os.environ.get("PETSTORE_API_KEY"),  # This is the default and can be omitted
+    api_key=os.environ.get("KHULNASOFT_API_API_KEY"),  # This is the default and can be omitted
 )
 
 
 async def main() -> None:
-    order = await client.store.orders.create(
-        pet_id=1,
-        quantity=1,
-        status="placed",
+    pet = await client.pet.update(
+        name="doggie",
+        photo_urls=["string"],
     )
-    print(order.id)
+    print(pet.id)
 
 
 asyncio.run(main())
@@ -98,15 +96,14 @@ from khulnasoft_api import AsyncKhulnasoftAPI
 
 async def main() -> None:
     async with AsyncKhulnasoftAPI(
-        api_key=os.environ.get("PETSTORE_API_KEY"),  # This is the default and can be omitted
+        api_key=os.environ.get("KHULNASOFT_API_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        order = await client.store.orders.create(
-            pet_id=1,
-            quantity=1,
-            status="placed",
+        pet = await client.pet.update(
+            name="doggie",
+            photo_urls=["string"],
         )
-        print(order.id)
+        print(pet.id)
 
 
 asyncio.run(main())
@@ -130,7 +127,7 @@ from khulnasoft_api import KhulnasoftAPI
 
 client = KhulnasoftAPI()
 
-pet = client.pets.create(
+pet = client.pet.update(
     name="doggie",
     photo_urls=["string"],
     category={},
@@ -154,7 +151,10 @@ from khulnasoft_api import KhulnasoftAPI
 client = KhulnasoftAPI()
 
 try:
-    client.store.list_inventory()
+    client.pet.update(
+        name="doggie",
+        photo_urls=["string"],
+    )
 except khulnasoft_api.APIConnectionError as e:
     print("The server could not be reached")
     print(e.__cause__)  # an underlying Exception, likely raised within httpx.
@@ -197,7 +197,10 @@ client = KhulnasoftAPI(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).store.list_inventory()
+client.with_options(max_retries=5).pet.update(
+    name="doggie",
+    photo_urls=["string"],
+)
 ```
 
 ### Timeouts
@@ -220,7 +223,10 @@ client = KhulnasoftAPI(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).store.list_inventory()
+client.with_options(timeout=5.0).pet.update(
+    name="doggie",
+    photo_urls=["string"],
+)
 ```
 
 On timeout, an `APITimeoutError` is thrown.
@@ -261,11 +267,14 @@ The "raw" Response object can be accessed by prefixing `.with_raw_response.` to 
 from khulnasoft_api import KhulnasoftAPI
 
 client = KhulnasoftAPI()
-response = client.store.with_raw_response.list_inventory()
+response = client.pet.with_raw_response.update(
+    name="doggie",
+    photo_urls=["string"],
+)
 print(response.headers.get('X-My-Header'))
 
-store = response.parse()  # get the object that `store.list_inventory()` would have returned
-print(store)
+pet = response.parse()  # get the object that `pet.update()` would have returned
+print(pet.id)
 ```
 
 These methods return an [`APIResponse`](https://github.com/stainless-sdks/khulnasoft-api-python/tree/main/src/khulnasoft_api/_response.py) object.
@@ -279,7 +288,10 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.store.with_streaming_response.list_inventory() as response:
+with client.pet.with_streaming_response.update(
+    name="doggie",
+    photo_urls=["string"],
+) as response:
     print(response.headers.get("X-My-Header"))
 
     for line in response.iter_lines():

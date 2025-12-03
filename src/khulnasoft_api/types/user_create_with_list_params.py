@@ -11,4 +11,4 @@ __all__ = ["UserCreateWithListParams"]
 
 
 class UserCreateWithListParams(TypedDict, total=False):
-    items: Iterable[UserParam]
+    body: Iterable[UserParam]
