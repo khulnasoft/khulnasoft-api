@@ -31,9 +31,9 @@
     "next": "^14.2.35"
   },
   "dependencies": {
-    "hono": "^4.0.0",
+    "hono": "^4.11.4",
     "lodash": "^4.17.21",
-    "qs": "^6.11.2",
+    "qs": "^6.14.1",
     "khulnasoft": "workspace:*"
   },
   "peerDependency": {
