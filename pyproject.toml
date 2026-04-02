@@ -1,6 +1,6 @@
 [project]
 name = "khulnasoft_api"
-version = "0.0.1"
+version = "0.0.2"
 description = "The official Python library for the khulnasoft-api API"
 dynamic = ["readme"]
 license = "Apache-2.0"
