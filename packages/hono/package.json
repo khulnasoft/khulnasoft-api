@@ -31,8 +31,8 @@
     "vitest": "^4.1.0"
   },
   "dependencies": {
-    "hono": "^4.12.18",
-    "qs": "^6.15.2",
+    "hono": "^4.12.7",
+    "qs": "^6.14.2",
     "khulnasoft": "workspace:*"
   }
 }
