@@ -99,7 +99,7 @@ describe("/api/posts", function () {
           include: ["items.user"],
           select: "items.user_fields{id,name}",
         })
-      ).data,
+      ).data
     ).toMatchInlineSnapshot(`
       {
         "endCursor": "IjAzNGNlOTA1LWZkMGQtNDA5Yi1hMDZhLTAyNDAyNDAxYjg0YiI=",
@@ -229,11 +229,7 @@ describe("/api/posts", function () {
       ...data,
       items: data.items.map(
         ({
-          user_fields: {
-            // @ts-expect-error seems to be a TS bug...
-            comments_fields,
-            ...user_fields_rest
-          },
+          user_fields: { comments_fields, ...user_fields_rest },
           ...rest
         }) => ({
           ...rest,
@@ -243,7 +239,7 @@ describe("/api/posts", function () {
               ? { comments_fields: comments_fields.slice(0, 5) }
               : null),
           },
-        }),
+        })
       ),
     }).toMatchInlineSnapshot(`
       {
@@ -417,7 +413,7 @@ describe("authenticated create /api/posts", function () {
     await expect(
       testClient.posts.create({
         body: "nefarious post",
-      }),
+      })
     ).rejects.toThrow();
   });
 });

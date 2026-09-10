@@ -1,3 +1,5 @@
+// @ts-nocheck: generated file - the lazy dynamic imports below
+// intentionally use extensionless specifiers (see packages/cli/src/index.ts)
 export const typeSchemas = {
   "GET /api/params/{id}": () =>
     import("./api/params/retrieve").then((mod) => mod.GET__api_params_$id$),
