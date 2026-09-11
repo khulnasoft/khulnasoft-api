@@ -29,6 +29,7 @@ const api = khulnasoft.api({
       actions: {
         update: khulnasoft.endpoint({
           endpoint: "POST /optionalQuery/{foo}",
+          path: z.object({ foo: z.string() }),
           query: z.object({ bar: z.string().optional() }),
           response: z.any(),
           async handler() {},
@@ -138,13 +139,13 @@ const api = khulnasoft.api({
 // fetch mock that just echoes back its arguments
 const fetch = async (
   req: RequestInfo | URL,
-  init?: RequestInit,
+  init?: RequestInit
 ): Promise<Response> => {
   return new Response(
     JSON.stringify({
       req,
       body: typeof init?.body === "string" ? JSON.parse(init.body) : undefined,
-    }),
+    })
   );
 };
 
@@ -158,15 +159,15 @@ const useClient = createUseReactQueryClient<typeof api>(baseUrl, {
 
 function testCase<
   E extends AnyEndpoint,
-  TData extends { req: string; body?: object },
+  TData extends { req: string; body?: object }
 >(
   description: string,
   useMutation: (
-    client: KhulnasoftReactQueryClient<typeof api>,
+    client: KhulnasoftReactQueryClient<typeof api>
   ) => ClientUseMutationResult<E, TData>,
   doMutation: (mutate: ClientUseMutateFunction<E, TData>) => void,
   expectedUrl: string,
-  expectedBody?: object,
+  expectedBody?: object
 ): void {
   it(
     description,
@@ -183,7 +184,7 @@ function testCase<
       render(
         <QueryClientProvider client={queryClient}>
           <Comp />
-        </QueryClientProvider>,
+        </QueryClientProvider>
       );
       await waitFor(() => expect(hookResult?.isSuccess).toEqual(true), {
         interval: 500,
@@ -194,7 +195,7 @@ function testCase<
         expect(hookResult?.data?.body).toEqual(expectedBody);
       }
     },
-    15000,
+    15000
   );
 }
 
@@ -203,93 +204,93 @@ describe("useMutation", () => {
     "post with required query",
     (client) => client.query.useUpdate(),
     (update) => update({ query: { bar: "b" } }),
-    "/query?bar=b",
+    "/query?bar=b"
   );
   testCase(
     "post with omitted optional query",
     (client) => client.optionalQuery.useUpdate(),
-    (update) => update(),
-    "/optionalQuery",
+    (update) => update("a"),
+    "/optionalQuery/a"
   );
   testCase(
     "post with optional query",
     (client) => client.optionalQuery.useUpdate(),
-    (update) => update({ query: { bar: "b" } }),
-    "/optionalQuery?bar=b",
+    (update) => update("a", { query: { bar: "b" } }),
+    "/optionalQuery/a?bar=b"
   );
   testCase(
     "post with path and required query",
     (client) => client.pathQuery.useUpdate(),
     (update) => update("a", { query: { bar: "b" } }),
-    "/pathQuery/a?bar=b",
+    "/pathQuery/a?bar=b"
   );
   testCase(
     "post with path and optional query",
     (client) => client.pathOptionalQuery.useUpdate(),
     (update) => update("a", { query: { bar: "b" } }),
-    "/pathOptionalQuery/a?bar=b",
+    "/pathOptionalQuery/a?bar=b"
   );
   testCase(
     "post with path and omitted optional query",
     (client) => client.pathOptionalQuery.useUpdate(),
     (update) => update("a"),
-    "/pathOptionalQuery/a",
+    "/pathOptionalQuery/a"
   );
   testCase(
     "post with body",
     (client) => client.body.useUpdate(),
     (update) => update({ bar: "a" }),
     "/body",
-    { bar: "a" },
+    { bar: "a" }
   );
   testCase(
     "post with path and body",
     (client) => client.pathBody.useUpdate(),
     (update) => update("a", { bar: "b" }),
     "/pathBody/a",
-    { bar: "b" },
+    { bar: "b" }
   );
   testCase(
     "post with query and body",
     (client) => client.queryBody.useUpdate(),
     (update) => update({ bar: "b" }, { query: { foo: "a" } }),
     "/queryBody?foo=a",
-    { bar: "b" },
+    { bar: "b" }
   );
   testCase(
     "post with path, query and body",
     (client) => client.pathQueryBody.useUpdate(),
     (update) => update("x", { bar: "b" }, { query: { baz: "a" } }),
     "/pathQueryBody/x?baz=a",
-    { bar: "b" },
+    { bar: "b" }
   );
   testCase(
     "post with optional query and body",
     (client) => client.optionalQueryBody.useUpdate(),
     (update) => update({ bar: "b" }, { query: { foo: "a" } }),
     "/optionalQueryBody?foo=a",
-    { bar: "b" },
+    { bar: "b" }
   );
   testCase(
     "post with omitted optional query and body",
     (client) => client.optionalQueryBody.useUpdate(),
     (update) => update({ bar: "b" }),
     "/optionalQueryBody",
-    { bar: "b" },
+    { bar: "b" }
   );
   testCase(
     "post with path, optional query and body",
     (client) => client.pathOptionalQueryBody.useUpdate(),
     (update) => update("x", { bar: "b" }, { query: { baz: "a" } }),
     "/pathOptionalQueryBody/x?baz=a",
-    { bar: "b" },
+    { bar: "b" }
   );
   testCase(
     "post with path, omitted optional query and body",
     (client) => client.pathOptionalQueryBody.useUpdate(),
     (update) => update("x", { bar: "b" }),
     "/pathOptionalQueryBody/x",
-    { bar: "b" },
+    { bar: "b" }
   );
 });
 
@@ -310,7 +311,7 @@ it("post with query - onSuccess hook passed to useMutation", async () => {
   render(
     <QueryClientProvider client={queryClient}>
       <Comp />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
   await waitFor(
     () => {
@@ -320,10 +321,10 @@ it("post with query - onSuccess hook passed to useMutation", async () => {
     {
       interval: 500,
       timeout: 10000,
-    },
+    }
   );
   expect(hookResult?.data?.req).toMatchInlineSnapshot(
-    `"http://localhost:3000/query?bar=a"`,
+    `"http://localhost:3000/query?bar=a"`
   );
   expect(hookResult?.data?.body).toMatchInlineSnapshot(`undefined`);
   expect(onSuccessArgs).toMatchInlineSnapshot(`
@@ -362,7 +363,7 @@ it("post with query - onSuccess hook passed to mutate fn", async () => {
   render(
     <QueryClientProvider client={queryClient}>
       <Comp />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
   await waitFor(
     () => {
@@ -372,10 +373,10 @@ it("post with query - onSuccess hook passed to mutate fn", async () => {
     {
       interval: 500,
       timeout: 10000,
-    },
+    }
   );
   expect(hookResult?.data?.req).toMatchInlineSnapshot(
-    `"http://localhost:3000/query?bar=a"`,
+    `"http://localhost:3000/query?bar=a"`
   );
   expect(hookResult?.data?.body).toMatchInlineSnapshot(`undefined`);
   expect(onSuccessArgs).toMatchInlineSnapshot(`
@@ -414,7 +415,7 @@ it("post with path, optional query and body - onSuccess hook passed to useMutati
   render(
     <QueryClientProvider client={queryClient}>
       <Comp />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
   await waitFor(
     () => {
@@ -424,10 +425,10 @@ it("post with path, optional query and body - onSuccess hook passed to useMutati
     {
       interval: 500,
       timeout: 10000,
-    },
+    }
   );
   expect(hookResult?.data?.req).toMatchInlineSnapshot(
-    `"http://localhost:3000/pathOptionalQueryBody/a"`,
+    `"http://localhost:3000/pathOptionalQueryBody/a"`
   );
   expect(hookResult?.data?.body).toMatchInlineSnapshot(`
     {
@@ -468,7 +469,7 @@ it("post with path, optional query and body - onSuccess hook passed to mutate fn
         { bar: "b" },
         {
           onSuccess: (...args) => (onSuccessArgs = args),
-        },
+        }
       );
     }, []);
     return null;
@@ -476,7 +477,7 @@ it("post with path, optional query and body - onSuccess hook passed to mutate fn
   render(
     <QueryClientProvider client={queryClient}>
       <Comp />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
   await waitFor(
     () => {
@@ -486,10 +487,10 @@ it("post with path, optional query and body - onSuccess hook passed to mutate fn
     {
       interval: 500,
       timeout: 10000,
-    },
+    }
   );
   expect(hookResult?.data?.req).toMatchInlineSnapshot(
-    `"http://localhost:3000/pathOptionalQueryBody/a"`,
+    `"http://localhost:3000/pathOptionalQueryBody/a"`
   );
   expect(hookResult?.data?.body).toMatchInlineSnapshot(`
     {
@@ -534,7 +535,7 @@ it("post with path, query and body - onSuccess hook passed to useMutation", asyn
   render(
     <QueryClientProvider client={queryClient}>
       <Comp />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
   await waitFor(
     () => {
@@ -544,10 +545,10 @@ it("post with path, query and body - onSuccess hook passed to useMutation", asyn
     {
       interval: 500,
       timeout: 10000,
-    },
+    }
   );
   expect(hookResult?.data?.req).toMatchInlineSnapshot(
-    `"http://localhost:3000/pathQueryBody/a?baz=c"`,
+    `"http://localhost:3000/pathQueryBody/a?baz=c"`
   );
   expect(hookResult?.data?.body).toMatchInlineSnapshot(`
     {
@@ -593,7 +594,7 @@ it("post with path, query and body - onSuccess hook passed to mutate fn", async 
         {
           query: { baz: "c" },
           onSuccess: (...args) => (onSuccessArgs = args),
-        },
+        }
       );
     }, []);
     return null;
@@ -601,7 +602,7 @@ it("post with path, query and body - onSuccess hook passed to mutate fn", async 
   render(
     <QueryClientProvider client={queryClient}>
       <Comp />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
   await waitFor(
     () => {
@@ -611,10 +612,10 @@ it("post with path, query and body - onSuccess hook passed to mutate fn", async 
     {
       interval: 500,
       timeout: 10000,
-    },
+    }
   );
   expect(hookResult?.data?.req).toMatchInlineSnapshot(
-    `"http://localhost:3000/pathQueryBody/a?baz=c"`,
+    `"http://localhost:3000/pathQueryBody/a?baz=c"`
   );
   expect(hookResult?.data?.body).toMatchInlineSnapshot(`
     {
@@ -661,6 +662,7 @@ function typeTests() {
   // @ts-expect-error
   client.query.useUpdate().mutate({ query: { bar: 1 } });
   client.query.useUpdate().mutate({ query: { bar: "a" }, onError: () => {} });
+  // @ts-expect-error
   client.query.useUpdate().mutate({ query: { bar: 1 } });
   client.query.useUpdate().mutate({ query: { bar: "a" }, onError: () => {} });
 
@@ -705,7 +707,6 @@ function typeTests() {
   client.pathOptionalQuery.useUpdate().mutate();
   // @ts-expect-error
   client.pathOptionalQuery.useUpdate().mutate(1);
-  // @ts-expect-error
   // This should error because query must be an object with a string 'bar' property
   // @ts-expect-error - Query must be an object with 'bar' property
   client.pathOptionalQuery.useUpdate().mutate("a", { query: 1 });
@@ -730,9 +731,9 @@ function typeTests() {
   // @ts-expect-error - 'bar' must be a string
   client.body.useUpdate().mutate({ bar: 1 });
   // Valid usage with body
-  client.body.useUpdate().mutate({ body: { bar: "a" } });
+  client.body.useUpdate().mutate({ bar: "a" });
   // Valid usage with body and options
-  client.body.useUpdate().mutate({ body: { bar: "a" } }, { onError: () => {} });
+  client.body.useUpdate().mutate({ bar: "a" }, { onError: () => {} });
 
   // @ts-expect-error - Missing required path parameter and body
   client.pathBody.useUpdate().mutate();
@@ -758,20 +759,13 @@ function typeTests() {
   // @ts-expect-error - Missing required body
   client.queryBody.useUpdate().mutate({ query: { bar: "a" } });
   // @ts-expect-error - Missing required query
-  client.queryBody.useUpdate().mutate({ body: { bar: "a" } });
+  client.queryBody.useUpdate().mutate({ bar: "a" });
   // Valid usage with query and body
-  client.queryBody.useUpdate().mutate({
-    query: { bar: "a" },
-    body: { bar: "a" },
-  });
+  client.queryBody.useUpdate().mutate({ bar: "a" }, { query: { foo: "a" } });
   // Valid usage with options
-  client.queryBody.useUpdate().mutate(
-    {
-      query: { bar: "a" },
-      body: { bar: "a" },
-    },
-    { onError: () => {} },
-  );
+  client.queryBody
+    .useUpdate()
+    .mutate({ bar: "a" }, { query: { foo: "a" }, onError: () => {} });
 
   // @ts-expect-error
   client.optionalQueryBody.useUpdate().mutate();
@@ -781,25 +775,20 @@ function typeTests() {
   client.optionalQueryBody.useUpdate().mutate();
   // @ts-expect-error - Invalid parameter type
   client.optionalQueryBody.useUpdate().mutate(1);
-  // Valid usage with empty body (optional query, but body is required)
-  client.optionalQueryBody.useUpdate().mutate({ body: {} });
+  // Valid usage with body, query omitted (query is optional, body is required)
+  client.optionalQueryBody.useUpdate().mutate({ bar: "b" });
   // @ts-expect-error - 'bar' in body must be a string
-  client.optionalQueryBody.useUpdate().mutate({ body: { bar: 1 } });
-  // Valid usage with optional query and empty body
-  client.optionalQueryBody.useUpdate().mutate({
-    query: { bar: "a" },
-    body: {},
-  });
+  client.optionalQueryBody.useUpdate().mutate({ bar: 1 });
+  // Valid usage with optional query and body
+  client.optionalQueryBody
+    .useUpdate()
+    .mutate({ bar: "a" }, { query: { foo: "a" } });
   // @ts-expect-error - Missing required body
-  client.optionalQueryBody.useUpdate().mutate({ query: { bar: "a" } });
+  client.optionalQueryBody.useUpdate().mutate({ query: { foo: "a" } });
   // Valid usage with both query and body
-  client.optionalQueryBody.useUpdate().mutate(
-    {
-      query: { bar: "a" },
-      body: { bar: "a" },
-    },
-    { onError: () => {} },
-  );
+  client.optionalQueryBody
+    .useUpdate()
+    .mutate({ bar: "a" }, { query: { foo: "a" }, onError: () => {} });
 
   // @ts-expect-error - Missing required path and body
   client.pathOptionalQueryBody.useUpdate().mutate();
@@ -807,34 +796,27 @@ function typeTests() {
   client.pathOptionalQueryBody.useUpdate().mutate(1);
   // @ts-expect-error - Missing required body
   client.pathOptionalQueryBody.useUpdate().mutate("a");
-  // Valid usage with path and empty body
-  client.pathOptionalQueryBody.useUpdate().mutate("a", { body: {} });
-  // @ts-expect-error - 'bar' in query must be a string
-  client.pathOptionalQueryBody.useUpdate().mutate("a", {
-    query: { bar: 1 },
-    body: {},
-  });
+  // Valid usage with path and body, query omitted
+  client.pathOptionalQueryBody.useUpdate().mutate("a", { bar: "b" });
+  client.pathOptionalQueryBody.useUpdate().mutate(
+    "a",
+    { bar: "b" },
+    // @ts-expect-error - 'baz' in query must be a string
+    { query: { baz: 1 } }
+  );
   // @ts-expect-error - 'bar' in body must be a string
-  client.pathOptionalQueryBody.useUpdate().mutate("a", {
-    body: { bar: 1 },
-  });
+  client.pathOptionalQueryBody.useUpdate().mutate("a", { bar: 1 });
   // @ts-expect-error - Path must be a string
   client.pathOptionalQueryBody.useUpdate().mutate(1, {
     query: { bar: "a" },
     body: { bar: "a" },
   });
   // Valid usage with all parameters
-  client.pathOptionalQueryBody.useUpdate().mutate("a", {
-    query: { bar: "a" },
-    body: { bar: "a" },
-  });
+  client.pathOptionalQueryBody
+    .useUpdate()
+    .mutate("a", { bar: "a" }, { query: { baz: "a" } });
   // Valid usage with options
-  client.pathOptionalQueryBody.useUpdate().mutate(
-    "a",
-    {
-      query: { bar: "a" },
-      body: { bar: "a" },
-    },
-    { onError: () => {} },
-  );
+  client.pathOptionalQueryBody
+    .useUpdate()
+    .mutate("a", { bar: "a" }, { query: { baz: "a" }, onError: () => {} });
 }

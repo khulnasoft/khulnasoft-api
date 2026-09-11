@@ -22,12 +22,18 @@
   "main": "dist/prismaPlugin.js",
   "types": "dist/prismaPlugin.d.ts",
   "scripts": {
-    "clean": "rimraf dist *.tsbuildinfo"
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"No tests specified\"",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "typedoc": "typedoc --project typedoc.json",
+    "prepublishOnly": "pnpm clean && pnpm build && pnpm test"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.10.3",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.2",
+    "typedoc": "0.28.20"
   },
   "dependencies": {
     "lodash": "^4.18.1",

@@ -31,13 +31,19 @@
   "scripts": {
     "test": "pnpm -r test",
     "test:ci": "start-server-and-test start-test-server http://0.0.0.0:3005 test",
-    "start-test-server": "cd demo && pnpm start -p 3005",
-    "build": "pnpm -r run prebuild && tsc -b packages/*/tsconfig*.json && (cd demo && pnpm build)",
-    "build:watch": "pnpm -r run prebuild && tsc -b --watch packages/*/tsconfig*.json demo/tsconfig.json",
+    "start-test-server": "cd apps/demo && pnpm start -p 3005",
+    "build": "pnpm -r run prebuild && tsc -b packages/*/tsconfig*.json && pnpm docs:types && (cd apps/demo && pnpm build)",
+    "build:watch": "pnpm -r run prebuild && tsc -b --watch packages/*/tsconfig*.json apps/demo/tsconfig.json",
+    "typecheck": "pnpm --filter './packages/*' typecheck",
+    "build:packages": "pnpm --filter './packages/*' build",
+    "test:unit": "pnpm --filter './packages/*' test",
+    "test:e2e": "pnpm --filter '@khulnasoft-api/demo' test",
+    "verify": "pnpm prettier:check && pnpm typecheck && pnpm test:unit && pnpm build:packages",
     "dev:types": "tsc -p tsconfig.dev.json",
     "docs:start": "cd docs && pnpm start",
-    "docs:build": "cd docs && pnpm build",
-    "docs:deploy": "pnpm docs:build && netlify deploy --dir docs/build --prod",
+    "docs:build": "rimraf docs/index.html docs/hierarchy.html docs/assets && pnpm docs:types",
+    "docs:deploy": "netlify deploy --dir docs --prod",
+    "docs:types": "typedoc",
     "watch": "pnpm run build:watch",
     "clean": "pnpm -r run clean && rimraf packages/*/{package,*.tgz}",
     "format": "prettier --write .",
@@ -46,6 +52,7 @@
     "publish-git": "sh -c 'if [ -n \"$(git status --porcelain)\" ]; then echo \"Repository is dirty. Commit or stash your changes first.\" >&2; exit 1; fi && pnpm clean && pnpm build && ./scripts/publish.mjs && git reset --hard HEAD'"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.10",
     "@types/node": "^20.10.3",
     "@types/node-fetch": "^2.6.9",
     "execa": "^7.2.0",
@@ -56,7 +63,7 @@
     "prettier": "^2.8.8",
     "rimraf": "^5.0.5",
     "start-server-and-test": "^2.0.3",
-    "typescript": "^5.3.2",
-    "@types/jest": "^29.5.10"
+    "typedoc": "^0.28.20",
+    "typescript": "^5.3.2"
   }
 }

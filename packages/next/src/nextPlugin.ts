@@ -29,7 +29,12 @@ export type NextServerContext = {
   type: "nextjs";
   args:
     | [NextApiRequest, NextApiResponse]
-    | [NextRequest, { params: Record<string, any> }];
+    // Next.js 15+ passes `params` as a Promise; accept both shapes for
+    // compatibility with older versions.
+    | [
+        NextRequest,
+        { params: Record<string, any> | Promise<Record<string, any>> }
+      ];
 };
 
 type RouterOptions = {
@@ -41,12 +46,12 @@ const methods = ["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"];
 
 type PagesHandler = (
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) => Promise<void>;
 
 type AppHandler = (
   req: NextRequest,
-  ctx: { params: Record<string, any> },
+  ctx: { params: Promise<Record<string, any>> }
 ) => Promise<NextResponse>;
 
 type AppHandlers = {
@@ -71,7 +76,7 @@ const makeAppHandlers = (handler: AppHandler): AppHandlers => ({
 
 function makeRouter(
   endpoints: AnyEndpoint[],
-  options?: RouterOptions,
+  options?: RouterOptions
 ): { appHandler: AppHandler; pagesHandler: PagesHandler } {
   const khulnasoft = endpoints[0]?.khulnasoft;
   if (!khulnasoft) {
@@ -100,7 +105,9 @@ function makeRouter(
 
   const appHandler = async (
     req: NextRequest,
-    ctx: { params: Record<string, any> },
+    // Next.js 15+ passes `params` as a Promise. It is unused here (path
+    // params come from the route matcher), so no awaiting is needed.
+    ctx: { params: Promise<Record<string, any>> }
   ): Promise<NextResponse> => {
     try {
       const { method, url } = req;
@@ -110,7 +117,7 @@ function makeRouter(
 
       if (!isValidRouteMatch(match)) {
         const enabledMethods = methods.filter((method) =>
-          isValidRouteMatch(routeMatcher.match(method, pathname)),
+          isValidRouteMatch(routeMatcher.match(method, pathname))
         );
         if (enabledMethods.length) {
           return NextResponse.json(
@@ -119,7 +126,7 @@ function makeRouter(
                 .map((x) => x.toUpperCase())
                 .join(", ")}.`,
             },
-            { status: 405 },
+            { status: 405 }
           );
         }
         throw new NotFoundError();
@@ -167,11 +174,11 @@ function makeRouter(
 
       console.error(
         `ERROR in ${req.method} ${req.url}:`,
-        error instanceof Error ? error.stack : error,
+        error instanceof Error ? error.stack : error
       );
       return NextResponse.json(
         { error, details: "Failed to handle the request." },
-        { status: 500 },
+        { status: 500 }
       );
     }
   };
@@ -190,7 +197,7 @@ function makeRouter(
 
       if (!isValidRouteMatch(match)) {
         const enabledMethods = methods.filter((method) =>
-          isValidRouteMatch(routeMatcher.match(method, pathname)),
+          isValidRouteMatch(routeMatcher.match(method, pathname))
         );
         if (enabledMethods.length) {
           res.status(405).json({
@@ -240,7 +247,7 @@ function makeRouter(
 
       console.error(
         `ERROR in ${req.method} ${req.url}:`,
-        error instanceof Error ? error.stack : error,
+        error instanceof Error ? error.stack : error
       );
       res.status(500).json({ error, details: "Failed to handle the request." });
       return;
@@ -263,24 +270,24 @@ export const khulnasoftNextPageRoute = <Endpoints extends AnyEndpoint[]>(
 
 export const khulnasoftNextPageCatchAllRouter = <API extends AnyAPIDescription>(
   { topLevel, resources }: API,
-  options?: RouterOptions,
+  options?: RouterOptions
 ) =>
   makeRouter(
     allEndpoints({
       actions: topLevel?.actions,
       namespacedResources: resources,
     }),
-    options,
+    options
   ).pagesHandler;
 
 export const khulnasoftNextAppRoute = (
   endpoint: AnyEndpoint,
-  options?: RouterOptions,
+  options?: RouterOptions
 ) => makeRouter([endpoint], options).appHandler;
 
 export const khulnasoftNextAppCatchAllRouter = <API extends AnyAPIDescription>(
   { topLevel, resources }: API,
-  options?: RouterOptions,
+  options?: RouterOptions
 ) =>
   makeAppHandlers(
     makeRouter(
@@ -288,6 +295,6 @@ export const khulnasoftNextAppCatchAllRouter = <API extends AnyAPIDescription>(
         actions: topLevel?.actions,
         namespacedResources: resources,
       }),
-      options,
-    ).appHandler,
+      options
+    ).appHandler
   );

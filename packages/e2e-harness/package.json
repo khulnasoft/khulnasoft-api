@@ -1,0 +1,44 @@
+{
+  "name": "@khulnasoft-api/e2e-harness",
+  "version": "0.0.1",
+  "license": "ISC",
+  "description": "Shared E2E test harness and contracts for KhulnaSoft API adapters",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khulnasoft/khulnasoft-api.git",
+    "directory": "packages/e2e-harness"
+  },
+  "homepage": "https://github.com/khulnasoft/khulnasoft-api/tree/main/packages/e2e-harness",
+  "bugs": {
+    "url": "https://github.com/khulnasoft/khulnasoft-api/issues"
+  },
+  "keywords": [
+    "khulnasoft",
+    "e2e",
+    "testing",
+    "harness"
+  ],
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"No tests specified\"",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "prepublishOnly": "pnpm clean && pnpm build && pnpm test"
+  },
+  "dependencies": {
+    "@khulnasoft-api/component-types": "workspace:*",
+    "@khulnasoft-api/component-compiler": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.2"
+  }
+}

@@ -1,4 +1,8 @@
-import { Khulnasoft } from "khulnasoft";
+import { Khulnasoft, z } from "khulnasoft";
+
+// Referenced so that declaration emit can name schema types
+// (e.g. z.ZodObject) via the "khulnasoft" entrypoint.
+void z;
 import { cats } from "./cat-api";
 import { dogs } from "./dog-api";
 import { users } from "./user-api";
@@ -6,7 +10,7 @@ import { dogTreats } from "./dog-treat-api";
 
 export async function mockFetchImplementation(
   input: string | URL | Request,
-  options?: RequestInit,
+  options?: RequestInit
 ) {
   const mockCat = { name: "Shiro", color: "black" };
   let payload;

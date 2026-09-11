@@ -8,6 +8,21 @@
       "path": "packages/client"
     },
     {
+      "path": "packages/component-types"
+    },
+    {
+      "path": "packages/component-compiler"
+    },
+    {
+      "path": "packages/component-runtime"
+    },
+    {
+      "path": "packages/e2e-harness"
+    },
+    {
+      "path": "packages/frameworks"
+    },
+    {
       "path": "packages/express"
     },
     {

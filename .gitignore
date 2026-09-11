@@ -15,4 +15,21 @@ next-env.d.ts
 # Local Netlify folder
 .netlify
 
-/demo/.vscode
+/docs/typedoc
+/docs/index.html
+/docs/hierarchy.html
+/docs/assets
+/apps/demo/.vscode
+.khulnasoft-codegen
+/fixtures/legacy-js
+
+/apps/*/.khulnasoft-codegen
+/apps/todomvc/.khulnasoft-codegen
+/examples/*/.khulnasoft-codegen
+
+# TypeDoc generated output
+*.typedoc/
+typedoc/
+docs/typedoc/
+
+**/src/__tests__/*.test.js

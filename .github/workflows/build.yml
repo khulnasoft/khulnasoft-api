@@ -43,7 +43,7 @@ jobs:
 
       - name: Set up db
         run: |
-          cd demo
+          cd apps/demo
           cp .env-ci .env
           pnpm prisma migrate dev
 
