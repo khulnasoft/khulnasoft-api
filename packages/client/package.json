@@ -14,11 +14,13 @@
     }
   },
   "scripts": {
+    "clean": "rimraf dist *.tsbuildinfo",
     "build": "tsc -p tsconfig.json",
-    "clean": "rimraf dist *.tsbuildinfo package",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typedoc": "typedoc --project typedoc.json",
     "test": "VITE_CJS_TRACE=true vitest run",
     "prebuild": "mkdir -p dist/esm && echo '{\"type\": \"module\"}' > dist/esm/package.json",
-    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "prepublishOnly": "pnpm clean && pnpm build && pnpm test",
     "generate-types": "node dist/scripts/run-codegen.js src/test-util generated-api-types.ts ../index"
   },
   "keywords": [
@@ -39,7 +41,9 @@
     "@types/lodash": "^4.14.202",
     "@types/prettier": "^2.7.3",
     "ts-node": "^10.9.1",
-    "vitest": "^4.1.0"
+    "vite": "^6.0.0",
+    "vitest": "^4.1.0",
+    "typedoc": "0.28.20"
   },
   "peerDependencies": {
     "@tanstack/react-query": "~5.x"

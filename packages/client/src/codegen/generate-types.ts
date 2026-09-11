@@ -333,7 +333,10 @@ export async function generateOutput<API extends APIConfig>(
     reactQueryAlias
   );
 
+  // Use the typescript parser (not babel) so generated output is stable:
+  // it matches what `prettier --write` (e.g. the pre-commit hook) produces
+  // for .ts files, instead of flip-flopping on every regeneration.
   return await prettier.format(output.flat().join("\n"), {
-    parser: "babel",
+    parser: "typescript",
   });
 }

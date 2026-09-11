@@ -1,0 +1,14 @@
+{
+  "entryPoints": ["src/nextPlugin.ts"],
+  "tsconfig": "tsconfig.json",
+  "includeVersion": true,
+  "readme": "none",
+  "searchInComments": true,
+  "visibility": "public",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "hideGenerator": false,
+  "categorizeByGroup": true,
+  "plugin": []
+}
